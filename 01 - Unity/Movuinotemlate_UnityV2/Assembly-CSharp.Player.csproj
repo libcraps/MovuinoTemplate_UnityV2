@@ -612,7 +612,8 @@
   <ItemGroup>
     <Compile Include="Assets\OSC\OSC.cs" />
     <Compile Include="Assets\Scripts\DeviceBehaviour.cs" />
-    <Compile Include="Assets\Scripts\Movuino.cs" />
+    <Compile Include="Assets\Scripts\MovuinoBehaviour.cs" />
+    <Compile Include="Assets\Scripts\MovuinoData.cs" />
     <Compile Include="Assets\Scripts\OSCDataHandler.cs" />
     <Compile Include="Assets\Scripts\OSCtest.cs" />
   </ItemGroup>
