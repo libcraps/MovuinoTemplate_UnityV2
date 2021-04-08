@@ -28,7 +28,7 @@ namespace MovuinoTemplate
         void Start()
         {
             oscManager.SetAddressHandler(movuino.MovuinoAdress, movuino.OSCmovuinoSensorData.ToOSCDataHandler);
-            oscManager.SetAllMessageHandler(OSCDataHandler.DebugAllMessage);
+            //oscManager.SetAllMessageHandler(OSCDataHandler.DebugAllMessage);
         }
 
 
