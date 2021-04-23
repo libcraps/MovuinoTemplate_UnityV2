@@ -5,7 +5,7 @@ using UnityEngine;
 /// <summary>
 /// Namespace relative to device
 /// </summary>
-namespace MovuinoTemplate
+namespace Device
 {
     /// <summary>
     /// MonoBehaviour class used to described e bit more DeviceBehaviours

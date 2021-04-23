@@ -1,8 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using Device;
 using UnityEngine;
 
-namespace MovuinoTemplate
+namespace Movuino
 {
     /// <summary>
     /// Class that manage the movuino object in the scene
@@ -14,7 +15,7 @@ namespace MovuinoTemplate
         public OSC oscManager;
         private string addressSensorData;
 
-        private MovuinoData movuino;
+        private MovuinoDataOnline movuino;
         [SerializeField]
         private string movuinoAdress;
 
@@ -22,7 +23,7 @@ namespace MovuinoTemplate
 
         private void Awake()
         {
-            movuino = new MovuinoData(movuinoAdress);
+            movuino = new MovuinoDataOnline(movuinoAdress);
             addressSensorData = movuino.MovuinoAdress + OSCmovuinoSensorData.OSCAddress;
         }
         void Start()

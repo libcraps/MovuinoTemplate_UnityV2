@@ -7,7 +7,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace MovuinoTemplate
+namespace Device
 {
 	/// <summary>
 	/// Inherit this if you want to represent a Movuino Data Type.

@@ -12,14 +12,17 @@
     <ProjectTypeGuids>{E097FAD1-6243-4DAD-9C02-E9B9EFC3FFC1};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <TargetFrameworkIdentifier>.NETFramework</TargetFrameworkIdentifier>
     <TargetFrameworkVersion>v4.7.1</TargetFrameworkVersion>
-    <TargetFrameworkProfile></TargetFrameworkProfile>
-    <CompilerResponseFile></CompilerResponseFile>
+    <TargetFrameworkProfile>
+    </TargetFrameworkProfile>
+    <CompilerResponseFile>
+    </CompilerResponseFile>
     <UnityProjectGenerator>VSTU</UnityProjectGenerator>
     <UnityProjectGeneratorVersion>4.8.2.0</UnityProjectGeneratorVersion>
     <UnityProjectType>Game:1</UnityProjectType>
     <UnityBuildTarget>StandaloneWindows:5</UnityBuildTarget>
     <UnityVersion>2019.4.17f1</UnityVersion>
-    <RootNamespace></RootNamespace>
+    <RootNamespace>
+    </RootNamespace>
     <LangVersion>7.3</LangVersion>
   </PropertyGroup>
   <PropertyGroup>
@@ -613,7 +616,8 @@
     <Compile Include="Assets\OSC\OSC.cs" />
     <Compile Include="Assets\Scripts\DeviceBehaviour.cs" />
     <Compile Include="Assets\Scripts\MovuinoBehaviour.cs" />
-    <Compile Include="Assets\Scripts\MovuinoData.cs" />
+    <Compile Include="Assets\Scripts\MovuinoDataSet.cs" />
+    <Compile Include="Assets\Scripts\MovuinoDataOnline.cs" />
     <Compile Include="Assets\Scripts\OSCDataHandler.cs" />
     <Compile Include="Assets\Scripts\OSCtest.cs" />
   </ItemGroup>
