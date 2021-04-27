@@ -10,52 +10,121 @@ namespace Movuino
     /// </summary>
     /// <remarks>Handle OSC conncetion too</remarks>
     public class MovuinoBehaviour : MonoBehaviour
-    {
-
+	{
         public OSC oscManager;
-        private string addressSensorData;
 
-        private MovuinoDataOnline movuino;
         [SerializeField]
-        private string movuinoAdress;
+        private string _movuinoAdress;
 
-        public OSCMovuinoSensorData OSCmovuinoSensorData { get { return movuino.OSCmovuinoSensorData; } }
+        private string _addressSensorData;
+
+        public OSCMovuinoSensorData OSCmovuinoSensorData; //9axes data
+
+        public string movuinoAdress { get { return _movuinoAdress; } }
+        public Vector3 instantAcceleration { get { return OSCmovuinoSensorData.accelerometer; } }
+        public Vector3 instantGyroscope { get { return OSCmovuinoSensorData.gyroscope; } }
+        public Vector3 instantMagnetometer { get { return OSCmovuinoSensorData.magnetometer; } }
+
+        public Vector3 acceleration { get { return _accel; } }
+        public Vector3 gyroscope { get { return _gyr; } }
+        public Vector3 magnetometer { get { return _mag; } }
+
+        public Vector3 deltaAccel { get { return _accel - _prevAccel;  } }
+        public Vector3 deltaGyr { get { return _gyr - _prevGyr;  } }
+        public Vector3 deltaMag { get { return _mag - _prevMag;  } }
+
+        public Vector3 angleOrientation {  get { return GetAngleMag(); } }
+
+
+        public Vector3 _accel;
+        Vector3 _gyr;
+        Vector3 _mag;
+
+        Vector3 _prevAccel;
+        Vector3 _prevGyr;
+        Vector3 _prevMag;
+
+        Vector3 _initAngle;
+        Vector3 _angleMagMethod;
+        Vector3 _angleGyrMethod;
 
         private void Awake()
         {
-            movuino = new MovuinoDataOnline(movuinoAdress);
-            addressSensorData = movuino.MovuinoAdress + OSCmovuinoSensorData.OSCAddress;
+            Init();
+            _addressSensorData = movuinoAdress + OSCmovuinoSensorData.OSCAddress;
         }
         void Start()
         {
-            oscManager.SetAddressHandler(movuino.MovuinoAdress, movuino.OSCmovuinoSensorData.ToOSCDataHandler);
+            oscManager.SetAddressHandler(movuinoAdress, OSCmovuinoSensorData.ToOSCDataHandler);
             //oscManager.SetAllMessageHandler(OSCDataHandler.DebugAllMessage);
         }
 
 
         private void FixedUpdate()
         {
-            movuino.UpdateMovuinoData();
-            //this.gameObject.transform.Rotate(movuino.InstantGyroscope * Time.fixedDeltaTime * (float)(360/(2*3.14)));
-            movuino.InitMovTransform();
-            this.gameObject.transform.Translate(new Vector3(movuino.AngleOrientation.y * (float)0.001, -movuino.AngleOrientation.x * (float)0.001, 0) );
-            Debug.Log(movuino.AngleOrientation);
+            UpdateMovuinoData();
+            InitMovTransform();
+            
         }
 
-        void GetGyroriantation(OSCMovuinoSensorData movuino)
+
+        Vector3 GetAngleGyrEulerIntegratino()
         {
-            this.gameObject.transform.Rotate(movuino.gyroscope * Time.fixedDeltaTime * (float)(360.0 / (2 * 3.14)));
-        }
-        void MoveObj(OSCMovuinoSensorData movuino)
-        {
-            this.gameObject.transform.Translate(movuino.accelerometer * Time.fixedDeltaTime);
+            Vector3 angle = new Vector3();
+
+            angle.x = _angleGyrMethod.x + _gyr.x * Time.deltaTime;
+            angle.x = _angleGyrMethod.y + _gyr.y * Time.deltaTime;
+            angle.x = _angleGyrMethod.z + _gyr.z * Time.deltaTime;
+            return angle;
         }
 
-        void OrientObj(OSCMovuinoSensorData movuino)
-        {
-            //this.gameObject.transform.localEulerAngles = Angle;
+
+        public void Init()
+		{
+            _prevAccel = new Vector3(0, 0, 0);
+            _prevGyr = new Vector3(0, 0, 0);
+            _prevMag = new Vector3(0, 0, 0);
+
+            _accel = new Vector3(0, 0, 0);
+            _gyr = new Vector3(0, 0, 0);
+            _mag = new Vector3(0, 0, 0);
+
+            _angleGyrMethod = new Vector3(0, 0, 0);
+            _angleMagMethod = new Vector3(0, 0, 0);
+            _initAngle = new Vector3(0, 0, 0);
+            OSCmovuinoSensorData = OSCDataHandler.CreateOSCDataHandler<OSCMovuinoSensorData>();
         }
 
+
+        Vector3 GetAngleMag()
+        {
+            _angleMagMethod = OSCmovuinoSensorData.magnetometer - _initAngle;
+            return _angleMagMethod;
+        }
+
+        public void InitMovTransform()
+        {
+
+            if (Input.GetKeyDown(KeyCode.I))
+            {
+                _initAngle = OSCmovuinoSensorData.magnetometer;
+            }
+        }
+
+        public void UpdateMovuinoData()
+        {
+            _prevAccel = _accel;
+            _prevGyr = _gyr;
+            _prevMag = _mag;
+
+            _angleGyrMethod = GetAngleGyrEulerIntegratino();
+            _angleMagMethod = GetAngleMag();
+
+            _accel = instantAcceleration;
+            _gyr = instantGyroscope;
+            _mag = instantMagnetometer;
+
+        }
 
     }
 

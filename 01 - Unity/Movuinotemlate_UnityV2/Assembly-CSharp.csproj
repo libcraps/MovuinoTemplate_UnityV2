@@ -64,13 +64,14 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets\OSC\OSC.cs" />
     <Compile Include="Assets\Scripts\DeviceBehaviour.cs" />
+    <Compile Include="Assets\Scripts\MouseBehaviour.cs" />
     <Compile Include="Assets\Scripts\MovuinoBehaviour.cs" />
-    <Compile Include="Assets\Scripts\MovuinoDataOnline.cs" />
     <Compile Include="Assets\Scripts\MovuinoDataSet.cs" />
+    <Compile Include="Assets\Scripts\OSC\OSC.cs" />
     <Compile Include="Assets\Scripts\OSCDataHandler.cs" />
-    <Compile Include="Assets\Scripts\OSCtest.cs" />
+    <Compile Include="Assets\Scripts\_less_important\OLD\MovuinoBehaviour_OLD.cs" />
+    <Compile Include="Assets\Scripts\_less_important\Test\OSCtest.cs" />
     <Reference Include="UnityEngine">
       <HintPath>C:/Program Files/Unity/Hub/Editor/2019.4.17f1/Editor/Data/Managed/UnityEngine/UnityEngine.dll</HintPath>
     </Reference>

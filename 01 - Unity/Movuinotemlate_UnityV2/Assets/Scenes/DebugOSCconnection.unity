@@ -319,6 +319,7 @@ GameObject:
   - component: {fileID: 1101071202}
   - component: {fileID: 1101071204}
   - component: {fileID: 1101071203}
+  - component: {fileID: 1101071205}
   m_Layer: 0
   m_Name: Movuino
   m_TagString: Untagged
@@ -366,11 +367,23 @@ MonoBehaviour:
   m_GameObject: {fileID: 1101071201}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cd042e844064f6141ba5aab09d425812, type: 3}
+  m_Script: {fileID: 11500000, guid: aa6b5b91754610a4a83257316240b653, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   oscManager: {fileID: 577604969}
-  movuinoAdress: /movPlayer
+  _movuinoAdress: /movPlayer
+--- !u!114 &1101071205
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1101071201}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c320b2146d5287c4abec8a47555953d2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &1379854579202066527
 PrefabInstance:
   m_ObjectHideFlags: 0

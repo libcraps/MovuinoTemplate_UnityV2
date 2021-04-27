@@ -13,7 +13,6 @@ namespace Movuino
     /// </summary>
     public class MovuinoDataSet
     {
-
         private string dataPath;
         List<object[]> rawData_ = new List<object[]>();
         DataTable _rawData;
