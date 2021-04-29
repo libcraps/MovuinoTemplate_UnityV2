@@ -26,14 +26,21 @@ namespace Movuino
         public Vector3 instantMagnetometer { get { return OSCmovuinoSensorData.magnetometer; } }
 
         public Vector3 acceleration { get { return _accel; } }
-        public Vector3 gyroscope { get { return _gyr; } }
+        public Vector3 gyroscope { get { return (_gyr-_initGyr)*(float)(360/(2*3.14)); } }
         public Vector3 magnetometer { get { return _mag; } }
 
         public Vector3 deltaAccel { get { return _accel - _prevAccel;  } }
         public Vector3 deltaGyr { get { return _gyr - _prevGyr;  } }
         public Vector3 deltaMag { get { return _mag - _prevMag;  } }
 
-        public Vector3 angleOrientation {  get { return GetAngleMag(); } }
+        public Vector3 angleMagOrientation {  get { return GetAngleMag(); } }
+        public Vector3 angleGyrOrientation {  get { return GetAngleGyrEulerIntegratino(); } }
+
+        public Vector3 angleAccelOrientation { get; }
+
+        public float gravity;
+
+        public Vector3 gravityReference;
 
 
         public Vector3 _accel;
@@ -45,8 +52,12 @@ namespace Movuino
         Vector3 _prevMag;
 
         Vector3 _initAngle;
+        Vector3 _initGyr;
+        Vector3 _initAccel;
+        Vector3 _initMag;
         Vector3 _angleMagMethod;
         Vector3 _angleGyrMethod;
+        Vector3 _angleAccelMethod;
 
         private void Awake()
         {
@@ -64,21 +75,28 @@ namespace Movuino
         {
             UpdateMovuinoData();
             InitMovTransform();
-            
+            ComputeAngle(instantAcceleration.normalized);
         }
 
-
-        Vector3 GetAngleGyrEulerIntegratino()
+        private void ComputeAngle(Vector3 U)
         {
-            Vector3 angle = new Vector3();
+            Vector3 angle;
 
-            angle.x = _angleGyrMethod.x + _gyr.x * Time.deltaTime;
-            angle.x = _angleGyrMethod.y + _gyr.y * Time.deltaTime;
-            angle.x = _angleGyrMethod.z + _gyr.z * Time.deltaTime;
-            return angle;
+            Vector2 Uxy = new Vector2(U.x, U.y);
+            Vector2 Uyz = new Vector2(U.y, U.z);
+            Vector2 Uzx = new Vector2(U.z, U.x);
+
+            float alpha; //z angle (real)
+            float beta; //x angle (real)
+            float gamma; //y angle (real)
+
+            alpha = Mathf.Acos(U.x/(Uxy.sqrMagnitude));
+            beta = Mathf.Acos(U.y/(Uyz.sqrMagnitude));
+            gamma = Mathf.Acos(U.z/(Uzx.sqrMagnitude));
+
+            angle = new Vector3(beta, alpha, gamma)*360/(2*Mathf.PI);
+            print(angle);
         }
-
-
         public void Init()
 		{
             _prevAccel = new Vector3(0, 0, 0);
@@ -91,7 +109,11 @@ namespace Movuino
 
             _angleGyrMethod = new Vector3(0, 0, 0);
             _angleMagMethod = new Vector3(0, 0, 0);
+            _angleMagMethod = new Vector3(0, 0, 0);
             _initAngle = new Vector3(0, 0, 0);
+            _initGyr = new Vector3(0, 0, 0);
+            _initAccel = new Vector3(0, 0, 0);
+            _initMag = new Vector3(0, 0, 0);
             OSCmovuinoSensorData = OSCDataHandler.CreateOSCDataHandler<OSCMovuinoSensorData>();
         }
 
@@ -102,14 +124,16 @@ namespace Movuino
             return _angleMagMethod;
         }
 
-        public void InitMovTransform()
+        Vector3 GetAngleGyrEulerIntegratino()
         {
+            Vector3 angle = new Vector3();
 
-            if (Input.GetKeyDown(KeyCode.I))
-            {
-                _initAngle = OSCmovuinoSensorData.magnetometer;
-            }
+            angle.x = _angleGyrMethod.x + _gyr.x * Time.deltaTime;
+            angle.x = _angleGyrMethod.y + _gyr.y * Time.deltaTime;
+            angle.x = _angleGyrMethod.z + _gyr.z * Time.deltaTime;
+            return angle;
         }
+
 
         public void UpdateMovuinoData()
         {
@@ -125,6 +149,24 @@ namespace Movuino
             _mag = instantMagnetometer;
 
         }
+
+        public void InitMovTransform()
+        {
+
+            if (Input.GetKeyDown(KeyCode.I))
+            {
+                _initAngle = OSCmovuinoSensorData.magnetometer;
+            }
+            if (Input.GetKeyDown(KeyCode.Y))
+            {
+                _initGyr = OSCmovuinoSensorData.gyroscope;
+                _initMag = OSCmovuinoSensorData.magnetometer;
+                _initAccel = OSCmovuinoSensorData.accelerometer;
+            }
+
+        }
+
+
 
     }
 
