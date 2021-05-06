@@ -21,18 +21,23 @@ namespace Movuino
         public OSCMovuinoSensorData OSCmovuinoSensorData; //9axes data
 
         public string movuinoAdress { get { return _movuinoAdress; } }
+
+        //Instant data
         public Vector3 instantAcceleration { get { return OSCmovuinoSensorData.accelerometer; } }
         public Vector3 instantGyroscope { get { return OSCmovuinoSensorData.gyroscope; } }
         public Vector3 instantMagnetometer { get { return OSCmovuinoSensorData.magnetometer; } }
 
+        //Data for the duration of the frame
         public Vector3 acceleration { get { return _accel; } }
         public Vector3 gyroscope { get { return (_gyr-_initGyr)*(float)(360/(2*3.14)); } }
         public Vector3 magnetometer { get { return _mag; } }
 
+        //DeltaValues
         public Vector3 deltaAccel { get { return _accel - _prevAccel;  } }
         public Vector3 deltaGyr { get { return _gyr - _prevGyr;  } }
         public Vector3 deltaMag { get { return _mag - _prevMag;  } }
 
+        //Angle obtained with != ways
         public Vector3 angleMagOrientation {  get { return GetAngleMag(); } }
         public Vector3 angleGyrOrientation {  get { return GetAngleGyrEulerIntegratino(); } }
 
@@ -43,7 +48,7 @@ namespace Movuino
         public Vector3 gravityReference;
 
 
-        public Vector3 _accel;
+        Vector3 _accel;
         Vector3 _gyr;
         Vector3 _mag;
 
@@ -55,6 +60,7 @@ namespace Movuino
         Vector3 _initGyr;
         Vector3 _initAccel;
         Vector3 _initMag;
+
         Vector3 _angleMagMethod;
         Vector3 _angleGyrMethod;
         Vector3 _angleAccelMethod;
@@ -95,7 +101,6 @@ namespace Movuino
             gamma = Mathf.Acos(U.z/(Uzx.sqrMagnitude));
 
             angle = new Vector3(beta, alpha, gamma)*360/(2*Mathf.PI);
-            print(angle);
         }
         public void Init()
 		{

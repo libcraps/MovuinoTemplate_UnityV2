@@ -65,14 +65,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\Scripts\DeviceBehaviour.cs" />
-    <Compile Include="Assets\Scripts\FollowingBehaviour.cs" />
-    <Compile Include="Assets\Scripts\MouseBehaviour.cs" />
+    <Compile Include="Assets\Scripts\Mouse\MouseBehaviour.cs" />
     <Compile Include="Assets\Scripts\Movuino\MovuinoSensor.cs" />
     <Compile Include="Assets\Scripts\MovuinoBehaviour.cs" />
     <Compile Include="Assets\Scripts\MovuinoDataSet.cs" />
     <Compile Include="Assets\Scripts\OSC\OSC.cs" />
     <Compile Include="Assets\Scripts\OSCDataHandler.cs" />
     <Compile Include="Assets\Scripts\SphereVisu\SphereBehaviour.cs" />
+    <Compile Include="Assets\Scripts\Tools\FollowingBehaviour.cs" />
     <Compile Include="Assets\Scripts\_less_important\OLD\MovuinoBehaviour_OLD.cs" />
     <Compile Include="Assets\Scripts\_less_important\Test\OSCtest.cs" />
     <Reference Include="UnityEngine">

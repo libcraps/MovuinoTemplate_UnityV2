@@ -372,6 +372,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   oscManager: {fileID: 577604969}
   _movuinoAdress: /movPlayer
+  gravity: 0
+  gravityReference: {x: 0, y: 0, z: 0}
+  _accel: {x: 0, y: 0, z: 0}
 --- !u!114 &1101071205
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -481,8 +484,8 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 4e0b83d3463581c47bae9c685045f86e, type: 2}
-  - {fileID: 2100000, guid: 61a3f1de800fe814091998925cb7f071, type: 2}
+  - {fileID: 2100000, guid: 216295e190a474844b77876f3dd9792c, type: 2}
+  - {fileID: 2100000, guid: 55546162b92b8f2439d6c6c8718dd289, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

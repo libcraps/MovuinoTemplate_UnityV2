@@ -1,14 +1,12 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Device;
 using Movuino;
 
 public class SphereBehaviour : MonoBehaviour
 {
     MovuinoBehaviour movuinoBehaviour;
     Vector3 angle;
-
 
     public void Awake()
     {
@@ -19,7 +17,7 @@ public class SphereBehaviour : MonoBehaviour
     public void FixedUpdate()
     {
         angle = movuinoBehaviour.angleGyrOrientation;
-        this.gameObject.transform.Rotate(movuinoBehaviour.gyroscope * Time.deltaTime);
+        this.gameObject.transform.Rotate(movuinoBehaviour.gyroscope * Time.deltaTime * 100);
         if (Input.GetKeyDown(KeyCode.G))
         {
             this.gameObject.transform.eulerAngles = GameObject.Find("OrbitCamera").transform.eulerAngles;

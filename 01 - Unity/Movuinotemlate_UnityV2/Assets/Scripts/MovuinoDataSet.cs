@@ -11,10 +11,9 @@ namespace Movuino
     /// <summary>
     /// Class That represent a complete file of data of a movuino
     /// </summary>
-    public class MovuinoDataSet
+    public class MovuinoDataSet 
     {
         private string dataPath;
-        List<object[]> rawData_ = new List<object[]>();
         DataTable _rawData;
 
 
@@ -35,7 +34,16 @@ namespace Movuino
 
         }
 
-        public Vector3 GetVector(string columnX, string columnY, string columnZ, int i)
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="columnX"></param>
+        /// <param name="columnY"></param>
+        /// <param name="columnZ"></param>
+        /// <param name="i"></param>
+        /// <returns></returns>
+        public Vector3 GetVector3(string columnX, string columnY, string columnZ, int i)
         {
             float x = GetValue(columnX, i);
             float y = GetValue(columnY, i);
@@ -45,17 +53,17 @@ namespace Movuino
 
         public Vector3 GetAcceleration(int i)
         {
-            return GetVector("ax", "ay", "az", i);
+            return GetVector3("ax", "ay", "az", i);
         }
 
         public Vector3 GetGyroscope(int i)
         {
-            return GetVector("gx", "gy", "gz", i);
+            return GetVector3("gx", "gy", "gz", i);
         }
 
         public Vector3 GetMagnetometre(int i)
         {
-            return GetVector("mx", "my", "mz", i);
+            return GetVector3("mx", "my", "mz", i);
         }
 
         /// <summary>
