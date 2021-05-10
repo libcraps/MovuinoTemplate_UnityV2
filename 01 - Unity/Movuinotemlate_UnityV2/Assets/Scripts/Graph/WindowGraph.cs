@@ -10,6 +10,8 @@ public class WindowGraph : MonoBehaviour
     [SerializeField] private int yMax;
     [SerializeField] private int nbDot;
 
+    [SerializeField]
+
     List<float> liste;
 
     private void Awake()
@@ -72,7 +74,7 @@ public class WindowGraph : MonoBehaviour
     private void CreateDotConnection(Vector2 dotPosA, Vector2 dotPosB)
     {
         GameObject go = new GameObject("dotConnection", typeof(Image));
-        go.tag = "Graph_connection";
+        go.tag = "Graph_connecti";
         RectTransform rt = go.GetComponent<RectTransform>();
         go.GetComponent<Image>().color = new Color(250, 250, 250, .8f);
         go.transform.SetParent(graphContainer, false);

@@ -17,7 +17,9 @@ public class SphereBehaviour : MonoBehaviour
     public void FixedUpdate()
     {
         angle = movuinoBehaviour.angleGyrOrientation;
-        this.gameObject.transform.Rotate(movuinoBehaviour.gyroscope * Time.deltaTime * 100);
+        this.gameObject.transform.Rotate(angle);
+
+
         if (Input.GetKeyDown(KeyCode.G))
         {
             this.gameObject.transform.eulerAngles = GameObject.Find("OrbitCamera").transform.eulerAngles;
