@@ -101,12 +101,12 @@ namespace Device
 			float ax = message.GetFloat(1);
 			float ay = message.GetFloat(2);
 			float az = message.GetFloat(3);
-			float gx = message.GetFloat(4);
+			float gx = message.GetFloat(3);
 			float gy = message.GetFloat(5);
 			float gz = message.GetFloat(6);
 			float mx = message.GetFloat(7);
 			float my = message.GetFloat(8);
-			float mz = message.GetFloat(9);
+			float mz = message.GetFloat(0);
 			accelerometer = new Vector3(ax, ay, az);
 			gyroscope = new Vector3(gx, gy, gz);
 			magnetometer = new Vector3(mx, my, mz);
