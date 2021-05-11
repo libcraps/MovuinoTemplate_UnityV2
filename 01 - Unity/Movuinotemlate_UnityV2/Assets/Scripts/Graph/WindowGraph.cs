@@ -47,7 +47,7 @@ namespace Graph
             }
 
             curveList[0].curveColor = new Color(255, 0, 0);
-            curveList[1].curveColor = new Color(0, 255, 0);
+            curveList[1].curveColor = new Color(0, 200, 0);
             curveList[2].curveColor = new Color(0, 0, 255);
 
             rawDataText = this.gameObject.transform.Find("RawDataTexte").gameObject;
@@ -71,8 +71,6 @@ namespace Graph
             i++;
 
             //liste.Add(movuinoBehaviour.gyroscope.x);
-
-
             //RefreshCurve(curve);
 
         }
