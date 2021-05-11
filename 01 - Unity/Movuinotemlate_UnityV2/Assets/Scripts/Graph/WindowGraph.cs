@@ -24,6 +24,12 @@ namespace Graph
 
         int i = 0;
 
+        private GameObject rawDataText;
+        private Text angleX;
+        private Text angleY;
+        private Text angleZ;
+
+
 
         private void Awake()
         {
@@ -43,17 +49,25 @@ namespace Graph
             curveList[0].curveColor = new Color(255, 0, 0);
             curveList[1].curveColor = new Color(0, 255, 0);
             curveList[2].curveColor = new Color(0, 0, 255);
+
+            rawDataText = this.gameObject.transform.Find("RawDataTexte").gameObject;
+            angleX = rawDataText.transform.Find("AngleX").GetComponent<Text>();
+            angleY = rawDataText.transform.Find("AngleY").GetComponent<Text>();
+            angleZ = rawDataText.transform.Find("AngleZ").GetComponent<Text>();
         }
         private void Update()
         {
-            //ShowGraph(liste, yMax, nbDot);
-            float theta = (float)(i * 0.5);
-            for (int k = 0; k < nbCurve; k++)
+            curveList[0].valueList.Add(movuinoBehaviour.angleGyrOrientation.x);
+            curveList[1].valueList.Add(movuinoBehaviour.angleGyrOrientation.y);
+            curveList[2].valueList.Add(movuinoBehaviour.angleGyrOrientation.z);
+
+            angleX.text = "Angle X : " + (int)movuinoBehaviour.angleGyrOrientation.x;
+            angleY.text = "Angle Y : " + (int)movuinoBehaviour.angleGyrOrientation.y;
+            angleZ.text = "Angle Z : " + (int)movuinoBehaviour.angleGyrOrientation.z;
+            for (int k =0; k<nbCurve; k++)
             {
-                curveList[k].valueList.Add(Mathf.Cos(theta + k * Mathf.PI / 2) * 30);
                 curveList[k].RefreshCurve();
             }
-
             i++;
 
             //liste.Add(movuinoBehaviour.gyroscope.x);

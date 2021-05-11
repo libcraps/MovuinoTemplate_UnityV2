@@ -12,12 +12,13 @@ public class SphereBehaviour : MonoBehaviour
     {
         angle = new Vector3();
         movuinoBehaviour = GetComponent<MovuinoBehaviour>();
+        
     }
 
     public void FixedUpdate()
     {
-        angle = movuinoBehaviour.angleGyrOrientation;
-        this.gameObject.transform.Rotate(angle);
+        angle = movuinoBehaviour.angleAccelOrientation;
+        this.gameObject.transform.Rotate(movuinoBehaviour.gyroscope * Time.deltaTime);
 
 
         if (Input.GetKeyDown(KeyCode.G))

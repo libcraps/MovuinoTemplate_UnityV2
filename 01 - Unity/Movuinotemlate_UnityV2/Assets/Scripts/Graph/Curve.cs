@@ -116,7 +116,7 @@ namespace Graph
             go.GetComponent<Image>().sprite = sprite;
             go.GetComponent<Image>().color = curveColor;
             rt.anchoredPosition = anchoredPosition;
-            rt.sizeDelta = new Vector2(11, 11);
+            rt.sizeDelta = new Vector2(8, 8);
             rt.anchorMin = new Vector2(0, 0.5f);
             rt.anchorMax = new Vector2(0, 0.5f);
 
@@ -136,7 +136,7 @@ namespace Graph
             Vector2 dir = vectDots.normalized;
             float dist = vectDots.magnitude;
 
-            rt.sizeDelta = new Vector2(dist, 5);
+            rt.sizeDelta = new Vector2(dist, 8);
             rt.anchorMin = new Vector2(0, 0.5f);
             rt.anchorMax = new Vector2(0, 0.5f);
             rt.anchoredPosition = dotPosA + dir * dist / 2;

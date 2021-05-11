@@ -39,9 +39,9 @@ namespace Movuino
 
         //Angle obtained with != ways
         public Vector3 angleMagOrientation {  get { return GetAngleMag(); } }
-        public Vector3 angleGyrOrientation {  get { return GetAngleGyrEulerIntegratino(); } }
+        public Vector3 angleGyrOrientation {  get { return _angleGyrMethod; } }
+        public Vector3 angleAccelOrientation {  get { return _angleAccelMethod; } }
 
-        public Vector3 angleAccelOrientation { get; }
 
         public float gravity;
 
@@ -81,10 +81,10 @@ namespace Movuino
         {
             UpdateMovuinoData();
             InitMovTransform();
-            ComputeAngle(instantAcceleration.normalized);
+            
         }
 
-        private void ComputeAngle(Vector3 U)
+        private Vector3 ComputeAngle(Vector3 U)
         {
             Vector3 angle;
 
@@ -96,11 +96,12 @@ namespace Movuino
             float beta; //x angle (real)
             float gamma; //y angle (real)
 
-            alpha = Mathf.Acos(U.x/(Uxy.sqrMagnitude));
-            beta = Mathf.Acos(U.y/(Uyz.sqrMagnitude));
-            gamma = Mathf.Acos(U.z/(Uzx.sqrMagnitude));
+            alpha = Mathf.Acos((U.x) / (Uxy.magnitude));
+            beta = Mathf.Acos((U.y) / (Uyz.magnitude));
+            gamma = Mathf.Acos((U.z) / (Uzx.magnitude));
 
             angle = new Vector3(beta, alpha, gamma)*360/(2*Mathf.PI);
+            return angle;
         }
         public void Init()
 		{
@@ -129,14 +130,11 @@ namespace Movuino
             return _angleMagMethod;
         }
 
-        Vector3 GetAngleGyrEulerIntegratino()
+        void GetAngleGyrEulerIntegratino()
         {
-            Vector3 angle = new Vector3();
-
-            angle.x = _angleGyrMethod.x + _gyr.x * Time.deltaTime;
-            angle.x = _angleGyrMethod.y + _gyr.y * Time.deltaTime;
-            angle.x = _angleGyrMethod.z + _gyr.z * Time.deltaTime;
-            return angle;
+            _angleGyrMethod.x += gyroscope.x * Time.deltaTime;
+            _angleGyrMethod.y += gyroscope.y * Time.deltaTime;
+            _angleGyrMethod.z += gyroscope.z * Time.deltaTime;
         }
 
 
@@ -146,13 +144,13 @@ namespace Movuino
             _prevGyr = _gyr;
             _prevMag = _mag;
 
-            _angleGyrMethod = GetAngleGyrEulerIntegratino();
+            GetAngleGyrEulerIntegratino();
             _angleMagMethod = GetAngleMag();
+            _angleAccelMethod = ComputeAngle(instantAcceleration.normalized);
 
             _accel = instantAcceleration;
             _gyr = instantGyroscope;
             _mag = instantMagnetometer;
-
         }
 
         public void InitMovTransform()
