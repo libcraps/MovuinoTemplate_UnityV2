@@ -611,6 +611,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\Scripts\DeviceBehaviour.cs" />
+    <Compile Include="Assets\Scripts\Graph\Curve.cs" />
     <Compile Include="Assets\Scripts\Graph\WindowGraph.cs" />
     <Compile Include="Assets\Scripts\Mouse\MouseBehaviour.cs" />
     <Compile Include="Assets\Scripts\Movuino\MovuinoSensor.cs" />
