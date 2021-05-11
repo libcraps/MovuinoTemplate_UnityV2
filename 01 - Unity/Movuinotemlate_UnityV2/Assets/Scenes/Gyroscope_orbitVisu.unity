@@ -1205,8 +1205,8 @@ MonoBehaviour:
   graphContainer: {fileID: 1771406172}
   curvePrefab: {fileID: 3503979565838556357, guid: 4b4b37e5143f9d142b9f561dce670cf4,
     type: 3}
-  _yMax: 360
-  nbDot: 150
+  _yMax: 720
+  nbDot: 247
   movuinoBehaviour: {fileID: 1497267971}
 --- !u!1 &898689902
 GameObject:
@@ -1968,6 +1968,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   oscManager: {fileID: 1797201036}
   _movuinoAdress: /movPlayer
+  nbPointFilter: 4
+  listMeanX: []
+  listMeanY: []
+  listMeanZ: []
   gravity: 0
   gravityReference: {x: 0, y: 0, z: 0}
 --- !u!114 &1497267972
@@ -2009,8 +2013,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1526251404}
   m_LocalRotation: {x: -0, y: -0, z: 0.7071068, w: 0.7071068}
-  m_LocalPosition: {x: 0.007296751, y: 1.6644849, z: -0.0019999999}
-  m_LocalScale: {x: 0.31359342, y: 0.031359345, z: 0.10453118}
+  m_LocalPosition: {x: 0.007, y: 1.62, z: -0.0019999999}
+  m_LocalScale: {x: 0.37, y: 0.02, z: 0.4}
   m_Children: []
   m_Father: {fileID: 543450652139093509}
   m_RootOrder: 0

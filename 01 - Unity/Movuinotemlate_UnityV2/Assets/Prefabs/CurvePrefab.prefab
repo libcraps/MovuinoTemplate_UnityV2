@@ -46,9 +46,11 @@ MonoBehaviour:
   material: {fileID: 0}
   sprite: {fileID: 0}
   graphContainer: {fileID: 0}
+  nbPointFilter: 5
   yMax: 0
-  nbDot: 0
+  nbDot: 30
   graph_points: []
   graph_lines: []
   valueList: []
+  listMean: []
   curveColor: {r: 0, g: 0, b: 0, a: 0}

@@ -2,6 +2,10 @@
 using System.Collections.Generic;
 using Device;
 using UnityEngine;
+using Movuino.Data;
+using System.IO;
+using System;
+using System.Data;
 
 namespace Movuino
 {
@@ -13,12 +17,21 @@ namespace Movuino
 	{
         public OSC oscManager;
 
-        [SerializeField]
-        private string _movuinoAdress;
+        [SerializeField] private string _movuinoAdress;
+        [SerializeField] private int nbPointFilter;
+
+        [SerializeField] private bool _exportIntoFile;
+
+        private string _filePath;
+
+        public List<float> listMeanX;
+        public List<float> listMeanY;
+        public List<float> listMeanZ;
 
         private string _addressSensorData;
 
         public OSCMovuinoSensorData OSCmovuinoSensorData; //9axes data
+        public DataSessionMovuinoExtended movuinoExportData;
 
         public string movuinoAdress { get { return _movuinoAdress; } }
 
@@ -69,6 +82,8 @@ namespace Movuino
         {
             Init();
             _addressSensorData = movuinoAdress + OSCmovuinoSensorData.OSCAddress;
+            _filePath = ".\\_data\\";
+            movuinoExportData = new DataSessionMovuinoExtended();
         }
         void Start()
         {
@@ -81,7 +96,20 @@ namespace Movuino
         {
             UpdateMovuinoData();
             InitMovTransform();
-            
+            movuinoExportData.StockData(Time.realtimeSinceStartup, acceleration, gyroscope, magnetometer, angleGyrOrientation, angleAccelOrientation);
+        }
+
+        private void OnDestroy()
+        {
+            if (_exportIntoFile == true) //We export the file t the end of the session if t
+            {
+                if (!Directory.Exists(_filePath))
+                {
+                    Debug.Log(_filePath + " has been created");
+                    Directory.CreateDirectory(_filePath);
+                }
+                DataManager.ToCSV(movuinoExportData.DataTable, _filePath + "test.csv");
+            }
         }
 
         private Vector3 ComputeAngle(Vector3 U)
@@ -116,10 +144,16 @@ namespace Movuino
             _angleGyrMethod = new Vector3(0, 0, 0);
             _angleMagMethod = new Vector3(0, 0, 0);
             _angleMagMethod = new Vector3(0, 0, 0);
+
             _initAngle = new Vector3(0, 0, 0);
             _initGyr = new Vector3(0, 0, 0);
             _initAccel = new Vector3(0, 0, 0);
             _initMag = new Vector3(0, 0, 0);
+
+            listMeanX = new List<float>();
+            listMeanY = new List<float>();
+            listMeanZ = new List<float>();
+
             OSCmovuinoSensorData = OSCDataHandler.CreateOSCDataHandler<OSCMovuinoSensorData>();
         }
 
@@ -167,6 +201,36 @@ namespace Movuino
                 _initAccel = OSCmovuinoSensorData.accelerometer;
             }
 
+        }
+
+
+        /// <summary>
+        /// Filtered incoming data
+        /// </summary>
+        /// <param name="rawDat"></param>
+        /// <param name="listMean"></param>
+        /// <returns></returns>
+        public float MovingMean(float rawDat, ref List<float> listMean)
+        {
+            float meanDat = 0;
+            listMean.Add(rawDat);
+
+            if (listMean.Count - nbPointFilter > 0)
+            {
+                // remove oldest data if N unchanged (i=0 removed)
+                // remove from 0 to rawdat.length - N + 1 if new N < old N
+                for (int i = 0; i < listMean.Count - nbPointFilter + 1; i++)
+                {
+                    listMean.RemoveAt(0);
+                }
+            }
+
+            foreach (float number in listMean)
+            {
+                meanDat += number;
+            }
+            meanDat /= listMean.Count;
+            return meanDat;
         }
 
 

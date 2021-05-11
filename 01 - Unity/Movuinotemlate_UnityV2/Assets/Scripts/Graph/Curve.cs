@@ -25,14 +25,16 @@ namespace Graph
         public List<GameObject> graph_lines;
 
         public List<float> valueList;
+        public List<float> listMean;
 
         public Color curveColor;
-
+        int i;
         private void Awake()
         {
             graph_points = new List<GameObject>();
             graph_lines = new List<GameObject>();
             valueList = new List<float>();
+            listMean = new List<float>();
             curveColor = Random.ColorHSV();
         }
 
@@ -48,6 +50,7 @@ namespace Graph
             _xSpace = graphContainer.sizeDelta.x / nbDot;
             _graphHeight = graphContainer.sizeDelta.y;
         }
+
         public void RefreshCurve()
         {
             if (graph_points != null)
@@ -100,7 +103,7 @@ namespace Graph
             else
             {
                 print("ok");
-                ShowGraph(valueList, yMax, nbDot);
+                ShowCurve(valueList, yMax, nbDot);
             }
 
         }
@@ -156,7 +159,7 @@ namespace Graph
             rt.localRotation = Quaternion.Euler(new Vector3(0, 0, Vector2.SignedAngle(Vector2.right, dir)));
         }
 
-        public void ShowGraph(List<float> listValue, float yMax, int nbDot)
+        public void ShowCurve(List<float> listValue, float yMax, int nbDot)
         {
             GameObject lastGameObject = null;
 

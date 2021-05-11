@@ -4,6 +4,7 @@ using Movuino;
 using UnityEngine;
 using UnityEngine.UI;
 
+
 namespace Graph
 {
     public class WindowGraph : MonoBehaviour
@@ -57,13 +58,15 @@ namespace Graph
         }
         private void Update()
         {
-            curveList[0].valueList.Add(movuinoBehaviour.angleGyrOrientation.x);
-            curveList[1].valueList.Add(movuinoBehaviour.angleGyrOrientation.y);
-            curveList[2].valueList.Add(movuinoBehaviour.angleGyrOrientation.z);
+            float theta = (float)(i * 0.5);
+            liste.Add(Mathf.Cos(theta) * 30);
+            curveList[0].valueList.Add(movuinoBehaviour.MovingMean(movuinoBehaviour.angleAccelOrientation.x, ref movuinoBehaviour.listMeanX));
+            curveList[1].valueList.Add(movuinoBehaviour.MovingMean(movuinoBehaviour.angleAccelOrientation.y, ref movuinoBehaviour.listMeanY));
+            curveList[2].valueList.Add(movuinoBehaviour.MovingMean(movuinoBehaviour.angleAccelOrientation.z, ref movuinoBehaviour.listMeanZ));
 
-            angleX.text = "Angle X : " + (int)movuinoBehaviour.angleGyrOrientation.x;
-            angleY.text = "Angle Y : " + (int)movuinoBehaviour.angleGyrOrientation.y;
-            angleZ.text = "Angle Z : " + (int)movuinoBehaviour.angleGyrOrientation.z;
+            angleX.text = "Angle X : " + (int)movuinoBehaviour.angleAccelOrientation.x;
+            angleY.text = "Angle Y : " + (int)movuinoBehaviour.angleAccelOrientation.y;
+            angleZ.text = "Angle Z : " + (int)movuinoBehaviour.angleAccelOrientation.z;
             for (int k =0; k<nbCurve; k++)
             {
                 curveList[k].RefreshCurve();
