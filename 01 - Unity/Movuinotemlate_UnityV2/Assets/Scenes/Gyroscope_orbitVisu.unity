@@ -936,7 +936,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   circleSprite: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
   graphContainer: {fileID: 1771406172}
-  _yMax: 83
+  _yMax: 143
   nbDot: 200
   movuinoBehaviour: {fileID: 1497267971}
 --- !u!1 &898689902

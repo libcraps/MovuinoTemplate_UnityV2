@@ -4,6 +4,7 @@ using Movuino;
 using UnityEngine;
 using UnityEngine.UI;
 
+
 public class WindowGraph : MonoBehaviour
 {
     [SerializeField] private Sprite circleSprite;
@@ -40,15 +41,11 @@ public class WindowGraph : MonoBehaviour
         //ShowGraph(liste, yMax, nbDot);
         float theta = (float)(i * 0.5);
         liste.Add(Mathf.Cos(theta) * 30);
-        //liste.Add(movuinoBehaviour.instantAcceleration.x);
+        //liste.Add(movuinoBehaviour.gyroscope.x);
         i++;
         GameObject curve = GameObject.Find("curve");
         RefreshGraph(liste, curve);
 
-
-
-
-        
     }
 
     private void RefreshGraph(List<float> listCurve, GameObject curveParent)
@@ -58,40 +55,41 @@ public class WindowGraph : MonoBehaviour
 
         if (graph_points.Length >0)
         {
-            GameObject lastCircleGameObject = null;
+            GameObject lastDot = null;
             int i = 0;
 
-            foreach (var circleGameObject in graph_points)
-            {
 
-                float xpos = _xSpace + i * _xSpace;
+            foreach (var dot in graph_points)
+            {
+                float xpos = i* _xSpace;
                 float ypos = (listCurve[i] / _yMax) * _graphHeight;
-                circleGameObject.GetComponent<RectTransform>().anchoredPosition = new Vector2(xpos, ypos);
-                if (lastCircleGameObject)
+                dot.GetComponent<RectTransform>().anchoredPosition = new Vector2(xpos, ypos);
+
+                if (lastDot)
                 {
-                    Vector2 dotPosA = lastCircleGameObject.GetComponent<RectTransform>().anchoredPosition;
-                    Vector2 dotPosB = circleGameObject.GetComponent<RectTransform>().anchoredPosition;
+                    Vector2 dotPosA = lastDot.GetComponent<RectTransform>().anchoredPosition;
+                    Vector2 dotPosB = dot.GetComponent<RectTransform>().anchoredPosition;
                     RefreshDotConnection(dotPosA, dotPosB, graph_lines[i - 1]);
                 }
-                    
-                lastCircleGameObject = circleGameObject;
+                lastDot = dot;
                 i++;
             }
+
             //i == prev listCurve.Count
             while (i < listCurve.Count)
             {
                 float xpos = i * _xSpace;
                 float ypos = (listCurve[i] / _yMax) * _graphHeight;
                 GameObject circleGameObject = CreateCircle(new Vector2(xpos, ypos), curveParent);
-                if (lastCircleGameObject)
+                if (lastDot)
                 {
-                    Vector2 dotPosA = lastCircleGameObject.GetComponent<RectTransform>().anchoredPosition;
+                    Vector2 dotPosA = lastDot.GetComponent<RectTransform>().anchoredPosition;
                     Vector2 dotPosB = circleGameObject.GetComponent<RectTransform>().anchoredPosition;
                     CreateDotConnection(dotPosA, dotPosB, curveParent);
                 }
 
-                lastCircleGameObject = circleGameObject;
-                
+                lastDot = circleGameObject;
+                //If listCurve.Count > Nbdot we remove objects
                 if (i >= nbDot)
                 {
                     listCurve.RemoveAt(0);
@@ -101,7 +99,6 @@ public class WindowGraph : MonoBehaviour
                 i++;
 
             }
-
         }
         else
         {
@@ -184,4 +181,15 @@ public class WindowGraph : MonoBehaviour
     }
 
 
+}
+
+[System.Serializable]
+public class Curve : MonoBehaviour
+{
+    [SerializeField] private Material material;
+
+    GameObject[] graph_points;
+    GameObject[] graph_lines;
+
+    List<float> valueList;
 }

@@ -98,15 +98,15 @@ namespace Device
 
 		public override void ToOSCDataHandler (OscMessage message)
 		{
-			float ax = message.GetFloat(1);
-			float ay = message.GetFloat(2);
-			float az = message.GetFloat(3);
+			float ax = message.GetFloat(0);
+			float ay = message.GetFloat(1);
+			float az = message.GetFloat(2);
 			float gx = message.GetFloat(3);
-			float gy = message.GetFloat(5);
-			float gz = message.GetFloat(6);
-			float mx = message.GetFloat(7);
-			float my = message.GetFloat(8);
-			float mz = message.GetFloat(0);
+			float gy = message.GetFloat(4);
+			float gz = message.GetFloat(5);
+			float mx = message.GetFloat(6);
+			float my = message.GetFloat(7);
+			float mz = message.GetFloat(8);
 			accelerometer = new Vector3(ax, ay, az);
 			gyroscope = new Vector3(gx, gy, gz);
 			magnetometer = new Vector3(mx, my, mz);

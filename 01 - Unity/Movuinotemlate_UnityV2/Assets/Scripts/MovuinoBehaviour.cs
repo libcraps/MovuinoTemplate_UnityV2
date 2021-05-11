@@ -82,7 +82,6 @@ namespace Movuino
             UpdateMovuinoData();
             InitMovTransform();
             ComputeAngle(instantAcceleration.normalized);
-            print(_accel);
         }
 
         private void ComputeAngle(Vector3 U)
