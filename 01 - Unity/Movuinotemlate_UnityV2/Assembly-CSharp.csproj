@@ -75,6 +75,7 @@
     <Compile Include="Assets\Scripts\MovuinoDataSet.cs" />
     <Compile Include="Assets\Scripts\OSC\OSC.cs" />
     <Compile Include="Assets\Scripts\OSCDataHandler.cs" />
+    <Compile Include="Assets\Scripts\SkateBehaviour.cs" />
     <Compile Include="Assets\Scripts\SphereVisu\SphereBehaviour.cs" />
     <Compile Include="Assets\Scripts\Tools\FollowingBehaviour.cs" />
     <Compile Include="Assets\Scripts\_less_important\OLD\MovuinoBehaviour_OLD.cs" />

@@ -1968,7 +1968,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   oscManager: {fileID: 1797201036}
   _movuinoAdress: /movPlayer
-  nbPointFilter: 4
+  nbPointFilter: 10
+  _exportIntoFile: 1
   listMeanX: []
   listMeanY: []
   listMeanZ: []

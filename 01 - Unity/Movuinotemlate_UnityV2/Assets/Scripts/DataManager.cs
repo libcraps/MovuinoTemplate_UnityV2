@@ -145,7 +145,6 @@ namespace Movuino.Data
             {
                 for (int i = 0; i < dtDataTable.Columns.Count; i++)
                 {
-
                     sw.Write(dr[i].ToString());
                     if (i < dtDataTable.Columns.Count - 1)
                     {

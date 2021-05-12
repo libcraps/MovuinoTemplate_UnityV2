@@ -51,7 +51,7 @@ namespace Movuino
         public Vector3 deltaMag { get { return _mag - _prevMag;  } }
 
         //Angle obtained with != ways
-        public Vector3 angleMagOrientation {  get { return GetAngleMag(); } }
+        public Vector3 angleMagOrientation {  get { return _angleMagMethod; } }
         public Vector3 angleGyrOrientation {  get { return _angleGyrMethod; } }
         public Vector3 angleAccelOrientation {  get { return _angleAccelMethod; } }
 
@@ -96,7 +96,7 @@ namespace Movuino
         {
             UpdateMovuinoData();
             InitMovTransform();
-            movuinoExportData.StockData(Time.realtimeSinceStartup, acceleration, gyroscope, magnetometer, angleGyrOrientation, angleAccelOrientation);
+            movuinoExportData.StockData(Time.time, acceleration, gyroscope, magnetometer, angleGyrOrientation, angleAccelOrientation);
         }
 
         private void OnDestroy()
@@ -128,7 +128,7 @@ namespace Movuino
             beta = Mathf.Acos((U.y) / (Uyz.magnitude));
             gamma = Mathf.Acos((U.z) / (Uzx.magnitude));
 
-            angle = new Vector3(beta, alpha, gamma)*360/(2*Mathf.PI);
+            angle = new Vector3(beta, gamma, alpha) *360/(2*Mathf.PI);
             return angle;
         }
         public void Init()
@@ -164,7 +164,7 @@ namespace Movuino
             return _angleMagMethod;
         }
 
-        void GetAngleGyrEulerIntegratino()
+        void GetEulerIntegratino()
         {
             _angleGyrMethod.x += gyroscope.x * Time.deltaTime;
             _angleGyrMethod.y += gyroscope.y * Time.deltaTime;
@@ -178,7 +178,7 @@ namespace Movuino
             _prevGyr = _gyr;
             _prevMag = _mag;
 
-            GetAngleGyrEulerIntegratino();
+            GetEulerIntegratino();
             _angleMagMethod = GetAngleMag();
             _angleAccelMethod = ComputeAngle(instantAcceleration.normalized);
 

@@ -281,7 +281,7 @@ namespace Movuino.Data
     {
         /// <value>Id of the movuino</value>
         public string id = "";
-        public List<float> listTime = new List<float>();
+        public List<object> listTime = new List<object>();
         public List<Vector3> listAcceleration = new List<Vector3>();
         public List<Vector3> listGyroscope = new List<Vector3>();
         public List<Vector3> listMagneto = new List<Vector3>();

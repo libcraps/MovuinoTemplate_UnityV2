@@ -8,15 +8,14 @@ using UnityEngine;
 
 namespace Movuino
 {
-    /// <summary>
-    /// Class That represent a complete file of data of a movuino
-    /// </summary>
-    public class MovuinoDataSet 
+    public class MovuinoDataSet
     {
+
         private string dataPath;
+        List<object[]> rawData_ = new List<object[]>();
         DataTable _rawData;
 
-
+          
         public DataTable rawData
         {
             get { return _rawData; }
@@ -31,19 +30,10 @@ namespace Movuino
             Debug.Log("Reading... " + dataPath);
             //rawData_ = ReadCSV(dataPath);
             _rawData = ConvertCSVtoDataTable(dataPath);
-
+            
         }
 
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="columnX"></param>
-        /// <param name="columnY"></param>
-        /// <param name="columnZ"></param>
-        /// <param name="i"></param>
-        /// <returns></returns>
-        public Vector3 GetVector3(string columnX, string columnY, string columnZ, int i)
+        public Vector3 GetVector(string columnX, string columnY, string columnZ, int i)
         {
             float x = GetValue(columnX, i);
             float y = GetValue(columnY, i);
@@ -53,17 +43,17 @@ namespace Movuino
 
         public Vector3 GetAcceleration(int i)
         {
-            return GetVector3("ax", "ay", "az", i);
+            return GetVector("ax", "ay", "az", i);
         }
 
         public Vector3 GetGyroscope(int i)
         {
-            return GetVector3("gx", "gy", "gz", i);
+            return GetVector("gx", "gy", "gz", i);
         }
 
         public Vector3 GetMagnetometre(int i)
         {
-            return GetVector3("mx", "my", "mz", i);
+            return GetVector("mx", "my", "mz", i);
         }
 
         /// <summary>
@@ -75,7 +65,7 @@ namespace Movuino
         {
             List<float> column = new List<float>();
 
-            for (int i = 0; i < _rawData.Columns.Count; i++)
+            for (int i = 0; i<_rawData.Columns.Count; i++)
             {
                 column.Add(GetValue(columnName, i));
             }
@@ -105,7 +95,7 @@ namespace Movuino
             StreamReader sr = new StreamReader(strFilePath);
             string[] headers = sr.ReadLine().Split(',');
             DataTable dt = new DataTable();
-
+            
             foreach (string header in headers)
             {
                 dt.Columns.Add(header);
@@ -123,6 +113,14 @@ namespace Movuino
                 dt.Rows.Add(dr);
             }
             return dt;
+        }
+
+        public void showColumns()
+        {
+            foreach (DataColumn c in this.rawData.Columns)
+            {
+                Debug.Log(c.ColumnName);
+            }
         }
 
         List<object[]> ReadCSV(string dataPath)
@@ -151,7 +149,7 @@ namespace Movuino
                 if (a == ',')
                 {
                     tData[i] = value;
-
+                    
                     value = "";
                     i += 1;
                 }

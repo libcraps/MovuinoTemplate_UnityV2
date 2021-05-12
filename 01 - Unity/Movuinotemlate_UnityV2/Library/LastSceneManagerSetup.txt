@@ -1,5 +1,5 @@
 sceneSetups:
-- path: Assets/Scenes/Gyroscope_orbitVisu.unity
+- path: Assets/Scenes/Skateboard_visu.unity
   isLoaded: 1
   isActive: 1
   isSubScene: 0
