@@ -1,5 +1,5 @@
 sceneSetups:
-- path: Assets/Scenes/Skateboard_visu.unity
+- path: Assets/Scenes/SensitivePen_visu.unity
   isLoaded: 1
   isActive: 1
   isSubScene: 0

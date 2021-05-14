@@ -6,19 +6,19 @@ using Movuino;
 public class SphereBehaviour : MonoBehaviour
 {
     MovuinoBehaviour movuinoBehaviour;
-    Vector3 angle;
+    Vector3 angleAccel;
 
     public void Awake()
     {
-        angle = new Vector3();
+        angleAccel = new Vector3();
         movuinoBehaviour = GetComponent<MovuinoBehaviour>();
         
     }
 
     public void FixedUpdate()
     {
-        angle = movuinoBehaviour.angleAccelOrientation;
-        this.gameObject.transform.Rotate(movuinoBehaviour.gyroscope * Time.deltaTime);
+        angleAccel = movuinoBehaviour.angleAccelOrientationRaw;
+        this.gameObject.transform.Rotate(movuinoBehaviour.gyroscopeRaw * Time.deltaTime);
 
 
         if (Input.GetKeyDown(KeyCode.G))

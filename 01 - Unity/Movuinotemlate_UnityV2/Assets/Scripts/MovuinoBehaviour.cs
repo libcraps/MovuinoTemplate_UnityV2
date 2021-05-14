@@ -7,6 +7,9 @@ using System.IO;
 using System;
 using System.Data;
 
+/// <summary>
+/// Namespace relative to movuino's scripts
+/// </summary>
 namespace Movuino
 {
     /// <summary>
@@ -15,18 +18,30 @@ namespace Movuino
     /// <remarks>Handle OSC conncetion too</remarks>
     public class MovuinoBehaviour : MonoBehaviour
 	{
+        #region Attributs
+        /// <summary>
+        /// OSC connection
+        /// </summary>
         public OSC oscManager;
 
+        /// <summary>
+        /// OSC adress that tbe movuino will read
+        /// </summary>
         [SerializeField] private string _movuinoAdress;
-        [SerializeField] private int nbPointFilter;
+        [SerializeField] private int _nbPointFilter;
 
         [SerializeField] private bool _exportIntoFile;
 
+        /// <summary>
+        /// Path of the export data file
+        /// </summary>
         private string _filePath;
 
-        public List<float> listMeanX;
-        public List<float> listMeanY;
-        public List<float> listMeanZ;
+        public List<Vector3> listMeanAcc;
+        public List<Vector3> listMeanGyro;
+        public List<Vector3> listMeanMag;
+        public List<Vector3> listMeanAngleAcc;
+
 
         private string _addressSensorData;
 
@@ -35,15 +50,20 @@ namespace Movuino
 
         public string movuinoAdress { get { return _movuinoAdress; } }
 
+        #region Properties
         //Instant data
         public Vector3 instantAcceleration { get { return OSCmovuinoSensorData.accelerometer; } }
         public Vector3 instantGyroscope { get { return OSCmovuinoSensorData.gyroscope; } }
         public Vector3 instantMagnetometer { get { return OSCmovuinoSensorData.magnetometer; } }
 
         //Data for the duration of the frame
-        public Vector3 acceleration { get { return _accel; } }
-        public Vector3 gyroscope { get { return (_gyr-_initGyr)*(float)(360/(2*3.14)); } }
-        public Vector3 magnetometer { get { return _mag; } }
+        public Vector3 accelerationRaw { get { return _accel; } }
+        public Vector3 gyroscopeRaw { get { return (_gyr-_initGyr)*(float)(360/(2*3.14)); } }
+        public Vector3 magnetometerRaw { get { return _mag; } }
+
+        public Vector3 accelerationSmooth { get { return MovingMean(_accel, ref listMeanAcc); } }
+        public Vector3 gyroscopeSmooth { get { return MovingMean(_gyr, ref listMeanGyro) * (float)(360 / (2 * 3.14)); } }
+        public Vector3 magnetometerSmooth { get { return MovingMean(_mag, ref listMeanMag); } }
 
         //DeltaValues
         public Vector3 deltaAccel { get { return _accel - _prevAccel;  } }
@@ -53,8 +73,9 @@ namespace Movuino
         //Angle obtained with != ways
         public Vector3 angleMagOrientation {  get { return _angleMagMethod; } }
         public Vector3 angleGyrOrientation {  get { return _angleGyrMethod; } }
-        public Vector3 angleAccelOrientation {  get { return _angleAccelMethod; } }
-
+        public Vector3 angleAccelOrientationRaw {  get { return _angleAccelMethod; } }
+        public Vector3 angleAccelOrientationSmooth {  get { return MovingMean(_angleAccelMethod, ref listMeanAngleAcc); } }
+        #endregion
 
         public float gravity;
 
@@ -77,7 +98,11 @@ namespace Movuino
         Vector3 _angleMagMethod;
         Vector3 _angleGyrMethod;
         Vector3 _angleAccelMethod;
+        #endregion
 
+        #region Methods
+
+        #region Unity implemented Methos
         private void Awake()
         {
             Init();
@@ -96,7 +121,7 @@ namespace Movuino
         {
             UpdateMovuinoData();
             InitMovTransform();
-            movuinoExportData.StockData(Time.time, acceleration, gyroscope, magnetometer, angleGyrOrientation, angleAccelOrientation);
+            movuinoExportData.StockData(Time.time, accelerationRaw, gyroscopeRaw, magnetometerRaw, angleGyrOrientation, angleAccelOrientationRaw);
         }
 
         private void OnDestroy()
@@ -111,26 +136,11 @@ namespace Movuino
                 DataManager.ToCSV(movuinoExportData.DataTable, _filePath + "test.csv");
             }
         }
+        #endregion
 
-        private Vector3 ComputeAngle(Vector3 U)
-        {
-            Vector3 angle;
-
-            Vector2 Uxy = new Vector2(U.x, U.y);
-            Vector2 Uyz = new Vector2(U.y, U.z);
-            Vector2 Uzx = new Vector2(U.z, U.x);
-
-            float alpha; //z angle (real)
-            float beta; //x angle (real)
-            float gamma; //y angle (real)
-
-            alpha = Mathf.Acos((U.x) / (Uxy.magnitude));
-            beta = Mathf.Acos((U.y) / (Uyz.magnitude));
-            gamma = Mathf.Acos((U.z) / (Uzx.magnitude));
-
-            angle = new Vector3(beta, gamma, alpha) *360/(2*Mathf.PI);
-            return angle;
-        }
+        /// <summary>
+        /// Initialise movuino's attributs
+        /// </summary>
         public void Init()
 		{
             _prevAccel = new Vector3(0, 0, 0);
@@ -150,9 +160,10 @@ namespace Movuino
             _initAccel = new Vector3(0, 0, 0);
             _initMag = new Vector3(0, 0, 0);
 
-            listMeanX = new List<float>();
-            listMeanY = new List<float>();
-            listMeanZ = new List<float>();
+            listMeanAcc = new List<Vector3>();
+            listMeanGyro = new List<Vector3>();
+            listMeanMag = new List<Vector3>();
+            listMeanAngleAcc = new List<Vector3>();
 
             OSCmovuinoSensorData = OSCDataHandler.CreateOSCDataHandler<OSCMovuinoSensorData>();
         }
@@ -164,11 +175,31 @@ namespace Movuino
             return _angleMagMethod;
         }
 
-        void GetEulerIntegratino()
+        Vector3 GetEulerIntegratino(Vector3 vectorInstDerivate, Vector3 vectorIntegrate)
         {
-            _angleGyrMethod.x += gyroscope.x * Time.deltaTime;
-            _angleGyrMethod.y += gyroscope.y * Time.deltaTime;
-            _angleGyrMethod.z += gyroscope.z * Time.deltaTime;
+            vectorIntegrate.x += vectorInstDerivate.x * Time.deltaTime;
+            vectorIntegrate.y += vectorInstDerivate.y * Time.deltaTime;
+            vectorIntegrate.z += vectorInstDerivate.z * Time.deltaTime;
+            return vectorIntegrate;
+        }
+        private Vector3 ComputeAngle(Vector3 U)
+        {
+            Vector3 angle;
+
+            Vector2 Uxy = new Vector2(U.x, U.y);
+            Vector2 Uyz = new Vector2(U.y, U.z);
+            Vector2 Uzx = new Vector2(U.z, U.x);
+
+            float alpha; //z angle
+            float beta; //x angle
+            float gamma; //y angle
+
+            alpha = Mathf.Acos((U.x) / (Uxy.magnitude));
+            beta = Mathf.Acos((U.y) / (Uyz.magnitude));
+            gamma = Mathf.Acos((U.z) / (Uzx.magnitude));
+
+            angle = new Vector3(beta, gamma, alpha) * 360 / (2 * Mathf.PI);
+            return angle;
         }
 
 
@@ -178,7 +209,7 @@ namespace Movuino
             _prevGyr = _gyr;
             _prevMag = _mag;
 
-            GetEulerIntegratino();
+            _angleGyrMethod = GetEulerIntegratino(gyroscopeRaw, _angleGyrMethod);
             _angleMagMethod = GetAngleMag();
             _angleAccelMethod = ComputeAngle(instantAcceleration.normalized);
 
@@ -215,16 +246,15 @@ namespace Movuino
             float meanDat = 0;
             listMean.Add(rawDat);
 
-            if (listMean.Count - nbPointFilter > 0)
+            if (listMean.Count - _nbPointFilter > 0)
             {
                 // remove oldest data if N unchanged (i=0 removed)
                 // remove from 0 to rawdat.length - N + 1 if new N < old N
-                for (int i = 0; i < listMean.Count - nbPointFilter + 1; i++)
+                for (int i = 0; i < listMean.Count - _nbPointFilter + 1; i++)
                 {
                     listMean.RemoveAt(0);
                 }
             }
-
             foreach (float number in listMean)
             {
                 meanDat += number;
@@ -232,6 +262,28 @@ namespace Movuino
             meanDat /= listMean.Count;
             return meanDat;
         }
+        public Vector3 MovingMean(Vector3 rawDat, ref List<Vector3> listMean)
+        {
+            Vector3 meanDat = new Vector3(0,0,0);
+            listMean.Add(rawDat);
+
+            if (listMean.Count - _nbPointFilter > 0)
+            {
+                // remove oldest data if N unchanged (i=0 removed)
+                // remove from 0 to rawdat.length - N + 1 if new N < old N
+                for (int i = 0; i < listMean.Count - _nbPointFilter + 1; i++)
+                {
+                    listMean.RemoveAt(0);
+                }
+            }
+            foreach (Vector3 vector in listMean)
+            {
+                meanDat += vector;
+            }
+            meanDat /= listMean.Count;
+            return meanDat;
+        }
+        #endregion
 
 
 
