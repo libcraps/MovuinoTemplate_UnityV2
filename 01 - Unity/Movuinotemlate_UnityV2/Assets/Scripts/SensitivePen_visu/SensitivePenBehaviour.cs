@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Movuino;
 
-public class SphereBehaviour : MonoBehaviour
+public class SensitivePenBehaviour : MonoBehaviour
 {
     MovuinoBehaviour movuinoBehaviour;
     Vector3 angleAccel;

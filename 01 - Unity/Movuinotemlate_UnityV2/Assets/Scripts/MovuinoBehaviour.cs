@@ -198,9 +198,9 @@ namespace Movuino
             beta = Mathf.Acos((U.y) / (Uyz.magnitude));
             gamma = Mathf.Acos((U.z) / (Uzx.magnitude));
             /*
-            alpha = Mathf.Atan();
-            beta = Mathf.Atan();
-            gamma = Mathf.Atan();
+            alpha = Mathf.Atan(U.x/U.y);
+            beta = Mathf.Atan(U.y / U.z);
+            gamma = Mathf.Atan(U.z/U.x);
             */
 
 
