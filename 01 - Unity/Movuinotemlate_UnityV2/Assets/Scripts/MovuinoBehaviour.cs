@@ -37,10 +37,10 @@ namespace Movuino
         /// </summary>
         private string _filePath;
 
-        public List<Vector3> listMeanAcc;
-        public List<Vector3> listMeanGyro;
-        public List<Vector3> listMeanMag;
-        public List<Vector3> listMeanAngleAcc;
+        public List<Vector3> _listMeanAcc;
+        public List<Vector3> _listMeanGyro;
+        public List<Vector3> _listMeanMag;
+        public List<Vector3> _listMeanAngleAcc;
 
 
         private string _addressSensorData;
@@ -61,9 +61,9 @@ namespace Movuino
         public Vector3 gyroscopeRaw { get { return (_gyr-_initGyr)*(float)(360/(2*3.14)); } }
         public Vector3 magnetometerRaw { get { return _mag; } }
 
-        public Vector3 accelerationSmooth { get { return MovingMean(_accel, ref listMeanAcc); } }
-        public Vector3 gyroscopeSmooth { get { return MovingMean(_gyr, ref listMeanGyro) * (float)(360 / (2 * 3.14)); } }
-        public Vector3 magnetometerSmooth { get { return MovingMean(_mag, ref listMeanMag); } }
+        public Vector3 accelerationSmooth { get { return MovingMean(_accel, ref _listMeanAcc); } }
+        public Vector3 gyroscopeSmooth { get { return MovingMean(_gyr, ref _listMeanGyro) * (float)(360 / (2 * 3.14)); } }
+        public Vector3 magnetometerSmooth { get { return MovingMean(_mag, ref _listMeanMag); } }
 
         //DeltaValues
         public Vector3 deltaAccel { get { return _accel - _prevAccel;  } }
@@ -74,7 +74,7 @@ namespace Movuino
         public Vector3 angleMagOrientation {  get { return _angleMagMethod; } }
         public Vector3 angleGyrOrientation {  get { return _angleGyrMethod; } }
         public Vector3 angleAccelOrientationRaw {  get { return _angleAccelMethod; } }
-        public Vector3 angleAccelOrientationSmooth {  get { return MovingMean(_angleAccelMethod, ref listMeanAngleAcc); } }
+        public Vector3 angleAccelOrientationSmooth {  get { return MovingMean(_angleAccelMethod, ref _listMeanAngleAcc); } }
         #endregion
 
         public float gravity;
@@ -160,10 +160,10 @@ namespace Movuino
             _initAccel = new Vector3(0, 0, 0);
             _initMag = new Vector3(0, 0, 0);
 
-            listMeanAcc = new List<Vector3>();
-            listMeanGyro = new List<Vector3>();
-            listMeanMag = new List<Vector3>();
-            listMeanAngleAcc = new List<Vector3>();
+            _listMeanAcc = new List<Vector3>();
+            _listMeanGyro = new List<Vector3>();
+            _listMeanMag = new List<Vector3>();
+            _listMeanAngleAcc = new List<Vector3>();
 
             OSCmovuinoSensorData = OSCDataHandler.CreateOSCDataHandler<OSCMovuinoSensorData>();
         }
@@ -197,6 +197,12 @@ namespace Movuino
             alpha = Mathf.Acos((U.x) / (Uxy.magnitude));
             beta = Mathf.Acos((U.y) / (Uyz.magnitude));
             gamma = Mathf.Acos((U.z) / (Uzx.magnitude));
+            /*
+            alpha = Mathf.Atan();
+            beta = Mathf.Atan();
+            gamma = Mathf.Atan();
+            */
+
 
             angle = new Vector3(beta, gamma, alpha) * 360 / (2 * Mathf.PI);
             return angle;

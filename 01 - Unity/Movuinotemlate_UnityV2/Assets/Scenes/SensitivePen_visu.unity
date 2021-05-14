@@ -1205,7 +1205,7 @@ MonoBehaviour:
   graphContainer: {fileID: 1771406172}
   curvePrefab: {fileID: 3503979565838556357, guid: 4b4b37e5143f9d142b9f561dce670cf4,
     type: 3}
-  _yMax: 720
+  _yMax: 30
   nbDot: 235
   movuinoBehaviour: {fileID: 1497267971}
 --- !u!1 &898689902
@@ -1969,11 +1969,11 @@ MonoBehaviour:
   oscManager: {fileID: 1797201036}
   _movuinoAdress: /movPlayer
   _nbPointFilter: 1
-  _exportIntoFile: 0
-  listMeanAcc: []
-  listMeanGyro: []
-  listMeanMag: []
-  listMeanAngleAcc: []
+  _exportIntoFile: 1
+  _listMeanAcc: []
+  _listMeanGyro: []
+  _listMeanMag: []
+  _listMeanAngleAcc: []
   gravity: 0
   gravityReference: {x: 0, y: 0, z: 0}
 --- !u!114 &1497267972

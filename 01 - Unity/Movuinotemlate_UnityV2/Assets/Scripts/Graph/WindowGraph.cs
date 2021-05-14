@@ -63,9 +63,9 @@ namespace Graph
         private void Update()
         {
             //Data of differents curve
-            curveList[0].valueList.Add(movuinoBehaviour.angleGyrOrientation.x); //movuinoBehaviour.MovingMean(movuinoBehaviour.angleAccelOrientation.x, ref movuinoBehaviour.listMeanX)
-            curveList[1].valueList.Add(movuinoBehaviour.angleGyrOrientation.y);
-            curveList[2].valueList.Add(movuinoBehaviour.angleGyrOrientation.z);
+            curveList[0].valueList.Add(movuinoBehaviour.accelerationSmooth.x); //movuinoBehaviour.MovingMean(movuinoBehaviour.angleAccelOrientation.x, ref movuinoBehaviour.listMeanX)
+            curveList[1].valueList.Add(movuinoBehaviour.accelerationSmooth.y);
+            curveList[2].valueList.Add(movuinoBehaviour.accelerationSmooth.z);
 
             angleX.text = "Angle X : " + (int)movuinoBehaviour.angleGyrOrientation.x;
             angleY.text = "Angle Y : " + (int)movuinoBehaviour.angleGyrOrientation.y;
