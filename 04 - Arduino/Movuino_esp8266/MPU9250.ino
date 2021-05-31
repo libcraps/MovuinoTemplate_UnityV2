@@ -1,20 +1,22 @@
 void print9axesDataMPU(MPU9250 IMU){
   // display the data
   Serial.print(IMU.getAccelX_mss(),6);
-  Serial.print("\t");
+  Serial.print(" ");
   Serial.print(IMU.getAccelY_mss(),6);
-  Serial.print("\t");
+  Serial.print(" ");
   Serial.print(IMU.getAccelZ_mss(),6);
-  Serial.print("\t");
+  Serial.print(" ");
   Serial.print(IMU.getGyroX_rads(),6);
-  Serial.print("\t");
+  Serial.print(" ");
   Serial.print(IMU.getGyroY_rads(),6);
-  Serial.print("\t");
+  Serial.print(" ");
   Serial.print(IMU.getGyroZ_rads(),6);
-  Serial.print("\t");
+  Serial.print(" ");
   Serial.print(IMU.getMagX_uT(),6);
-  Serial.print("\t");
-  Serial.println(IMU.getMagY_uT(),6);
+  Serial.print(" ");
+  Serial.print(IMU.getMagY_uT(),6);
+  Serial.print(" ");
+  Serial.println(IMU.getMagZ_uT(),6);
 }
 
 void printTempDataMPU(MPU9250 IMU){
