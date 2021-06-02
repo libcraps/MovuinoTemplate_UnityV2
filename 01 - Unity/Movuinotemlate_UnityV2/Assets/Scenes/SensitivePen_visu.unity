@@ -600,7 +600,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1497267966}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 22a21445e18272e4291ebe1854bf30cf, type: 3}
   m_Name: 
@@ -627,7 +627,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1497267966}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: aa6b5b91754610a4a83257316240b653, type: 3}
   m_Name: 
@@ -636,8 +636,8 @@ MonoBehaviour:
   _movuinoAdress: /movPlayer
   _nbPointFilter: 20
   _exportIntoFile: 1
-  _folderPath: 
-  _filename: 
+  _folderPath: .\\Test_record\\
+  _filename: record1.csv
 --- !u!1 &1526251404
 GameObject:
   m_ObjectHideFlags: 0
