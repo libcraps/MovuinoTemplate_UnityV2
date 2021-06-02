@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using Movuino;
 using UnityEngine;
@@ -29,7 +30,7 @@ namespace Graph
         private Text angleZ;
 
         //--------- Movuino part -----
-        [SerializeField] private MovuinoBehaviour movuinoBehaviour;
+        [SerializeField] private SensitivePenBehaviour_visu sensitivePen;
 
         //test
         private List<float> liste;
@@ -62,14 +63,37 @@ namespace Graph
         }
         private void Update()
         {
-            //Data of differents curve
-            curveList[0].valueList.Add(movuinoBehaviour.angleAccelOrientationSmooth.x); //movuinoBehaviour.MovingMean(movuinoBehaviour.angleAccelOrientation.x, ref movuinoBehaviour.listMeanX)
-            curveList[1].valueList.Add(movuinoBehaviour.angleAccelOrientationSmooth.y);
-            curveList[2].valueList.Add(movuinoBehaviour.angleAccelOrientationSmooth.z);
+            float valX=0;
+            float valY=0;
+            float valZ=0;
 
-            angleX.text = "Angle X : " + (int)movuinoBehaviour.angleAccelOrientationSmooth.x;
-            angleY.text = "Angle Y : " + (int)movuinoBehaviour.angleAccelOrientationSmooth.y;
-            angleZ.text = "Angle Z : " + (int)movuinoBehaviour.angleAccelOrientationSmooth.z;
+            //Data of differents curve
+            if (sensitivePen.onlineMode)
+            {
+                valX = sensitivePen.movuinoBehaviour.angleGyrOrientation.x;
+                valY = sensitivePen.movuinoBehaviour.angleGyrOrientation.y;
+                valZ = sensitivePen.movuinoBehaviour.angleGyrOrientation.z;
+            }
+            else if (sensitivePen.offlineMode)
+            {
+                valX = sensitivePen.movuinoDataSet.acceleration.x;
+                valY = sensitivePen.movuinoDataSet.acceleration.y;
+                valZ = sensitivePen.movuinoDataSet.acceleration.z;
+            }
+            else
+            {
+                valX = 0;
+                valY = 0;
+                valZ = 0;
+            }
+           
+            curveList[0].valueList.Add(valX); //movuinoBehaviour.MovingMean(movuinoBehaviour.angleAccelOrientation.x, ref movuinoBehaviour.listMeanX)
+            curveList[1].valueList.Add(valY);
+            curveList[2].valueList.Add(valZ);
+
+            angleX.text = "Angle X : " + (int)valX;
+            angleY.text = "Angle Y : " + (int)valY;
+            angleZ.text = "Angle Z : " + (int)valZ;
 
             for (int k =0; k<nbCurve; k++)
             {

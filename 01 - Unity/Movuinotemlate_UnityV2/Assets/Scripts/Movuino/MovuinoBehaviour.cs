@@ -35,26 +35,30 @@ namespace Movuino
         /// <summary>
         /// Path of the export data file
         /// </summary>
-        private string _filePath;
+        [SerializeField] private string _folderPath;
+        [SerializeField] private string _filename;
 
-        public List<Vector3> _listMeanAcc;
-        public List<Vector3> _listMeanGyro;
-        public List<Vector3> _listMeanMag;
-        public List<Vector3> _listMeanAngleAcc;
+        private List<Vector3> _listMeanAcc;
+        private List<Vector3> _listMeanGyro;
+        private List<Vector3> _listMeanMag;
+        private List<Vector3> _listMeanAngleAcc;
 
 
         private string _addressSensorData;
 
-        public OSCMovuinoSensorData OSCmovuinoSensorData; //9axes data
-        public DataSessionMovuinoExtended movuinoExportData;
+        private OSCMovuinoSensorData _OSCmovuinoSensorData; //9axes data
+        private DataSessionMovuinoExtended _movuinoExportData;
+
 
         public string movuinoAdress { get { return _movuinoAdress; } }
 
         #region Properties
+        //OSC
+        public OSCMovuinoSensorData OSCmovuinoSensorData { get { return _OSCmovuinoSensorData; } }
         //Instant data
-        public Vector3 instantAcceleration { get { return OSCmovuinoSensorData.accelerometer; } }
-        public Vector3 instantGyroscope { get { return OSCmovuinoSensorData.gyroscope; } }
-        public Vector3 instantMagnetometer { get { return OSCmovuinoSensorData.magnetometer; } }
+        public Vector3 instantAcceleration { get { return _OSCmovuinoSensorData.accelerometer; } }
+        public Vector3 instantGyroscope { get { return _OSCmovuinoSensorData.gyroscope; } }
+        public Vector3 instantMagnetometer { get { return _OSCmovuinoSensorData.magnetometer; } }
 
         //Data for the duration of the frame
         public Vector3 accelerationRaw { get { return _accel; } }
@@ -77,9 +81,9 @@ namespace Movuino
         public Vector3 angleAccelOrientationSmooth {  get { return MovingMean(_angleAccelMethod, ref _listMeanAngleAcc); } }
         #endregion
 
-        public float gravity;
+        private float gravity;
 
-        public Vector3 gravityReference;
+        private Vector3 gravityReference;
 
 
         Vector3 _accel;
@@ -106,13 +110,12 @@ namespace Movuino
         private void Awake()
         {
             Init();
-            _addressSensorData = movuinoAdress + OSCmovuinoSensorData.OSCAddress;
-            _filePath = ".\\_data\\";
-            movuinoExportData = new DataSessionMovuinoExtended();
+            _addressSensorData = movuinoAdress + _OSCmovuinoSensorData.OSCAddress;
+            _movuinoExportData = new DataSessionMovuinoExtended();
         }
         void Start()
         {
-            oscManager.SetAddressHandler(movuinoAdress, OSCmovuinoSensorData.ToOSCDataHandler);
+            oscManager.SetAddressHandler(movuinoAdress, _OSCmovuinoSensorData.ToOSCDataHandler);
             //oscManager.SetAllMessageHandler(OSCDataHandler.DebugAllMessage);
         }
 
@@ -121,19 +124,19 @@ namespace Movuino
         {
             UpdateMovuinoData();
             InitMovTransform();
-            movuinoExportData.StockData(Time.time, accelerationRaw, gyroscopeRaw, magnetometerRaw, angleGyrOrientation, angleAccelOrientationRaw);
+            _movuinoExportData.StockData(Time.time, accelerationRaw, gyroscopeRaw, magnetometerRaw, angleGyrOrientation, angleAccelOrientationRaw);
         }
 
         private void OnDestroy()
         {
             if (_exportIntoFile == true) //We export the file t the end of the session if t
             {
-                if (!Directory.Exists(_filePath))
+                if (!Directory.Exists(_folderPath))
                 {
-                    Debug.Log(_filePath + " has been created");
-                    Directory.CreateDirectory(_filePath);
+                    Debug.Log(_folderPath + " has been created");
+                    Directory.CreateDirectory(_folderPath);
                 }
-                DataManager.ToCSV(movuinoExportData.DataTable, _filePath + "test.csv");
+                DataManager.ToCSV(_movuinoExportData.DataTable, _folderPath + _filename);
             }
         }
         #endregion
@@ -152,7 +155,7 @@ namespace Movuino
             _mag = new Vector3(0, 0, 0);
 
             _angleGyrMethod = new Vector3(0, 0, 0);
-            _angleMagMethod = new Vector3(0, 0, 0);
+            _angleAccelMethod = new Vector3(0, 0, 0);
             _angleMagMethod = new Vector3(0, 0, 0);
 
             _initAngle = new Vector3(0, 0, 0);
@@ -165,13 +168,13 @@ namespace Movuino
             _listMeanMag = new List<Vector3>();
             _listMeanAngleAcc = new List<Vector3>();
 
-            OSCmovuinoSensorData = OSCDataHandler.CreateOSCDataHandler<OSCMovuinoSensorData>();
+            _OSCmovuinoSensorData = OSCDataHandler.CreateOSCDataHandler<OSCMovuinoSensorData>();
         }
 
 
         Vector3 GetAngleMag()
         {
-            _angleMagMethod = OSCmovuinoSensorData.magnetometer - _initAngle;
+            _angleMagMethod = _OSCmovuinoSensorData.magnetometer - _initAngle;
             return _angleMagMethod;
         }
 
@@ -229,13 +232,13 @@ namespace Movuino
 
             if (Input.GetKeyDown(KeyCode.I))
             {
-                _initAngle = OSCmovuinoSensorData.magnetometer;
+                _initAngle = _OSCmovuinoSensorData.magnetometer;
             }
             if (Input.GetKeyDown(KeyCode.Y))
             {
-                _initGyr = OSCmovuinoSensorData.gyroscope;
-                _initMag = OSCmovuinoSensorData.magnetometer;
-                _initAccel = OSCmovuinoSensorData.accelerometer;
+                _initGyr = _OSCmovuinoSensorData.gyroscope;
+                _initMag = _OSCmovuinoSensorData.magnetometer;
+                _initAccel = _OSCmovuinoSensorData.accelerometer;
             }
 
         }

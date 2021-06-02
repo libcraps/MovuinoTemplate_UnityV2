@@ -8,14 +8,18 @@ using UnityEngine;
 
 namespace Movuino
 {
-    public class MovuinoDataSet
+    /// <summary>
+    /// Class That represent a complete file of data of a movuino
+    /// </summary>
+    public class MovuinoDataSet: MonoBehaviour
     {
+        [SerializeField] private string folderPath;
+        [SerializeField] private string filename;
 
-        private string dataPath;
         List<object[]> rawData_ = new List<object[]>();
         DataTable _rawData;
 
-          
+
         public DataTable rawData
         {
             get { return _rawData; }
@@ -25,14 +29,32 @@ namespace Movuino
         {
             get { return _rawData.Rows; }
         }
-        public MovuinoDataSet(string dataPath)
+
+
+        public int i;
+
+        #region Properties
+        public float time { get { return GetValue("time",i); } }
+        public Vector3 acceleration { get { return GetAcceleration(i); } }
+        public Vector3 gyroscope { get { return GetGyroscope(i); } }
+        public Vector3 magnetometre { get { return GetMagnetometre(i); } }
+        #endregion
+        #region Methods
+
+        public void Start()
+        {
+            Init(folderPath + filename);
+        }
+
+        public void Init(string dataPath)
         {
             Debug.Log("Reading... " + dataPath);
             //rawData_ = ReadCSV(dataPath);
             _rawData = ConvertCSVtoDataTable(dataPath);
-            
-        }
+            i = 1;
+            Debug.Log(GetValue("posAngX", 25));
 
+        }
         public Vector3 GetVector(string columnX, string columnY, string columnZ, int i)
         {
             float x = GetValue(columnX, i);
@@ -60,12 +82,12 @@ namespace Movuino
         /// Get a complete column.
         /// </summary>
         /// <param name="columnName"></param>
-        /// <returns>List of floats <=> dataTable.[columnName].Value</returns>
+        /// <returns>List of floats <=> dataTable[columnName].Value</returns>
         public List<float> GetColumn(string columnName)
         {
             List<float> column = new List<float>();
 
-            for (int i = 0; i<_rawData.Columns.Count; i++)
+            for (int i = 0; i < _rawData.Columns.Count; i++)
             {
                 column.Add(GetValue(columnName, i));
             }
@@ -95,7 +117,7 @@ namespace Movuino
             StreamReader sr = new StreamReader(strFilePath);
             string[] headers = sr.ReadLine().Split(',');
             DataTable dt = new DataTable();
-            
+
             foreach (string header in headers)
             {
                 dt.Columns.Add(header);
@@ -113,14 +135,6 @@ namespace Movuino
                 dt.Rows.Add(dr);
             }
             return dt;
-        }
-
-        public void showColumns()
-        {
-            foreach (DataColumn c in this.rawData.Columns)
-            {
-                Debug.Log(c.ColumnName);
-            }
         }
 
         List<object[]> ReadCSV(string dataPath)
@@ -149,7 +163,7 @@ namespace Movuino
                 if (a == ',')
                 {
                     tData[i] = value;
-                    
+
                     value = "";
                     i += 1;
                 }
@@ -192,7 +206,7 @@ namespace Movuino
             }
             return data;
         }
-
+        #endregion
     }
 
 

@@ -25,18 +25,9 @@ namespace Skateboard
 
         private void Start()
         {
-            movuinoDataSet = new MovuinoDataSet(dataPath);
-            i = 1;
-            IEnumerator ok()
-            {
-                this.gameObject.transform.Rotate(new Vector3(0, 45, 0));
-                yield return new WaitForSeconds(0.5f);
-                this.gameObject.transform.Rotate(new Vector3(180, 0, 0));
-                yield return new WaitForSeconds(0.5f);
-                this.gameObject.transform.Rotate(new Vector3(0, 45, 0));
-                
-            }
-            StartCoroutine(ok());
+            movuinoDataSet = GetComponent<MovuinoDataSet>();
+            movuinoDataSet.Init(dataPath);
+            movuinoDataSet.i = 1;
 
             //movuinoDataSet.showColumns();
             print(movuinoDataSet.GetValue("time", 0));
@@ -45,10 +36,10 @@ namespace Skateboard
 
         private void Rotate()
         {
-            Vector3 deltaTheta = movuinoDataSet.GetVector("posAngY", "posAngX", "posAngZ", i) - movuinoDataSet.GetVector("posAngY", "posAngX", "posAngZ", i-1);
+            Vector3 deltaTheta = movuinoDataSet.GetVector("posAngY", "posAngX", "posAngZ", movuinoDataSet.i) - movuinoDataSet.GetVector("posAngY", "posAngX", "posAngZ", movuinoDataSet.i -1);
             this.gameObject.transform.Rotate(deltaTheta);
 
-            i++;
+            movuinoDataSet.i++;
         }
 
     }
