@@ -315,15 +315,15 @@ namespace Movuino.Data
         {
             DataTable table = new DataTable();
             table.Columns.Add("time " + id, typeof(float));
-            table.Columns.Add("Ax " + id, typeof(float));
-            table.Columns.Add("Ay " + id, typeof(float));
-            table.Columns.Add("Az " + id, typeof(float));
-            table.Columns.Add("Gx " + id, typeof(float));
-            table.Columns.Add("Gy " + id, typeof(float));
-            table.Columns.Add("Gz " + id, typeof(float));
-            table.Columns.Add("Mx " + id, typeof(float));
-            table.Columns.Add("My " + id, typeof(float));
-            table.Columns.Add("Mz " + id, typeof(float));
+            table.Columns.Add("ax " + id, typeof(float));
+            table.Columns.Add("ay " + id, typeof(float));
+            table.Columns.Add("az " + id, typeof(float));
+            table.Columns.Add("gx " + id, typeof(float));
+            table.Columns.Add("gy " + id, typeof(float));
+            table.Columns.Add("gz " + id, typeof(float));
+            table.Columns.Add("mx " + id, typeof(float));
+            table.Columns.Add("my " + id, typeof(float));
+            table.Columns.Add("mz " + id, typeof(float));
             table.Columns.Add("ThetaGyrx " + id, typeof(float));
             table.Columns.Add("ThetaGyry " + id, typeof(float));
             table.Columns.Add("ThetaGyrz " + id, typeof(float));
