@@ -636,8 +636,8 @@ MonoBehaviour:
   _movuinoAdress: /movPlayer
   _nbPointFilter: 20
   _exportIntoFile: 1
-  _folderPath: .\\Test_record\\
-  _filename: record1.csv
+  _folderPath: .\\Test_reco\\
+  _filename: record2.csv
 --- !u!1 &1526251404
 GameObject:
   m_ObjectHideFlags: 0
