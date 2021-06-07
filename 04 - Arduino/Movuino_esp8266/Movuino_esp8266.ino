@@ -21,7 +21,7 @@ ESP8266WiFiMulti WiFiMulti;
 WiFiClient client;
 int packetNumber = 0;
 char * ssid = "GHG9D7511A0001 2565";    // your network SSID (name of the wifi network)
-char * pass = "********";               // your network password
+char * pass = "A!26p741";               // your network password
 char * hostIP =  "192.168.137.1";       // IP address of the host computer
 const unsigned int portOut = 7400;      // port on which data are sent (send OSC message)
 const unsigned int portIn = 7401;       // local port to listen for UDP packets (receive OSC message)
@@ -125,7 +125,7 @@ void loop() {
       msg.add(-ax);   // add acceleration X data as message -> 6ax in order to get a orthonormal repère
       msg.add(ay);   // add acceleration Y data
       msg.add(az);   // add ...
-      msg.add(gx);
+      msg.add(-gx);
       msg.add(gy);
       msg.add(gz);    // you can add as many data as you want
       msg.add(mx);
@@ -167,13 +167,13 @@ void loop() {
 }
 
 void printMovuinoData() {
-  Serial.print(ax);
+  Serial.print(-ax);
   Serial.print("\t ");
   Serial.print(ay);
   Serial.print("\t ");
   Serial.print(az);
   Serial.print("\t ");
-  Serial.print(gx);
+  Serial.print(-gx);
   Serial.print("\t ");
   Serial.print(gy);
   Serial.print("\t ");

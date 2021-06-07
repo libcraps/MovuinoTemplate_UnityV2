@@ -154,14 +154,16 @@ namespace Movuino
             _gyr = new Vector3(0, 0, 0);
             _mag = new Vector3(0, 0, 0);
 
-            _angleGyrMethod = new Vector3(0, 0, 0);
-            _angleAccelMethod = new Vector3(0, 0, 0);
-            _angleMagMethod = new Vector3(0, 0, 0);
-
-            _initAngle = new Vector3(0, 0, 0);
+            _initAngle = this.gameObject.transform.eulerAngles;
             _initGyr = new Vector3(0, 0, 0);
             _initAccel = new Vector3(0, 0, 0);
             _initMag = new Vector3(0, 0, 0);
+
+            _angleGyrMethod = _initAngle;
+            _angleAccelMethod = _initAngle;
+            _angleMagMethod = new Vector3(0, 0, 0);
+
+
 
             _listMeanAcc = new List<Vector3>();
             _listMeanGyro = new List<Vector3>();
@@ -189,23 +191,23 @@ namespace Movuino
         {
             Vector3 angle;
 
-            Vector2 Uxy = new Vector2(U.x, U.y);
-            Vector2 Uyz = new Vector2(U.y, U.z);
-            Vector2 Uzx = new Vector2(U.z, U.x);
-
             float alpha; //z angle
             float beta; //x angle
             float gamma; //y angle
-
+            
+            /*
+            Vector2 Uxy = new Vector2(U.x, U.y);
+            Vector2 Uyz = new Vector2(U.y, U.z);
+            Vector2 Uzx = new Vector2(U.z, U.x);
+            
             alpha = Mathf.Acos((U.x) / (Uxy.magnitude));
             beta = Mathf.Acos((U.y) / (Uyz.magnitude));
             gamma = Mathf.Acos((U.z) / (Uzx.magnitude));
-            /*
-            alpha = Mathf.Atan(U.x/U.y);
-            beta = Mathf.Atan(U.y / U.z);
-            gamma = Mathf.Atan(U.z/U.x);
             */
 
+            alpha = Mathf.Atan(U.x / U.y);
+            beta = Mathf.Atan(U.y / U.z);
+            gamma = Mathf.Atan(U.z / U.x);
 
             angle = new Vector3(beta, gamma, alpha) * 360 / (2 * Mathf.PI);
             return angle;
@@ -220,7 +222,7 @@ namespace Movuino
 
             _angleGyrMethod = GetEulerIntegratino(gyroscopeRaw, _angleGyrMethod);
             _angleMagMethod = GetAngleMag();
-            _angleAccelMethod = ComputeAngle(instantAcceleration.normalized);
+            _angleAccelMethod = ComputeAngle(accelerationSmooth.normalized);
 
             _accel = instantAcceleration;
             _gyr = instantGyroscope;

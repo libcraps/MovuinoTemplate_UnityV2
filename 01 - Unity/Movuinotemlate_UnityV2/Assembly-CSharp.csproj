@@ -74,10 +74,9 @@
     <Compile Include="Assets\Scripts\Movuino\MovuinoDataSet.cs" />
     <Compile Include="Assets\Scripts\Movuino\OSC\OSC.cs" />
     <Compile Include="Assets\Scripts\Movuino\OSCDataHandler.cs" />
-    <Compile Include="Assets\Scripts\SensitivePen_visu\SensitivePenBehaviour.cs" />
-    <Compile Include="Assets\Scripts\SensitivePen_visu\SensitivePenBehaviour_live_visu.cs" />
+    <Compile Include="Assets\Scripts\Movuino\ObjectMovuino_visu.cs" />
     <Compile Include="Assets\Scripts\SensitivePen_visu\SensitivePenBehaviour_visu.cs" />
-    <Compile Include="Assets\Scripts\SkateboardXXX3000\SkateBehaviour.cs" />
+    <Compile Include="Assets\Scripts\SkateboardXXX3000\SkateBehaviour_visu.cs" />
     <Compile Include="Assets\Scripts\SphereVisu\SphereBehaviour.cs" />
     <Compile Include="Assets\Scripts\Tools\FollowingBehaviour.cs" />
     <Compile Include="Assets\Scripts\Touch\Arduino_LedControl.cs" />

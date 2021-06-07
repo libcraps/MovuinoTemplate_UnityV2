@@ -30,7 +30,7 @@ namespace Graph
         private Text angleZ;
 
         //--------- Movuino part -----
-        [SerializeField] private SensitivePenBehaviour_visu sensitivePen;
+        [SerializeField] private ObjectMovuino_visu objectVisu;
 
         //test
         private List<float> liste;
@@ -68,17 +68,17 @@ namespace Graph
             float valZ=0;
 
             //Data of differents curve
-            if (sensitivePen.onlineMode)
+            if (objectVisu.onlineMode)
             {
-                valX = sensitivePen.movuinoBehaviour.angleGyrOrientation.x;
-                valY = sensitivePen.movuinoBehaviour.angleGyrOrientation.y;
-                valZ = sensitivePen.movuinoBehaviour.angleGyrOrientation.z;
+                valX = objectVisu.movuinoBehaviour.angleGyrOrientation.x;
+                valY = objectVisu.movuinoBehaviour.angleGyrOrientation.y;
+                valZ = objectVisu.movuinoBehaviour.angleGyrOrientation.z;
             }
-            else if (sensitivePen.offlineMode)
+            else if (objectVisu.offlineMode)
             {
-                valX = sensitivePen.movuinoDataSet.acceleration.x;
-                valY = sensitivePen.movuinoDataSet.acceleration.y;
-                valZ = sensitivePen.movuinoDataSet.acceleration.z;
+                valX = objectVisu.movuinoDataSet.angleGyrOrientation.x;
+                valY = objectVisu.movuinoDataSet.angleGyrOrientation.y;
+                valZ = objectVisu.movuinoDataSet.angleGyrOrientation.z;
             }
             else
             {

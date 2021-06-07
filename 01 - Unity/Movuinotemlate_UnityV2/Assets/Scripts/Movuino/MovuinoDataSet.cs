@@ -38,12 +38,45 @@ namespace Movuino
         public Vector3 acceleration { get { return GetAcceleration(i); } }
         public Vector3 gyroscope { get { return GetGyroscope(i); } }
         public Vector3 magnetometre { get { return GetMagnetometre(i); } }
+        public Vector3 angleGyrOrientation 
+        { 
+            get 
+            { 
+                if (Convert.ToBoolean(_rawData.Rows[i]["ThetaGyrx"]))
+                {
+                    return GetVector("ThetaGyrx", "ThetaGyry", "ThetaGyrz", i);
+                }
+                else
+                {
+                    return new Vector3(0, 0, 0);
+                }
+            } 
+        }
+        public Vector3 angleAccelOrientationRaw
+        {
+            get
+            {
+                if (Convert.ToBoolean(_rawData.Rows[i]["ThetaAccx"]))
+                {
+                    return GetVector("ThetaAccx", "ThetaAccy", "ThetaAccz", i);
+                }
+                else
+                {
+                    return new Vector3(0, 0, 0);
+                }
+            }
+        }
         #endregion
         #region Methods
 
-        public void Start()
+        public void Awake()
         {
             Init(folderPath + filename);
+        }
+
+        public void Start()
+        {
+            
         }
 
         public void Init(string dataPath)
@@ -52,8 +85,6 @@ namespace Movuino
             //rawData_ = ReadCSV(dataPath);
             _rawData = ConvertCSVtoDataTable(dataPath);
             i = 1;
-            Debug.Log(GetValue("posAngX", 25));
-
         }
         public Vector3 GetVector(string columnX, string columnY, string columnZ, int i)
         {
