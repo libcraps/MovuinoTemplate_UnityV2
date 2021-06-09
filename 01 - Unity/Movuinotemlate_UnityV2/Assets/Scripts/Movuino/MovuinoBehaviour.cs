@@ -29,6 +29,7 @@ namespace Movuino
         /// </summary>
         [SerializeField] private string _movuinoAdress;
         [SerializeField] private int _nbPointFilter;
+        [SerializeField] private float _fcHighPass;
 
         [SerializeField] private bool _exportIntoFile;
 
@@ -67,6 +68,18 @@ namespace Movuino
 
         public Vector3 accelerationSmooth { get { return MovingMean(_accel, ref _listMeanAcc); } }
         public Vector3 gyroscopeSmooth { get { return MovingMean(_gyr, ref _listMeanGyro) * (float)(360 / (2 * 3.14)); } }
+        public Vector3 gyroscopeHighPass
+        {
+            get
+            {
+                float gx = HighPassFilter(_fcHighPass, Time.fixedDeltaTime, _prevHPGyr.x, _gyr.x, _prevGyr.x);
+                float gy = HighPassFilter(_fcHighPass, Time.fixedDeltaTime, _prevHPGyr.y, _gyr.y, _prevGyr.y);
+                float gz = HighPassFilter(_fcHighPass, Time.fixedDeltaTime, _prevHPGyr.z, _gyr.z, _prevGyr.z);
+                _HPGyr = new Vector3(gx, gy, gz);
+                _prevHPGyr = _HPGyr;
+                return _HPGyr * (float)(360 / (2 * 3.14));
+            }
+        }
         public Vector3 magnetometerSmooth { get { return MovingMean(_mag, ref _listMeanMag); } }
 
         //DeltaValues
@@ -74,9 +87,21 @@ namespace Movuino
         public Vector3 deltaGyr { get { return _gyr - _prevGyr;  } }
         public Vector3 deltaMag { get { return _mag - _prevMag;  } }
 
+        public Vector3 deltaAngleAccel 
+        { 
+            get 
+            {
+
+
+
+                return _deltaAngleAccel;
+            } 
+        }
+
         //Angle obtained with != ways
         public Vector3 angleMagOrientation {  get { return _angleMagMethod; } }
         public Vector3 angleGyrOrientation {  get { return _angleGyrMethod; } }
+        public Vector3 angleGyrOrientationHP {  get { return _angleGyrHP; } }
         public Vector3 angleAccelOrientationRaw {  get { return _angleAccelMethod; } }
         public Vector3 angleAccelOrientationSmooth {  get { return MovingMean(_angleAccelMethod, ref _listMeanAngleAcc); } }
         #endregion
@@ -92,16 +117,23 @@ namespace Movuino
 
         Vector3 _prevAccel;
         Vector3 _prevGyr;
+        Vector3 _prevHPGyr;
         Vector3 _prevMag;
+        Vector3 _HPGyr;
+
+        Vector3 _deltaAngleAccel;
 
         Vector3 _initAngle;
         Vector3 _initGyr;
         Vector3 _initAccel;
         Vector3 _initMag;
 
+        Vector3 _angleGyrHP;
         Vector3 _angleMagMethod;
         Vector3 _angleGyrMethod;
         Vector3 _angleAccelMethod;
+
+        
         #endregion
 
         #region Methods
@@ -149,21 +181,24 @@ namespace Movuino
             _prevAccel = new Vector3(0, 0, 0);
             _prevGyr = new Vector3(0, 0, 0);
             _prevMag = new Vector3(0, 0, 0);
+            _prevHPGyr = new Vector3(0, 0, 0);
+            _HPGyr = new Vector3(0, 0, 0);
 
             _accel = new Vector3(0, 0, 0);
             _gyr = new Vector3(0, 0, 0);
             _mag = new Vector3(0, 0, 0);
 
             _initAngle = this.gameObject.transform.eulerAngles;
+            _deltaAngleAccel = new Vector3(0, 0, 0);
+
             _initGyr = new Vector3(0, 0, 0);
             _initAccel = new Vector3(0, 0, 0);
             _initMag = new Vector3(0, 0, 0);
 
             _angleGyrMethod = _initAngle;
             _angleAccelMethod = _initAngle;
+            _angleGyrHP= _initAngle;
             _angleMagMethod = new Vector3(0, 0, 0);
-
-
 
             _listMeanAcc = new List<Vector3>();
             _listMeanGyro = new List<Vector3>();
@@ -205,11 +240,36 @@ namespace Movuino
             gamma = Mathf.Acos((U.z) / (Uzx.magnitude));
             */
 
-            alpha = Mathf.Atan(U.x / U.y);
-            beta = Mathf.Atan(U.y / U.z);
-            gamma = Mathf.Atan(U.z / U.x);
+            alpha = Mathf.Atan(U.x / U.y); 
+            beta = Mathf.Atan(U.y / U.z); 
+            gamma = Mathf.Atan(-U.x / U.z);
 
+            if (U.x > 0 && U.z > 0)
+            {
+                gamma = Mathf.PI + gamma;
+            } 
+            else if (U.x < 0 && U.z > 0)
+            {
+                gamma = -Mathf.PI + gamma;
+            }
+
+            if (U.y < 0 && U.z > 0 )
+            {
+                beta = Mathf.PI + beta;
+            } 
+            else if (U.y > 0 && U.z > 0)
+            {
+                beta = - Mathf.PI + beta;
+            }
+
+            if (U.z > 0)
+            {
+
+            }
             angle = new Vector3(beta, gamma, alpha) * 360 / (2 * Mathf.PI);
+            //print(angle + " ---- " + U);
+
+            
             return angle;
         }
 
@@ -221,8 +281,12 @@ namespace Movuino
             _prevMag = _mag;
 
             _angleGyrMethod = GetEulerIntegratino(gyroscopeRaw, _angleGyrMethod);
+            _angleGyrHP = GetEulerIntegratino(gyroscopeHighPass, _angleGyrHP);
+            print(gyroscopeHighPass);
             _angleMagMethod = GetAngleMag();
             _angleAccelMethod = ComputeAngle(accelerationSmooth.normalized);
+            _deltaAngleAccel = _angleAccelMethod - _deltaAngleAccel;
+
 
             _accel = instantAcceleration;
             _gyr = instantGyroscope;
@@ -293,6 +357,13 @@ namespace Movuino
             }
             meanDat /= listMean.Count;
             return meanDat;
+        }
+
+        public float HighPassFilter(float fc, float Te,  float sn_last, float en, float en_last)
+        {
+            float tau = 1 / (2 * Mathf.PI * fc);
+            float sn = sn_last * (1 - Te / tau) + en - en_last;
+            return sn;
         }
         #endregion
 

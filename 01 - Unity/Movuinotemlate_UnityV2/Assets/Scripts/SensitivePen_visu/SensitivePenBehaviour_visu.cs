@@ -7,9 +7,7 @@ using Movuino;
 public class SensitivePenBehaviour_visu : ObjectMovuino_visu
 {
     Vector3 angleAccel;
-
-
-
+    Vector3 initAngle;
 
     private float startTime;
     private int i;
@@ -32,6 +30,8 @@ public class SensitivePenBehaviour_visu : ObjectMovuino_visu
             print("Impossible to use both modes, please uncheck one");
         }
 
+        initAngle = this.gameObject.transform.localEulerAngles;
+
     }
     public void FixedUpdate()
     {
@@ -39,7 +39,7 @@ public class SensitivePenBehaviour_visu : ObjectMovuino_visu
         {
             angleAccel = movuinoBehaviour.angleGyrOrientation;
             //this.gameObject.transform.Rotate(movuinoBehaviour.gyroscopeRaw * Time.deltaTime);
-            this.gameObject.transform.localEulerAngles = new Vector3(angleAccel.x, angleAccel.y, angleAccel.z);
+            this.gameObject.transform.localEulerAngles = new Vector3(angleAccel.x, angleAccel.y, angleAccel.z) ;
         }
 
 

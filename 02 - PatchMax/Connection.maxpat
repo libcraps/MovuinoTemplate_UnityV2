@@ -40,6 +40,19 @@
 		"assistshowspatchername" : 0,
 		"boxes" : [ 			{
 				"box" : 				{
+					"id" : "obj-12",
+					"linecount" : 20,
+					"maxclass" : "message",
+					"numinlets" : 2,
+					"numoutlets" : 1,
+					"outlettype" : [ "" ],
+					"patching_rect" : [ 115.0, 425.0, 50.0, 284.0 ],
+					"text" : "/movPlayer -0.292107 -1.503635 -8.466329 0.825747 0.522672 0.240772 14.150488 9.97094 36.257111"
+				}
+
+			}
+, 			{
+				"box" : 				{
 					"id" : "obj-15",
 					"maxclass" : "message",
 					"numinlets" : 2,
@@ -141,8 +154,8 @@
 					"numinlets" : 1,
 					"numoutlets" : 2,
 					"outlettype" : [ "int", "" ],
-					"patching_rect" : [ 91.0, 125.0, 90.0, 22.0 ],
-					"text" : "serial e 115200"
+					"patching_rect" : [ 91.0, 125.0, 118.0, 22.0 ],
+					"text" : "serial COM8 115200"
 				}
 
 			}
@@ -155,7 +168,7 @@
 					"numoutlets" : 1,
 					"outlettype" : [ "" ],
 					"patching_rect" : [ 545.0, 152.0, 105.0, 119.0 ],
-					"text" : "/movPlayer 0.148448 -0.167603 9.946021 -0.00448 -0.002031 -0.003497 -32. 22. -60."
+					"text" : "/movPlayer -6.689741 5.775109 -4.304994 -0.111824 0.807389 0.104403 -66. -26. 80."
 				}
 
 			}
@@ -216,8 +229,17 @@
 			}
 , 			{
 				"patchline" : 				{
+					"destination" : [ "obj-12", 1 ],
+					"order" : 1,
+					"source" : [ "obj-13", 0 ]
+				}
+
+			}
+, 			{
+				"patchline" : 				{
 					"destination" : [ "obj-2", 0 ],
 					"midpoints" : [ 100.5, 402.0, 379.0, 402.0, 379.0, 192.0, 402.5, 192.0 ],
+					"order" : 0,
 					"source" : [ "obj-13", 0 ]
 				}
 
