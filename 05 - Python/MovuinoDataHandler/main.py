@@ -12,13 +12,13 @@ from scipy import signal
 
 ############ SETTINGS #############
 
-folderPath = "..\\Data\\test_ana\\"
+folderPath = "..\\Data\\test_ana_firmware\\"
 fileName = "record"
 
-serialPort = 'COM8'
+serialPort = 'COM7'
 
 toDataManage = True
-toExtract = True
+toExtract = False
 
 ###################################
 
@@ -68,7 +68,7 @@ if toExtract:
 
 if toDataManage:
     print(nbRecord)
-    nbRecord = 12
+    nbRecord = 10
     for i in range(1, nbRecord+1):
         dataSet = dm.MovuinoDataSet(folderPath + fileName + "_"+str(i))
         dataSet.run()

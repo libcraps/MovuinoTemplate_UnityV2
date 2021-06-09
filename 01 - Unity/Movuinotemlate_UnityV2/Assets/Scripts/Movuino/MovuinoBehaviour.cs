@@ -273,9 +273,10 @@ namespace Movuino
             _gyr = instantGyroscope;
             _mag = instantMagnetometer;
 
-            
-            _HPGyr = HighPassFilter(_fcHighPass, Time.fixedDeltaTime, _prevHPGyr, _gyr, _prevGyr);
             _prevHPGyr = _HPGyr;
+            _HPGyr = HighPassFilter(_fcHighPass, Time.fixedDeltaTime, _prevHPGyr, _gyr, _prevGyr);
+            
+
             _angleGyrHP = GetEulerIntegration(gyroscopeHighPass, _angleGyrHP, Time.fixedDeltaTime);
             _angleGyrMethod = GetEulerIntegration(gyroscopeRaw, _angleGyrMethod, Time.fixedDeltaTime);
             _angleMagMethod = GetAngleMag();

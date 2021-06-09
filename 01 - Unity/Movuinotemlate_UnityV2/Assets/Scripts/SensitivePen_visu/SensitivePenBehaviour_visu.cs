@@ -39,7 +39,7 @@ public class SensitivePenBehaviour_visu : ObjectMovuino_visu
         {
             angleAccel = movuinoBehaviour.angleGyrOrientation;
             //this.gameObject.transform.Rotate(movuinoBehaviour.gyroscopeRaw * Time.deltaTime);
-            this.gameObject.transform.localEulerAngles = new Vector3(angleAccel.x, angleAccel.y, angleAccel.z) ;
+            this.gameObject.transform.localEulerAngles = new Vector3(angleAccel.y, angleAccel.z, angleAccel.x) ;
         }
 
 
