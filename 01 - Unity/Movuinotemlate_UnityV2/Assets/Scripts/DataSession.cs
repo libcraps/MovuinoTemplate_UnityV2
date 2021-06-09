@@ -302,8 +302,8 @@ namespace Movuino.Data
             listAcceleration.Add((Vector3)list[1]);
             listGyroscope.Add((Vector3)list[2]);
             listMagneto.Add((Vector3)list[3]);
-            listAngleGyro.Add((Vector3)list[3]);
-            listAngleAccel.Add((Vector3)list[3]);
+            listAngleGyro.Add((Vector3)list[4]);
+            listAngleAccel.Add((Vector3)list[5]);
         }
 
         /// <summary>
@@ -339,6 +339,7 @@ namespace Movuino.Data
                     listMagneto[i].x, listMagneto[i].y, listMagneto[i].z,
                     listAngleGyro[i].x, listAngleGyro[i].y, listAngleGyro[i].z,
                     listAngleAccel[i].x, listAngleAccel[i].y, listAngleAccel[i].z);
+                Debug.Log("tgx : " + listAngleGyro[i].x + " -- tax : " + listAngleAccel[i].x);
             }
 
             return table;
