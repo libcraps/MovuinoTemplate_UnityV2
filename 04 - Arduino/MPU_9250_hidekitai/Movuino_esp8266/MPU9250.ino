@@ -1,29 +1,35 @@
 void print9axesDataMPU(MPU9250 IMU){
   // display the data
-  Serial.print(IMU.getAccX(),6);
+  Serial.print(IMU.getAccX(),2);
   Serial.print(" ");
-  Serial.print(IMU.getAccY(),6);
+  Serial.print(IMU.getAccY(),2);
   Serial.print(" ");
-  Serial.print(IMU.getAccZ(),6);
+  Serial.print(IMU.getAccZ(),2);
   Serial.print(" ");
-  Serial.print(IMU.getGyroX(),6);
+  Serial.print(IMU.getGyroX(),2);
   Serial.print(" ");
-  Serial.print(IMU.getGyroY(),6);
+  Serial.print(IMU.getGyroY(),2);
   Serial.print(" ");
-  Serial.print(IMU.getGyroZ(),6);
+  Serial.print(IMU.getGyroZ(),2);
   Serial.print(" ");
-  Serial.print(IMU.getMagX(),6);
+  Serial.print(IMU.getMagX(),2);
   Serial.print(" ");
-  Serial.print(IMU.getMagY(),6);
+  Serial.print(IMU.getMagY(),2);
   Serial.print(" ");
-  Serial.println(IMU.getMagZ(),6);
+  Serial.print(IMU.getMagZ(),2);
+  Serial.print(" ");
+  Serial.print(IMU.getYaw(),2);
+  Serial.print(" ");
+  Serial.print(IMU.getRoll(),2);
+  Serial.print(" ");
+  Serial.println(IMU.getPitch(),2);
 }
 
 void printTempDataMPU(MPU9250 IMU){
     //Serial.println(IMU.getTemperature_C(),6);
 }
 
-void get9axesDataMPU(MPU9250 IMU, float ax, float ay, float az, float gx, float gy, float gz, float mx, float my, float mz){
+void get9axesDataMPU(MPU9250 IMU, float ax, float ay, float az, float gx, float gy, float gz, float mx, float my, float mz, float y, float r, float p){
     //Accel
     ax = IMU.getAccX();
     ay = IMU.getAccY();
@@ -36,6 +42,10 @@ void get9axesDataMPU(MPU9250 IMU, float ax, float ay, float az, float gx, float 
     mx = IMU.getMagX();
     my = IMU.getMagY();
     mz = IMU.getMagZ();
+    //Yaw Pitch Roll
+    y = IMU.getYaw();
+    r = IMU .getRoll();
+    p = IMU.getPitch();
 }
 
 

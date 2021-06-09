@@ -35,6 +35,7 @@ int status;
 float ax, ay, az; // store accelerometre values
 float gx, gy, gz; // store gyroscope values
 float mx, my, mz; // store magneto values
+float r, p, y;
 int magRange[] = {666, -666, 666, -666, 666, -666}; // magneto range values for callibration
 
 // Button variables
@@ -89,28 +90,32 @@ void setup() {
     Serial.println(status);
     while(1) {}
   }
+  IMU.calibrateAccelGyro();
   
   // We start by connecting to a WiFi network
-  startWifi();
+  //startWifi();
   
 }
 
 void loop() {
-  getSerialMsg(); // update msgAdr & msgMsg
-
-  // BUTTON CHECK
-  checkButton();
 
     if (IMU.update())
     {
         // read the sensor
-        //print9axesDataMPU(IMU);
-        get9axesDataMPU(IMU, ax, ay, az, gx, gy, gz, mx, my, mz);
-        print9axesDataMPU(IMU);
+            //print9axesDataMPU(IMU);
+        Serial.print(IMU.getYaw(),2);
+        Serial.print(" ");
+        Serial.print(IMU.getRoll(),2);
+        Serial.print(" ");
+        Serial.println(IMU.getPitch(),2);
     }
-  
 
-  delay(100);
+ /*
+  getSerialMsg(); // update msgAdr & msgMsg
+
+  // BUTTON CHECK
+  checkButton();
+  
   // MOVUINO DATA
   if (WiFi.status() == WL_CONNECTED) {
     IPAddress myIp = WiFi.localIP();
@@ -119,7 +124,7 @@ void loop() {
     magnetometerAutoCallibration();
 
     if (millis() < 30000) {
-      printMovuinoData(); // optional
+      print9axesDataMPU(IMU); // optional
     }
 
     delay(2);
@@ -144,52 +149,14 @@ void loop() {
     }
 
     // RECEIVE EXTERNAL OSC MESSAGES
-    OSCMessage bundle;
-    int size = Udp.parsePacket();
-    if (size > 0) {
-      while (size--) {
-        bundle.fill(Udp.read()); // read incoming message into the bundle
-      }
-      if (!bundle.hasError()) {
-        bundle.dispatch("/vibroPulse", callbackVibroPulse);
-        bundle.dispatch("/vibroNow", callbackVibroNow);
-      } else {
-        error = bundle.getError();
-        Serial.print("error: ");
-        Serial.println(error);
-      }
-    }
 
-    // MANAGE VIBRATIONS
-    if (isVibro) {
-      vibroPulse();
-    }
   }
   else {
     delay(50); // wait more if Movuino is sleeping
   }
+  */
 }
 
-void printMovuinoData() {
-  Serial.print(ax);
-  Serial.print("\t ");
-  Serial.print(ay);
-  Serial.print("\t ");
-  Serial.print(az);
-  Serial.print("\t ");
-  Serial.print(gx);
-  Serial.print("\t ");
-  Serial.print(gy);
-  Serial.print("\t ");
-  Serial.print(gz);
-  Serial.print("\t ");
-  Serial.print(mx);
-  Serial.print("\t ");
-  Serial.print(my);
-  Serial.print("\t ");
-  Serial.print(mz);
-  Serial.println();  
-}
 
 float splitFloatDecimal(float f_){
   int i_ = f_ * 1000;
