@@ -63,23 +63,12 @@ namespace Movuino
 
         //Data for the duration of the frame
         public Vector3 accelerationRaw { get { return _accel; } }
-        public Vector3 gyroscopeRaw { get { return (_gyr-_initGyr)*(float)(360/(2*3.14)); } }
+        public Vector3 gyroscopeRaw { get { return (_gyr)*(float)(360/(2*3.14)); } }
         public Vector3 magnetometerRaw { get { return _mag; } }
 
         public Vector3 accelerationSmooth { get { return MovingMean(_accel, ref _listMeanAcc); } }
         public Vector3 gyroscopeSmooth { get { return MovingMean(_gyr, ref _listMeanGyro) * (float)(360 / (2 * 3.14)); } }
-        public Vector3 gyroscopeHighPass
-        {
-            get
-            {
-                float gx = HighPassFilter(_fcHighPass, Time.fixedDeltaTime, _prevHPGyr.x, _gyr.x, _prevGyr.x);
-                float gy = HighPassFilter(_fcHighPass, Time.fixedDeltaTime, _prevHPGyr.y, _gyr.y, _prevGyr.y);
-                float gz = HighPassFilter(_fcHighPass, Time.fixedDeltaTime, _prevHPGyr.z, _gyr.z, _prevGyr.z);
-                _HPGyr = new Vector3(gx, gy, gz);
-                _prevHPGyr = _HPGyr;
-                return _HPGyr * (float)(360 / (2 * 3.14));
-            }
-        }
+        public Vector3 gyroscopeHighPass { get { return _HPGyr * (float)(360 / (2 * 3.14)); } }
         public Vector3 magnetometerSmooth { get { return MovingMean(_mag, ref _listMeanMag); } }
 
         //DeltaValues
@@ -191,7 +180,7 @@ namespace Movuino
             _initAngle = this.gameObject.transform.eulerAngles;
             _deltaAngleAccel = new Vector3(0, 0, 0);
 
-            _initGyr = new Vector3(0, 0, 0);
+            _initGyr = new Vector3(0, 0, 0); ;
             _initAccel = new Vector3(0, 0, 0);
             _initMag = new Vector3(0, 0, 0);
 
@@ -215,11 +204,11 @@ namespace Movuino
             return _angleMagMethod;
         }
 
-        Vector3 GetEulerIntegratino(Vector3 vectorInstDerivate, Vector3 vectorIntegrate)
+        Vector3 GetEulerIntegration(Vector3 vectorInstDerivate, Vector3 vectorIntegrate, float dt)
         {
-            vectorIntegrate.x += vectorInstDerivate.x * Time.deltaTime;
-            vectorIntegrate.y += vectorInstDerivate.y * Time.deltaTime;
-            vectorIntegrate.z += vectorInstDerivate.z * Time.deltaTime;
+            vectorIntegrate.x += vectorInstDerivate.x * dt;
+            vectorIntegrate.y += vectorInstDerivate.y * dt;
+            vectorIntegrate.z += vectorInstDerivate.z * dt;
             return vectorIntegrate;
         }
         private Vector3 ComputeAngle(Vector3 U)
@@ -280,17 +269,19 @@ namespace Movuino
             _prevGyr = _gyr;
             _prevMag = _mag;
 
-            _angleGyrMethod = GetEulerIntegratino(gyroscopeRaw, _angleGyrMethod);
-            _angleGyrHP = GetEulerIntegratino(gyroscopeHighPass, _angleGyrHP);
-            print(gyroscopeHighPass);
+            _accel = instantAcceleration;
+            _gyr = instantGyroscope;
+            _mag = instantMagnetometer;
+
+            
+            _HPGyr = HighPassFilter(_fcHighPass, Time.fixedDeltaTime, _prevHPGyr, _gyr, _prevGyr);
+            _prevHPGyr = _HPGyr;
+            _angleGyrHP = GetEulerIntegration(gyroscopeHighPass, _angleGyrHP, Time.fixedDeltaTime);
+            _angleGyrMethod = GetEulerIntegration(gyroscopeRaw, _angleGyrMethod, Time.fixedDeltaTime);
             _angleMagMethod = GetAngleMag();
             _angleAccelMethod = ComputeAngle(accelerationSmooth.normalized);
             _deltaAngleAccel = _angleAccelMethod - _deltaAngleAccel;
 
-
-            _accel = instantAcceleration;
-            _gyr = instantGyroscope;
-            _mag = instantMagnetometer;
         }
 
         public void InitMovTransform()
@@ -363,6 +354,16 @@ namespace Movuino
         {
             float tau = 1 / (2 * Mathf.PI * fc);
             float sn = sn_last * (1 - Te / tau) + en - en_last;
+            return sn;
+        }
+        public Vector3 HighPassFilter(float fc, float Te, Vector3 sn_last, Vector3 en, Vector3 en_last)
+        {
+            Vector3 sn;
+            float gx = HighPassFilter(fc, Te, sn_last.x, en.x, en_last.x);
+            float gy = HighPassFilter(fc, Te, sn_last.y, en.y, en_last.y);
+            float gz = HighPassFilter(fc, Te, sn_last.z, en.z, en_last.z);
+            sn = new Vector3(gx, gy, gz);
+            
             return sn;
         }
         #endregion

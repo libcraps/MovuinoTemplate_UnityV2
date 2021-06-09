@@ -964,7 +964,7 @@ MonoBehaviour:
   oscManager: {fileID: 1330286088}
   _movuinoAdress: /movPlayer
   _nbPointFilter: 15
-  _fcHighPass: 0.15
+  _fcHighPass: 0.00000001
   _exportIntoFile: 1
   _folderPath: .\\Test_reco\\
   _filename: record2.csv
