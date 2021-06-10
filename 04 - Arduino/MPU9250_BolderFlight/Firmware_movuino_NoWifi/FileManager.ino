@@ -4,14 +4,13 @@
 
 void createFile(String filepath)
 {
-  File file = SPIFFS.open(filepath, "w");
+  file = SPIFFS.open(filepath, "w");
  
   if (!file) {
     Serial.println("Error opening file for writing");
     return;
   }
   initialiseFileMovuinoData(file, sep);
-  file.close();
 }
 
 void readFile(String filepath)
@@ -58,6 +57,9 @@ void listingDir(String dirPath)
     File f = dir.openFile("r");
     Serial.print(" ");
     Serial.println(f.size());
+    Serial.print("There are ");
+    Serial.print(nb_record); 
+    Serial.println(" record");
     f.close();
   }
   Serial.println("End of listing");

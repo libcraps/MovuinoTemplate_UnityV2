@@ -64,6 +64,7 @@ String serialMessage;
 bool isEditable = false;
 bool isReadable = false;
 bool formatted;
+int nb_record=0;
 
 void setup() {
   Wire.begin();
@@ -160,6 +161,9 @@ void loop() {
       case CMD_PRINT_DAT:
         printMovuinoData();
         break;
+      case 'h':
+        Serial.print(file);
+        break;
       default:
         Serial.println("No command associated");
         break;
@@ -175,25 +179,25 @@ void loop() {
       blink3Times();
       isEditable = true;
       startTime = millis();
-      
+      nb_record++;
       Serial.println("Writing in " + filePath);
       //---- If the file already exists we write after it
-      if (SPIFFS.exists(filePath))
+      if (!file && SPIFFS.exists(filePath))
       {
         file = SPIFFS.open(filePath, "a");     
         file.println("-----------------   NEW RECORD   ---------------------");
         initialiseFileMovuinoData(file, sep);
-        file.close();
       } 
       else 
       {
         createFile(filePath);
       }
     } 
-    else 
+    else //If the file was open and writable we close it
     {
       Serial.println();
       Serial.println("Stopping the continue edition of " + filePath);
+      file.close();
       isEditable = false;
       blinkLongTimes();
       
@@ -206,20 +210,44 @@ void loop() {
   //print9axesDataMPU(IMU);
   get9axesDataMPU(IMU, &ax, &ay, &az, &gx, &gy, &gz, &mx, &my, &mz);
   time = millis() - startTime;
-  
+
   //------- Writing in File ------------
   if (isEditable)
   {
-    writeData(filePath);
+    
+    if (file && SPIFFS.exists(filePath))
+    {
+      static uint32_t prev_ms = millis();
+      if (millis() > prev_ms + 10)
+      {
+          digitalWrite(pinLedBat, HIGH);
+          writeInFileMovuinoData(file, sep);
+          prev_ms = millis();
+      }
+
+    } 
+    else
+    {
+      Serial.println("Error opening file for writing");
+    }
+
   }
 
   //------- Reading file ---------------
   if (isReadable)
   {
-    Serial.println();
-    Serial.println("reading " + filePath + "...");
-    readFile(filePath);
-    isReadable = false;
+    if (!file)
+    {
+        Serial.println();
+        Serial.println("reading " + filePath + "...");
+        readFile(filePath);
+        isReadable = false;
+    } 
+    else 
+    {
+      Serial.print("file is open, please close it before start the reading");
+    }
+
   }
 
   if (buttonFlash) 
@@ -228,7 +256,7 @@ void loop() {
     {
       isReadable = true;
       digitalWrite(pinLedESP, HIGH);
-      startPush = millis()+10000;
+      startPush = millis()+30000;
       delay(250);
     }
     else
@@ -237,7 +265,6 @@ void loop() {
     }
   }
 
-  delay(1);
 }
 
 
