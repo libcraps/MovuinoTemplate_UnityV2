@@ -35,7 +35,7 @@ int status;
 float ax, ay, az; // store accelerometre values
 float gx, gy, gz; // store gyroscope values
 float mx, my, mz; // store magneto values
-float r, p, y;
+float ex, ey, ez;
 int magRange[] = {666, -666, 666, -666, 666, -666}; // magneto range values for callibration
 
 // Button variables
@@ -90,32 +90,26 @@ void setup() {
     Serial.println(status);
     while(1) {}
   }
+  
   IMU.calibrateAccelGyro();
   
   // We start by connecting to a WiFi network
-  //startWifi();
+  startWifi();
   
 }
 
 void loop() {
+    getSerialMsg(); // update msgAdr & msgMsg
 
+    // BUTTON CHECK
+    checkButton();
+    
     if (IMU.update())
     {
         // read the sensor
-            //print9axesDataMPU(IMU);
-        Serial.print(IMU.getYaw(),2);
-        Serial.print(" ");
-        Serial.print(IMU.getRoll(),2);
-        Serial.print(" ");
-        Serial.println(IMU.getPitch(),2);
+        print9axesDataMPU(IMU);
     }
 
- /*
-  getSerialMsg(); // update msgAdr & msgMsg
-
-  // BUTTON CHECK
-  checkButton();
-  
   // MOVUINO DATA
   if (WiFi.status() == WL_CONNECTED) {
     IPAddress myIp = WiFi.localIP();
@@ -140,21 +134,16 @@ void loop() {
       msg.add(mx);
       msg.add(my);
       msg.add(mz);
+      msg.add(ex);
+      msg.add(ey);
+      msg.add(ez);
       Udp.beginPacket(hostIP, portOut); // send message to computer target with "hostIP" on "port"
       msg.send(Udp);
       Udp.endPacket();
       msg.empty();
-  
-      delay(5);
     }
-
-    // RECEIVE EXTERNAL OSC MESSAGES
-
   }
-  else {
-    delay(50); // wait more if Movuino is sleeping
-  }
-  */
+  delay(5);
 }
 
 

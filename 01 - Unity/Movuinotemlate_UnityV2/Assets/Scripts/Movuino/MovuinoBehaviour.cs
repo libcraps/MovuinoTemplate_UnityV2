@@ -47,7 +47,7 @@ namespace Movuino
 
         private string _addressSensorData;
 
-        private OSCMovuinoSensorData _OSCmovuinoSensorData; //9axes data
+        private OSCMovuinoSensorBasicData _OSCmovuinoSensorData; //9axes data
         private DataSessionMovuinoExtended _movuinoExportData;
 
 
@@ -55,7 +55,7 @@ namespace Movuino
 
         #region Properties
         //OSC
-        public OSCMovuinoSensorData OSCmovuinoSensorData { get { return _OSCmovuinoSensorData; } }
+        public OSCMovuinoSensorBasicData OSCmovuinoSensorData { get { return _OSCmovuinoSensorData; } }
         //Instant data
         public Vector3 instantAcceleration { get { return _OSCmovuinoSensorData.accelerometer; } }
         public Vector3 instantGyroscope { get { return _OSCmovuinoSensorData.gyroscope; } }
@@ -194,7 +194,7 @@ namespace Movuino
             _listMeanMag = new List<Vector3>();
             _listMeanAngleAcc = new List<Vector3>();
 
-            _OSCmovuinoSensorData = OSCDataHandler.CreateOSCDataHandler<OSCMovuinoSensorData>();
+            _OSCmovuinoSensorData = OSCDataHandler.CreateOSCDataHandler<OSCMovuinoSensorBasicData>();
         }
 
 

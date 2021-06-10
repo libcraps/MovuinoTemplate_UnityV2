@@ -18,11 +18,11 @@ void print9axesDataMPU(MPU9250 IMU){
   Serial.print(" ");
   Serial.print(IMU.getMagZ(),2);
   Serial.print(" ");
-  Serial.print(IMU.getYaw(),2);
+  Serial.print(IMU.getEulerX(),2);
   Serial.print(" ");
-  Serial.print(IMU.getRoll(),2);
+  Serial.print(IMU.getEulerY(),2);
   Serial.print(" ");
-  Serial.println(IMU.getPitch(),2);
+  Serial.println(IMU.getEulerZ(),2);
 }
 
 void printTempDataMPU(MPU9250 IMU){
@@ -43,9 +43,9 @@ void get9axesDataMPU(MPU9250 IMU, float ax, float ay, float az, float gx, float 
     my = IMU.getMagY();
     mz = IMU.getMagZ();
     //Yaw Pitch Roll
-    y = IMU.getYaw();
-    r = IMU .getRoll();
-    p = IMU.getPitch();
+    ex = IMU.getEulerX();
+    ey = IMU .getEulerY();
+    ez = IMU.getEulerZ();
 }
 
 

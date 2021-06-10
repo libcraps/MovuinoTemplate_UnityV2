@@ -40,16 +40,16 @@ namespace Movuino
             Debug.Log(movuino.angleMagOrientation);
         }
 
-        void GetGyroriantation(OSCMovuinoSensorData movuino)
+        void GetGyroriantation(OSCMovuinoSensorBasicData movuino)
         {
             this.gameObject.transform.Rotate(movuino.gyroscope * Time.fixedDeltaTime * (float)(360.0 / (2 * 3.14)));
         }
-        void MoveObj(OSCMovuinoSensorData movuino)
+        void MoveObj(OSCMovuinoSensorBasicData movuino)
         {
             this.gameObject.transform.Translate(movuino.accelerometer * Time.fixedDeltaTime);
         }
 
-        void OrientObj(OSCMovuinoSensorData movuino)
+        void OrientObj(OSCMovuinoSensorBasicData movuino)
         {
             //this.gameObject.transform.localEulerAngles = Angle;
         }

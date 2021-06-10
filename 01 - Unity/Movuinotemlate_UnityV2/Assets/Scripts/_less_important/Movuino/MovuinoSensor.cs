@@ -10,7 +10,7 @@ namespace Movuino
 	{
         private string movuinoAdress;
 
-        public OSCMovuinoSensorData OSCmovuinoSensorData; //9axes data
+        public OSCMovuinoSensorBasicData OSCmovuinoSensorData; //9axes data
 
         public string MovuinoAdress { get { return movuinoAdress; } }
         public Vector3 InstantAcceleration { get { return OSCmovuinoSensorData.accelerometer; } }
@@ -47,7 +47,7 @@ namespace Movuino
 
             initAngle = new Vector3(0, 0, 0);
             movuinoAdress = adress;
-            OSCmovuinoSensorData = OSCDataHandler.CreateOSCDataHandler<OSCMovuinoSensorData>();
+            OSCmovuinoSensorData = OSCDataHandler.CreateOSCDataHandler<OSCMovuinoSensorBasicData>();
         }
 
 
