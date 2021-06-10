@@ -106,7 +106,7 @@ void loop() {
   //print9axesDataMPU(IMU);
   get9axesDataMPU(IMU, &ax, &ay, &az, &gx, &gy, &gz, &mx, &my, &mz);
   print9axesDataMPU(IMU);
-  delay(100);
+
   // MOVUINO DATA
   if (WiFi.status() == WL_CONNECTED) {
     IPAddress myIp = WiFi.localIP();
@@ -122,10 +122,10 @@ void loop() {
     if(!digitalRead(pinVibro)){
       // SEND MOVUINO DATA
       OSCMessage msg(idMov); // create an OSC message on address "/movuinOSC"
-      msg.add(-ax);   // add acceleration X data as message -> 6ax in order to get a orthonormal repère
+      msg.add(ax);   // add acceleration X data as message -> 6ax in order to get a orthonormal repère
       msg.add(ay);   // add acceleration Y data
       msg.add(az);   // add ...
-      msg.add(-gx);
+      msg.add(gx);
       msg.add(gy);
       msg.add(gz);    // you can add as many data as you want
       msg.add(mx);
@@ -167,13 +167,13 @@ void loop() {
 }
 
 void printMovuinoData() {
-  Serial.print(-ax);
+  Serial.print(ax);
   Serial.print("\t ");
   Serial.print(ay);
   Serial.print("\t ");
   Serial.print(az);
   Serial.print("\t ");
-  Serial.print(-gx);
+  Serial.print(gx);
   Serial.print("\t ");
   Serial.print(gy);
   Serial.print("\t ");

@@ -70,9 +70,9 @@ namespace Graph
             //Data of differents curve
             if (objectVisu.onlineMode)
             {
-                valX = objectVisu.movuinoBehaviour.angleGyrOrientation.x;
-                valY = objectVisu.movuinoBehaviour.angleGyrOrientation.y;
-                valZ = objectVisu.movuinoBehaviour.angleGyrOrientation.z;
+                valX = objectVisu.movuinoBehaviour.magnetometerRaw.x;
+                valY = objectVisu.movuinoBehaviour.magnetometerRaw.y;
+                valZ = objectVisu.movuinoBehaviour.magnetometerRaw.z;
             }
             else if (objectVisu.offlineMode)
             {

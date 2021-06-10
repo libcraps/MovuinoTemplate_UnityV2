@@ -967,6 +967,7 @@ MonoBehaviour:
   _exportIntoFile: 1
   _folderPath: .\\Test_reco\\
   _filename: record2.csv
+  instantEulerAngles: {x: 0, y: 0, z: 0}
 --- !u!1 &1526251404
 GameObject:
   m_ObjectHideFlags: 0

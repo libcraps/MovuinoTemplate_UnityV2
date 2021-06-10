@@ -103,12 +103,15 @@ void loop() {
 
     // BUTTON CHECK
     checkButton();
-    
     if (IMU.update())
     {
         // read the sensor
         print9axesDataMPU(IMU);
+        get9axesDataMPU(IMU, &ax, &ay, &az, &gx, &gy, &gz, &mx, &my, &mz, &ex, &ey, &ez);
     }
+
+
+
 
   // MOVUINO DATA
   if (WiFi.status() == WL_CONNECTED) {

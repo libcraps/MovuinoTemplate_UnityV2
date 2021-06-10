@@ -61,10 +61,14 @@ namespace Movuino
         public Vector3 instantGyroscope { get { return _OSCmovuinoSensorData.gyroscope; } }
         public Vector3 instantMagnetometer { get { return _OSCmovuinoSensorData.magnetometer; } }
 
+        public Vector3 instantEulerAngles; /*{ get { return _OSCmovuinoSensorData.eulerAngle; } }*/
+
         //Data for the duration of the frame
         public Vector3 accelerationRaw { get { return _accel; } }
         public Vector3 gyroscopeRaw { get { return (_gyr)*(float)(360/(2*3.14)); } }
         public Vector3 magnetometerRaw { get { return _mag; } }
+
+        public Vector3 eulerRaw { get { return _euler; } }
 
         public Vector3 accelerationSmooth { get { return MovingMean(_accel, ref _listMeanAcc); } }
         public Vector3 gyroscopeSmooth { get { return MovingMean(_gyr, ref _listMeanGyro) * (float)(360 / (2 * 3.14)); } }
@@ -93,6 +97,8 @@ namespace Movuino
         public Vector3 angleGyrOrientationHP {  get { return _angleGyrHP; } }
         public Vector3 angleAccelOrientationRaw {  get { return _angleAccelMethod; } }
         public Vector3 angleAccelOrientationSmooth {  get { return MovingMean(_angleAccelMethod, ref _listMeanAngleAcc); } }
+
+        public Vector3 angleEuler { get { return _euler - _initEulerAngle;  } }
         #endregion
 
         private float gravity;
@@ -103,11 +109,13 @@ namespace Movuino
         Vector3 _accel;
         Vector3 _gyr;
         Vector3 _mag;
+        Vector3 _euler;
 
         Vector3 _prevAccel;
         Vector3 _prevGyr;
         Vector3 _prevHPGyr;
         Vector3 _prevMag;
+        Vector3 _prevEuler;
         Vector3 _HPGyr;
 
         Vector3 _deltaAngleAccel;
@@ -116,11 +124,13 @@ namespace Movuino
         Vector3 _initGyr;
         Vector3 _initAccel;
         Vector3 _initMag;
+        Vector3 _initEulerAngle;
 
         Vector3 _angleGyrHP;
         Vector3 _angleMagMethod;
         Vector3 _angleGyrMethod;
         Vector3 _angleAccelMethod;
+        Vector3 _angleEuler;
 
         
         #endregion
@@ -171,23 +181,27 @@ namespace Movuino
             _prevGyr = new Vector3(0, 0, 0);
             _prevMag = new Vector3(0, 0, 0);
             _prevHPGyr = new Vector3(0, 0, 0);
+            _prevEuler = new Vector3(0, 0, 0);
             _HPGyr = new Vector3(0, 0, 0);
 
             _accel = new Vector3(0, 0, 0);
             _gyr = new Vector3(0, 0, 0);
             _mag = new Vector3(0, 0, 0);
+            _euler = new Vector3(0, 0, 0);
 
             _initAngle = this.gameObject.transform.eulerAngles;
             _deltaAngleAccel = new Vector3(0, 0, 0);
 
             _initGyr = new Vector3(0, 0, 0); ;
             _initAccel = new Vector3(0, 0, 0);
-            _initMag = new Vector3(0, 0, 0);
+            _initMag = new Vector3(666, 666, 666);
+            _initEulerAngle = new Vector3(666, 666, 666);
 
             _angleGyrMethod = _initAngle;
             _angleAccelMethod = _initAngle;
             _angleGyrHP= _initAngle;
             _angleMagMethod = new Vector3(0, 0, 0);
+            _angleEuler = new Vector3(0, 0, 0); ;
 
             _listMeanAcc = new List<Vector3>();
             _listMeanGyro = new List<Vector3>();
@@ -198,11 +212,39 @@ namespace Movuino
         }
 
 
-        Vector3 GetAngleMag()
+        
+
+
+        public void UpdateMovuinoData()
         {
-            _angleMagMethod = _OSCmovuinoSensorData.magnetometer - _initAngle;
-            return _angleMagMethod;
+            if (_initMag == new Vector3(666, 666, 666)  && _mag != new Vector3(0, 0, 0))
+            {
+                _initMag = _mag;
+                //print(_initEulerAngle);
+            }
+
+            _prevAccel = _accel;
+            _prevGyr = _gyr;
+            _prevMag = _mag;
+            _prevEuler = _euler;
+
+            _accel = instantAcceleration;
+            _gyr = instantGyroscope;
+            _mag = instantMagnetometer;
+            _euler = instantEulerAngles;
+
+            _prevHPGyr = _HPGyr;
+            _HPGyr = HighPassFilter(_fcHighPass, Time.fixedDeltaTime, _prevHPGyr, _gyr, _prevGyr);
+            
+
+            _angleGyrHP = GetEulerIntegration(gyroscopeHighPass, _angleGyrHP, Time.fixedDeltaTime);
+            _angleGyrMethod = GetEulerIntegration(gyroscopeRaw, _angleGyrMethod, Time.fixedDeltaTime);
+            _angleMagMethod = ComputeAngle(magnetometerSmooth.normalized);
+            _angleAccelMethod = ComputeAngle(accelerationSmooth.normalized);
+            _deltaAngleAccel = _angleAccelMethod - _deltaAngleAccel;
+
         }
+
 
         Vector3 GetEulerIntegration(Vector3 vectorInstDerivate, Vector3 vectorIntegrate, float dt)
         {
@@ -218,7 +260,7 @@ namespace Movuino
             float alpha; //z angle
             float beta; //x angle
             float gamma; //y angle
-            
+
             /*
             Vector2 Uxy = new Vector2(U.x, U.y);
             Vector2 Uyz = new Vector2(U.y, U.z);
@@ -229,26 +271,26 @@ namespace Movuino
             gamma = Mathf.Acos((U.z) / (Uzx.magnitude));
             */
 
-            alpha = Mathf.Atan(U.x / U.y); 
-            beta = Mathf.Atan(U.y / U.z); 
+            alpha = Mathf.Atan(U.x / U.y);
+            beta = Mathf.Atan(U.y / U.z);
             gamma = Mathf.Atan(-U.x / U.z);
 
             if (U.x > 0 && U.z > 0)
             {
                 gamma = Mathf.PI + gamma;
-            } 
+            }
             else if (U.x < 0 && U.z > 0)
             {
                 gamma = -Mathf.PI + gamma;
             }
 
-            if (U.y < 0 && U.z > 0 )
+            if (U.y < 0 && U.z > 0)
             {
                 beta = Mathf.PI + beta;
-            } 
+            }
             else if (U.y > 0 && U.z > 0)
             {
-                beta = - Mathf.PI + beta;
+                beta = -Mathf.PI + beta;
             }
 
             if (U.z > 0)
@@ -258,33 +300,9 @@ namespace Movuino
             angle = new Vector3(beta, gamma, alpha) * 360 / (2 * Mathf.PI);
             //print(angle + " ---- " + U);
 
-            
+
             return angle;
         }
-
-
-        public void UpdateMovuinoData()
-        {
-            _prevAccel = _accel;
-            _prevGyr = _gyr;
-            _prevMag = _mag;
-
-            _accel = instantAcceleration;
-            _gyr = instantGyroscope;
-            _mag = instantMagnetometer;
-
-            _prevHPGyr = _HPGyr;
-            _HPGyr = HighPassFilter(_fcHighPass, Time.fixedDeltaTime, _prevHPGyr, _gyr, _prevGyr);
-            
-
-            _angleGyrHP = GetEulerIntegration(gyroscopeHighPass, _angleGyrHP, Time.fixedDeltaTime);
-            _angleGyrMethod = GetEulerIntegration(gyroscopeRaw, _angleGyrMethod, Time.fixedDeltaTime);
-            _angleMagMethod = GetAngleMag();
-            _angleAccelMethod = ComputeAngle(accelerationSmooth.normalized);
-            _deltaAngleAccel = _angleAccelMethod - _deltaAngleAccel;
-
-        }
-
         public void InitMovTransform()
         {
 
