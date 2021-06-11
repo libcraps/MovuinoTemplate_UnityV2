@@ -70,6 +70,8 @@ namespace Movuino
 
         public Vector3 eulerRaw { get { return _euler; } }
 
+        public Vector3 initMag { get { return _initMag; } }
+
         public Vector3 accelerationSmooth { get { return MovingMean(_accel, ref _listMeanAcc); } }
         public Vector3 gyroscopeSmooth { get { return MovingMean(_gyr, ref _listMeanGyro) * (float)(360 / (2 * 3.14)); } }
         public Vector3 gyroscopeHighPass { get { return _HPGyr * (float)(360 / (2 * 3.14)); } }
@@ -92,7 +94,8 @@ namespace Movuino
         }
 
         //Angle obtained with != ways
-        public Vector3 angleMagOrientation {  get { return _angleMagMethod - _initMagAngle; } }
+        public Vector3 initAngleMag { get { return _initMagAngle; } }
+        public Vector3 angleMagOrientation {  get { return _angleMagMethod; } }
         public Vector3 angleGyrOrientation {  get { return _angleGyrMethod; } }
         public Vector3 angleGyrOrientationHP {  get { return _angleGyrHP; } }
         public Vector3 angleAccelOrientationRaw {  get { return _angleAccelMethod; } }
@@ -222,7 +225,7 @@ namespace Movuino
             if (_initMag == new Vector3(666, 666, 666)  && _mag != new Vector3(0, 0, 0))
             {
                 _initMag = _mag;
-                _initMagAngle = ComputeAngle(_initMag);
+                _initMagAngle = ComputeAngleAccel(_initMag);
                 //print(_initEulerAngle);
             }
 
@@ -242,8 +245,8 @@ namespace Movuino
 
             _angleGyrHP = GetEulerIntegration(gyroscopeHighPass, _angleGyrHP, Time.fixedDeltaTime);
             _angleGyrMethod = GetEulerIntegration(gyroscopeRaw, _angleGyrMethod, Time.fixedDeltaTime);
-            _angleMagMethod = ComputeAngle(magnetometerSmooth.normalized);
-            _angleAccelMethod = ComputeAngle(accelerationSmooth.normalized);
+            _angleMagMethod = ComputeAngleMagnetometer(magnetometerSmooth.normalized);
+            _angleAccelMethod = ComputeAngleAccel(accelerationSmooth.normalized);
             _deltaAngleAccel = _angleAccelMethod - _deltaAngleAccel;
 
         }
@@ -256,23 +259,13 @@ namespace Movuino
             vectorIntegrate.z += vectorInstDerivate.z * dt;
             return vectorIntegrate;
         }
-        private Vector3 ComputeAngle(Vector3 U)
+        private Vector3 ComputeAngleAccel(Vector3 U)
         {
             Vector3 angle;
 
             float alpha; //z angle
             float beta; //x angle
             float gamma; //y angle
-
-            /*
-            Vector2 Uxy = new Vector2(U.x, U.y);
-            Vector2 Uyz = new Vector2(U.y, U.z);
-            Vector2 Uzx = new Vector2(U.z, U.x);
-            
-            alpha = Mathf.Acos((U.x) / (Uxy.magnitude));
-            beta = Mathf.Acos((U.y) / (Uyz.magnitude));
-            gamma = Mathf.Acos((U.z) / (Uzx.magnitude));
-            */
 
             alpha = Mathf.Atan(U.x / U.y);
             beta = Mathf.Atan(U.y / U.z);
@@ -295,14 +288,34 @@ namespace Movuino
             else if (U.y > 0 && U.z > 0)
             {
                 beta = -Mathf.PI + beta;
-            }
+            }*/
 
-            if (U.z > 0)
+            if (U.z < 0)
             {
-
+                gamma =- gamma;
             }
+
+
+            angle = new Vector3(beta, gamma, alpha) * 360 / (2 * Mathf.PI);
+            //print(angle + " ---- " + U);
+            return angle;
+        }
+        public Vector3 ComputeAngleMagnetometer(Vector3 U)
+        {
+            Vector3 angle;
+
+            float alpha; //z angle
+            float beta; //x angle
+            float gamma; //y angle
+            /*
+            alpha = Mathf.Atan(U.x / U.y);
+            beta = Mathf.Atan(U.y / U.z);
+            gamma = Mathf.Atan(U.x / U.z);
             */
 
+            alpha = Mathf.Acos(U.x);
+            beta = Mathf.Acos(U.y);
+            gamma = Mathf.Atan(U.x / U.z);
             angle = new Vector3(beta, gamma, alpha) * 360 / (2 * Mathf.PI);
             //print(angle + " ---- " + U);
             return angle;

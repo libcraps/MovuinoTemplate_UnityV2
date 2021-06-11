@@ -13,6 +13,9 @@ public class SensitivePenBehaviour_visu : ObjectMovuino_visu
     private int i;
     private bool end;
 
+    [SerializeField] private GameObject vertAngle;
+    [SerializeField] private GameObject horizAngle;
+
     public void Start()
     {
         if (offlineMode)
@@ -37,12 +40,19 @@ public class SensitivePenBehaviour_visu : ObjectMovuino_visu
     {
         if (onlineMode)
         {
+
+
+
+
             graphData.x = movuinoBehaviour.angleMagOrientation.x;
             graphData.y = movuinoBehaviour.magnetometerSmooth.magnitude;
-            graphData.z = 0;
+            graphData.z = Vector3.SignedAngle(movuinoBehaviour.magnetometerSmooth, movuinoBehaviour.initMag, Vector3.up);
 
             angle = new Vector3(0,0,0);            //this.gameObject.transform.Rotate(movuinoBehaviour.gyroscopeRaw * Time.deltaTime);
-            //this.gameObject.transform.eulerAngles = new Vector3(-angle.x, angle.z, angle.y);
+                                                   //this.gameObject.transform.eulerAngles = new Vector3(-angle.x, angle.z, angle.y);
+
+            vertAngle.transform.eulerAngles = new Vector3(0,90-movuinoBehaviour.angleAccelOrientationSmooth.y, 0);
+            horizAngle.transform.eulerAngles = new Vector3(0,90-graphData.x, 0);
         }
 
 
