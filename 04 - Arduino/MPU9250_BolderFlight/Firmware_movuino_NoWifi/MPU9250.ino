@@ -1,3 +1,21 @@
+void magnometerCalibration()
+{
+    
+  Serial.println("Calibrating Magnetometer : ");
+  Serial.println("Please continuously and slowly move the sensor in a figure 8 while the function is running");
+  
+  int statusMagCal = IMU.calibrateMag();
+  if (statusMagCal<0)
+  {
+    Serial.println("ERROR while calibrating");
+  }
+  else
+  {
+    Serial.println("Magnetometer's calibration OK");
+  }
+
+}
+
 void print9axesDataMPU(MPU9250 IMU){
   // display the data
   Serial.print(IMU.getAccelX_mss(),6);

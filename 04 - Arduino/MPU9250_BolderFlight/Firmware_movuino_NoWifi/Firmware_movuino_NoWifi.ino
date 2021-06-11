@@ -39,7 +39,7 @@ int magRange[] = {666, -666, 666, -666, 666, -666}; // magneto range values for 
 // BUTTON
 Button button;
 const int pinBtn = 13;     // the number of the pushbutton pin
-bool buttonFlash = false;
+bool buttonHold = false;
 bool buttonPressed = false;
 bool doubleTap = false;
 float startPush;
@@ -64,12 +64,11 @@ String serialMessage;
 bool isEditable = false;
 bool isReadable = false;
 bool formatted;
-int nb_record=0;
 
 void setup() {
   Wire.begin();
   Serial.begin(115200);
-  delay(2000);
+  delay(3000);
   
   // initialize device
   Serial.println("Initializing I2C devices...");
@@ -87,9 +86,11 @@ void setup() {
     Serial.println(status);
     while(1) {}
   }
+
+  //magnometerCalibration();
   
-  int statusGyro = IMU.setGyroRange(MPU9250::GYRO_RANGE_250DPS);
-  int statusAccel = IMU.setAccelRange(MPU9250::ACCEL_RANGE_4G);
+  int statusGyro = IMU.setGyroRange(MPU9250::GYRO_RANGE_1000DPS);
+  int statusAccel = IMU.setAccelRange(MPU9250::ACCEL_RANGE_8G);
   
   if (statusGyro<0 || statusAccel<0) {
     Serial.println("ERROR while setting range :");
@@ -156,7 +157,7 @@ void loop() {
         listingDir(dirPath);
         break;
       case 'b': //Light tests
-        Serial.println("ligth");
+        blinkNtimes(3, 500);
         break;
       case CMD_PRINT_DAT:
         printMovuinoData();
@@ -179,14 +180,13 @@ void loop() {
       blink3Times();
       isEditable = true;
       startTime = millis();
-      nb_record++;
+      
       Serial.println("Writing in " + filePath);
+      
       //---- If the file already exists we write after it
-      if (!file && SPIFFS.exists(filePath))
+      if (SPIFFS.exists(filePath))
       {
-        file = SPIFFS.open(filePath, "a");     
-        file.println("-----------------   NEW RECORD   ---------------------");
-        initialiseFileMovuinoData(file, sep);
+        addNewRecord(filePath);
       } 
       else 
       {
@@ -205,11 +205,13 @@ void loop() {
   }
 
 
-    //----- GET MPU DATA ------
+  //----- GET MPU DATA ------
   IMU.readSensor();
   //print9axesDataMPU(IMU);
   get9axesDataMPU(IMU, &ax, &ay, &az, &gx, &gy, &gz, &mx, &my, &mz);
+  magnetometerAutoCallibration();
   time = millis() - startTime;
+  
 
   //------- Writing in File ------------
   if (isEditable)
@@ -236,7 +238,7 @@ void loop() {
   //------- Reading file ---------------
   if (isReadable)
   {
-    if (!file)
+    if (!file && SPIFFS.exists(filePath))
     {
         Serial.println();
         Serial.println("reading " + filePath + "...");
@@ -250,13 +252,13 @@ void loop() {
 
   }
 
-  if (buttonFlash) 
+  if (buttonHold) 
   {
-    if(millis()-startPush > 2500) //If the button is pressed more than 2.5sec
+    
+    if(millis()-startPush > 2500 && isReadable == false) //If the button is pressed more than 2.5sec
     {
       isReadable = true;
       digitalWrite(pinLedESP, HIGH);
-      startPush = millis()+30000;
       delay(250);
     }
     else

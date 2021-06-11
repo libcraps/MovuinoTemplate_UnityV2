@@ -1,4 +1,8 @@
-void printMovuinoData() {
+void printMovuinoData() 
+{
+  /*
+   * Print 9 axes data from the movuino
+   */
   Serial.print(time);
   Serial.print("\t ");
   Serial.print(-ax);

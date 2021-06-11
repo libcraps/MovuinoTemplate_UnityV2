@@ -35,21 +35,29 @@ void blinkLongTimes()
 
 void blinkNtimes(int N, int delayVar)
 {
-  int i = 0;
+  static int i = 0;
   static uint32_t prev_ms = millis();
 
   //USed when the record start
-  while (i<=N)
+  if (i<=N)
   {
-      if (millis() > prev_ms + delayVar)
+      if (millis() > prev_ms && millis() < prev_ms + delayVar)
       {
           digitalWrite(pinLedESP, LOW);
-          prev_ms = millis();
-          i++;
+          Serial.println("LOW");
+          
       }
       else 
       {
           digitalWrite(pinLedESP, HIGH);
+          Serial.println("HIGH");
+          
+          if (millis() > prev_ms + 2*delayVar)
+          {
+            prev_ms = millis(); 
+            i++;
+          }          
+          
       }
   }
 }
