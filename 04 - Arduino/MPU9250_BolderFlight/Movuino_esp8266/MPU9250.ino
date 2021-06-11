@@ -19,6 +19,24 @@ void print9axesDataMPU(MPU9250 IMU){
   Serial.println(IMU.getMagZ_uT(),6);
 }
 
+void magnometerCalibration()
+{
+    
+  Serial.println("Calibrating Magnetometer : ");
+  Serial.println("Please continuously and slowly move the sensor in a figure 8 while the function is running");
+  
+  int statusMagCal = IMU.calibrateMag();
+  if (statusMagCal<0)
+  {
+    Serial.println("ERROR while calibrating");
+  }
+  else
+  {
+    Serial.println("Magnetometer's calibration OK");
+  }
+
+}
+
 void printTempDataMPU(MPU9250 IMU){
     Serial.println(IMU.getTemperature_C(),6);
 }

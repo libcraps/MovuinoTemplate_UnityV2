@@ -10,6 +10,8 @@ namespace Movuino
         private MovuinoDataSet _movuinoDataSet;
         private MovuinoBehaviour _movuinoBehaviour;
 
+        public Vector3 graphData;
+
         public bool onlineMode 
         {
             get
@@ -46,6 +48,7 @@ namespace Movuino
         {
             _movuinoDataSet = GetComponent<MovuinoDataSet>();
             _movuinoBehaviour = GetComponent<MovuinoBehaviour>();
+            graphData = new Vector3(0, 0, 0);
         }
 
     }

@@ -37,9 +37,12 @@ public class SensitivePenBehaviour_visu : ObjectMovuino_visu
     {
         if (onlineMode)
         {
-            angle = movuinoBehaviour.angleAccelOrientationSmooth;
-            //this.gameObject.transform.Rotate(movuinoBehaviour.gyroscopeRaw * Time.deltaTime);
-            this.gameObject.transform.eulerAngles = new Vector3(-angle.x, angle.z, angle.y) ;
+            graphData.x = movuinoBehaviour.angleMagOrientation.x;
+            graphData.y = movuinoBehaviour.magnetometerSmooth.magnitude;
+            graphData.z = 0;
+
+            angle = new Vector3(0,0,0);            //this.gameObject.transform.Rotate(movuinoBehaviour.gyroscopeRaw * Time.deltaTime);
+            //this.gameObject.transform.eulerAngles = new Vector3(-angle.x, angle.z, angle.y);
         }
 
 

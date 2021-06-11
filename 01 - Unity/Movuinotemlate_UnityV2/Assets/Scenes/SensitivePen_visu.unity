@@ -948,6 +948,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d9ac441a82655bb45b2db336a16b70bb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  graphData: {x: 0, y: 0, z: 0}
 --- !u!114 &1497267973
 MonoBehaviour:
   m_ObjectHideFlags: 0

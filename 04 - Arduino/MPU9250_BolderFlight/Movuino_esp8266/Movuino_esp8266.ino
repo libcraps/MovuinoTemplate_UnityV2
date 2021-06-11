@@ -90,7 +90,9 @@ void setup() {
     Serial.println(status);
     while(1) {}
   }
-  
+
+
+  //magnometerCalibration();
   // We start by connecting to a WiFi network
   startWifi();
   
@@ -101,9 +103,9 @@ void loop() {
 
   // BUTTON CHECK
   checkButton();
+  
   // read the sensor
   IMU.readSensor();
-  //print9axesDataMPU(IMU);
   get9axesDataMPU(IMU, &ax, &ay, &az, &gx, &gy, &gz, &mx, &my, &mz);
   print9axesDataMPU(IMU);
 
@@ -122,12 +124,12 @@ void loop() {
     if(!digitalRead(pinVibro)){
       // SEND MOVUINO DATA
       OSCMessage msg(idMov); // create an OSC message on address "/movuinOSC"
-      msg.add(ax);   // add acceleration X data as message -> 6ax in order to get a orthonormal repère
+      msg.add(-ax);   // add acceleration X data as message -> 6ax in order to get a orthonormal repère
       msg.add(ay);   // add acceleration Y data
       msg.add(az);   // add ...
       msg.add(gx);
-      msg.add(gy);
-      msg.add(gz);    // you can add as many data as you want
+      msg.add(-gy);
+      msg.add(-gz);    // you can add as many data as you want
       msg.add(mx);
       msg.add(my);
       msg.add(mz);
@@ -167,7 +169,7 @@ void loop() {
 }
 
 void printMovuinoData() {
-  Serial.print(ax);
+  Serial.print(-ax);
   Serial.print("\t ");
   Serial.print(ay);
   Serial.print("\t ");
@@ -175,9 +177,9 @@ void printMovuinoData() {
   Serial.print("\t ");
   Serial.print(gx);
   Serial.print("\t ");
-  Serial.print(gy);
+  Serial.print(-gy);
   Serial.print("\t ");
-  Serial.print(gz);
+  Serial.print(-gz);
   Serial.print("\t ");
   Serial.print(mx);
   Serial.print("\t ");

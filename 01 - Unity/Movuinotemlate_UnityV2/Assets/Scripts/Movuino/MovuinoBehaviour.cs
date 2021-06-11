@@ -92,7 +92,7 @@ namespace Movuino
         }
 
         //Angle obtained with != ways
-        public Vector3 angleMagOrientation {  get { return _angleMagMethod; } }
+        public Vector3 angleMagOrientation {  get { return _angleMagMethod - _initMagAngle; } }
         public Vector3 angleGyrOrientation {  get { return _angleGyrMethod; } }
         public Vector3 angleGyrOrientationHP {  get { return _angleGyrHP; } }
         public Vector3 angleAccelOrientationRaw {  get { return _angleAccelMethod; } }
@@ -131,6 +131,7 @@ namespace Movuino
         Vector3 _angleGyrMethod;
         Vector3 _angleAccelMethod;
         Vector3 _angleEuler;
+        Vector3 _initMagAngle;
 
         
         #endregion
@@ -201,7 +202,8 @@ namespace Movuino
             _angleAccelMethod = _initAngle;
             _angleGyrHP= _initAngle;
             _angleMagMethod = new Vector3(0, 0, 0);
-            _angleEuler = new Vector3(0, 0, 0); ;
+            _angleEuler = new Vector3(0, 0, 0);
+            _initMagAngle = new Vector3(0, 0, 0);
 
             _listMeanAcc = new List<Vector3>();
             _listMeanGyro = new List<Vector3>();
@@ -220,6 +222,7 @@ namespace Movuino
             if (_initMag == new Vector3(666, 666, 666)  && _mag != new Vector3(0, 0, 0))
             {
                 _initMag = _mag;
+                _initMagAngle = ComputeAngle(_initMag);
                 //print(_initEulerAngle);
             }
 
@@ -275,6 +278,7 @@ namespace Movuino
             beta = Mathf.Atan(U.y / U.z);
             gamma = Mathf.Atan(-U.x / U.z);
 
+            /*
             if (U.x > 0 && U.z > 0)
             {
                 gamma = Mathf.PI + gamma;
@@ -297,10 +301,10 @@ namespace Movuino
             {
 
             }
+            */
+
             angle = new Vector3(beta, gamma, alpha) * 360 / (2 * Mathf.PI);
             //print(angle + " ---- " + U);
-
-
             return angle;
         }
         public void InitMovTransform()
