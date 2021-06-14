@@ -71,6 +71,7 @@
     <Compile Include="Assets\Scripts\Mouse\MouseBehaviour.cs" />
     <Compile Include="Assets\Scripts\Movuino\DeviceBehaviour.cs" />
     <Compile Include="Assets\Scripts\Movuino\MovuinoBehaviour.cs" />
+    <Compile Include="Assets\Scripts\Movuino\MovuinoDataProcessing.cs" />
     <Compile Include="Assets\Scripts\Movuino\MovuinoDataSet.cs" />
     <Compile Include="Assets\Scripts\Movuino\OSC\OSC.cs" />
     <Compile Include="Assets\Scripts\Movuino\OSCDataHandler.cs" />

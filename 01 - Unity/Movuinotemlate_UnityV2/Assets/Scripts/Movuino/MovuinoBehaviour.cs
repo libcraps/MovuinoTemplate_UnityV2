@@ -72,16 +72,15 @@ namespace Movuino
 
         public Vector3 initMag { get { return _initMag; } }
 
-        public Vector3 accelerationSmooth { get { return MovingMean(_accel, ref _listMeanAcc); } }
-        public Vector3 gyroscopeSmooth { get { return MovingMean(_gyr, ref _listMeanGyro) * (float)(360 / (2 * 3.14)); } }
+        public Vector3 accelerationSmooth { get { return MovuinoDataProcessing.MovingMean(_accel, ref _listMeanAcc, _nbPointFilter); } }
+        public Vector3 gyroscopeSmooth { get { return MovuinoDataProcessing.MovingMean(_gyr, ref _listMeanGyro, _nbPointFilter) * (float)(360 / (2 * 3.14)); } }
         public Vector3 gyroscopeHighPass { get { return _HPGyr * (float)(360 / (2 * 3.14)); } }
-        public Vector3 magnetometerSmooth { get { return MovingMean(_mag, ref _listMeanMag); } }
+        public Vector3 magnetometerSmooth { get { return MovuinoDataProcessing.MovingMean(_mag, ref _listMeanMag, _nbPointFilter); } }
 
         //DeltaValues
         public Vector3 deltaAccel { get { return _accel - _prevAccel;  } }
         public Vector3 deltaGyr { get { return _gyr - _prevGyr;  } }
         public Vector3 deltaMag { get { return _mag - _prevMag;  } }
-
         public Vector3 deltaAngleAccel 
         { 
             get 
@@ -99,7 +98,7 @@ namespace Movuino
         public Vector3 angleGyrOrientation {  get { return _angleGyrMethod; } }
         public Vector3 angleGyrOrientationHP {  get { return _angleGyrHP; } }
         public Vector3 angleAccelOrientationRaw {  get { return _angleAccelMethod; } }
-        public Vector3 angleAccelOrientationSmooth {  get { return MovingMean(_angleAccelMethod, ref _listMeanAngleAcc); } }
+        public Vector3 angleAccelOrientationSmooth {  get { return MovuinoDataProcessing.MovingMean(_angleAccelMethod, ref _listMeanAngleAcc, _nbPointFilter); } }
 
         public Vector3 angleEuler { get { return _euler - _initEulerAngle;  } }
         #endregion
@@ -225,7 +224,7 @@ namespace Movuino
             if (_initMag == new Vector3(666, 666, 666)  && _mag != new Vector3(0, 0, 0))
             {
                 _initMag = _mag;
-                _initMagAngle = ComputeAngleAccel(_initMag);
+                _initMagAngle = MovuinoDataProcessing.ComputeAngleAccel(_initMag);
                 //print(_initEulerAngle);
             }
 
@@ -240,86 +239,19 @@ namespace Movuino
             _euler = instantEulerAngles;
 
             _prevHPGyr = _HPGyr;
-            _HPGyr = HighPassFilter(_fcHighPass, Time.fixedDeltaTime, _prevHPGyr, _gyr, _prevGyr);
+            _HPGyr = MovuinoDataProcessing.HighPassFilter(_fcHighPass, Time.fixedDeltaTime, _prevHPGyr, _gyr, _prevGyr);
             
 
-            _angleGyrHP = GetEulerIntegration(gyroscopeHighPass, _angleGyrHP, Time.fixedDeltaTime);
-            _angleGyrMethod = GetEulerIntegration(gyroscopeRaw, _angleGyrMethod, Time.fixedDeltaTime);
-            _angleMagMethod = ComputeAngleMagnetometer(magnetometerSmooth.normalized);
-            _angleAccelMethod = ComputeAngleAccel(accelerationSmooth.normalized);
+            _angleGyrHP = MovuinoDataProcessing.GetEulerIntegration(gyroscopeHighPass, _angleGyrHP, Time.fixedDeltaTime);
+            _angleGyrMethod = MovuinoDataProcessing.GetEulerIntegration(gyroscopeRaw, _angleGyrMethod, Time.fixedDeltaTime);
+            _angleMagMethod = MovuinoDataProcessing.ComputeAngleMagnetometer(magnetometerSmooth.normalized);
+            _angleAccelMethod = MovuinoDataProcessing.ComputeAngleAccel(accelerationSmooth.normalized);
             _deltaAngleAccel = _angleAccelMethod - _deltaAngleAccel;
 
         }
 
 
-        Vector3 GetEulerIntegration(Vector3 vectorInstDerivate, Vector3 vectorIntegrate, float dt)
-        {
-            vectorIntegrate.x += vectorInstDerivate.x * dt;
-            vectorIntegrate.y += vectorInstDerivate.y * dt;
-            vectorIntegrate.z += vectorInstDerivate.z * dt;
-            return vectorIntegrate;
-        }
-        private Vector3 ComputeAngleAccel(Vector3 U)
-        {
-            Vector3 angle;
-
-            float alpha; //z angle
-            float beta; //x angle
-            float gamma; //y angle
-
-            alpha = Mathf.Atan(U.x / U.y);
-            beta = Mathf.Atan(U.y / U.z);
-            gamma = Mathf.Atan(-U.x / U.z);
-
-            /*
-            if (U.x > 0 && U.z > 0)
-            {
-                gamma = Mathf.PI + gamma;
-            }
-            else if (U.x < 0 && U.z > 0)
-            {
-                gamma = -Mathf.PI + gamma;
-            }
-
-            if (U.y < 0 && U.z > 0)
-            {
-                beta = Mathf.PI + beta;
-            }
-            else if (U.y > 0 && U.z > 0)
-            {
-                beta = -Mathf.PI + beta;
-            }*/
-
-            if (U.z < 0)
-            {
-                gamma =- gamma;
-            }
-
-
-            angle = new Vector3(beta, gamma, alpha) * 360 / (2 * Mathf.PI);
-            //print(angle + " ---- " + U);
-            return angle;
-        }
-        public Vector3 ComputeAngleMagnetometer(Vector3 U)
-        {
-            Vector3 angle;
-
-            float alpha; //z angle
-            float beta; //x angle
-            float gamma; //y angle
-            /*
-            alpha = Mathf.Atan(U.x / U.y);
-            beta = Mathf.Atan(U.y / U.z);
-            gamma = Mathf.Atan(U.x / U.z);
-            */
-
-            alpha = Mathf.Acos(U.x);
-            beta = Mathf.Acos(U.y);
-            gamma = Mathf.Atan(U.x / U.z);
-            angle = new Vector3(beta, gamma, alpha) * 360 / (2 * Mathf.PI);
-            //print(angle + " ---- " + U);
-            return angle;
-        }
+        
         public void InitMovTransform()
         {
 
@@ -337,71 +269,6 @@ namespace Movuino
         }
 
 
-        /// <summary>
-        /// Filtered incoming data
-        /// </summary>
-        /// <param name="rawDat"></param>
-        /// <param name="listMean"></param>
-        /// <returns></returns>
-        public float MovingMean(float rawDat, ref List<float> listMean)
-        {
-            float meanDat = 0;
-            listMean.Add(rawDat);
-
-            if (listMean.Count - _nbPointFilter > 0)
-            {
-                // remove oldest data if N unchanged (i=0 removed)
-                // remove from 0 to rawdat.length - N + 1 if new N < old N
-                for (int i = 0; i < listMean.Count - _nbPointFilter + 1; i++)
-                {
-                    listMean.RemoveAt(0);
-                }
-            }
-            foreach (float number in listMean)
-            {
-                meanDat += number;
-            }
-            meanDat /= listMean.Count;
-            return meanDat;
-        }
-        public Vector3 MovingMean(Vector3 rawDat, ref List<Vector3> listMean)
-        {
-            Vector3 meanDat = new Vector3(0,0,0);
-            listMean.Add(rawDat);
-
-            if (listMean.Count - _nbPointFilter > 0)
-            {
-                // remove oldest data if N unchanged (i=0 removed)
-                // remove from 0 to rawdat.length - N + 1 if new N < old N
-                for (int i = 0; i < listMean.Count - _nbPointFilter + 1; i++)
-                {
-                    listMean.RemoveAt(0);
-                }
-            }
-            foreach (Vector3 vector in listMean)
-            {
-                meanDat += vector;
-            }
-            meanDat /= listMean.Count;
-            return meanDat;
-        }
-
-        public float HighPassFilter(float fc, float Te,  float sn_last, float en, float en_last)
-        {
-            float tau = 1 / (2 * Mathf.PI * fc);
-            float sn = sn_last * (1 - Te / tau) + en - en_last;
-            return sn;
-        }
-        public Vector3 HighPassFilter(float fc, float Te, Vector3 sn_last, Vector3 en, Vector3 en_last)
-        {
-            Vector3 sn;
-            float gx = HighPassFilter(fc, Te, sn_last.x, en.x, en_last.x);
-            float gy = HighPassFilter(fc, Te, sn_last.y, en.y, en_last.y);
-            float gz = HighPassFilter(fc, Te, sn_last.z, en.z, en_last.z);
-            sn = new Vector3(gx, gy, gz);
-            
-            return sn;
-        }
         #endregion
 
 
