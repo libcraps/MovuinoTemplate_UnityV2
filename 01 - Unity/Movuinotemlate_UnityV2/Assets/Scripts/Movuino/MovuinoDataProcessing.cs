@@ -5,8 +5,19 @@ using UnityEngine;
 
 namespace Movuino
 {
+    /// <summary>
+    /// Static class that contains usefull methods for process data of the movuino
+    /// </summary>
     public static class MovuinoDataProcessing
+
     {
+        /// <summary>
+        /// Integrate with Euler methods incoming data
+        /// </summary>
+        /// <param name="vectorInstDerivate">Derivate data</param>
+        /// <param name="vectorIntegrate">Integrate data</param>
+        /// <param name="dt">delta time (sampling period)</param>
+        /// <returns>Integrate a time t vector</returns>
         public static Vector3 GetEulerIntegration(Vector3 vectorInstDerivate, Vector3 vectorIntegrate, float dt)
         {
             vectorIntegrate.x += vectorInstDerivate.x * dt;
@@ -14,6 +25,13 @@ namespace Movuino
             vectorIntegrate.z += vectorInstDerivate.z * dt;
             return vectorIntegrate;
         }
+
+
+        /// <summary>
+        /// return the angle Vector between gravity and incoming acceleration 
+        /// </summary>
+        /// <param name="U">Acceleration</param>
+        /// <returns></returns>
         public static Vector3 ComputeAngleAccel(Vector3 U)
         {
             Vector3 angle;
@@ -55,6 +73,12 @@ namespace Movuino
             //print(angle + " ---- " + U);
             return angle;
         }
+
+        /// <summary>
+        /// return the angle Vector between Bterrestre and the movuino
+        /// </summary>
+        /// <param name="U">Bmov</param>
+        /// <returns></returns>
         public static Vector3 ComputeAngleMagnetometer(Vector3 U)
         {
             Vector3 angle;
