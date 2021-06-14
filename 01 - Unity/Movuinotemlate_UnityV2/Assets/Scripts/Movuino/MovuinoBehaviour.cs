@@ -107,6 +107,19 @@ namespace Movuino
 
         private Vector3 gravityReference;
 
+        public struct coordinates
+        {
+            public Vector3 xAxis;
+            public Vector3 yAxis;
+            public Vector3 zAxis;
+
+            public Matrix4x4 rotationMatrix { get { return new Matrix4x4(xAxis, yAxis, zAxis, new Vector4(0, 0, 0, 1));  } }
+
+            public override string ToString() {
+                return "Vector x : " + xAxis + " / " + "Vector y : " + yAxis + " / " + "Vector z : " + zAxis;
+            }
+        }
+
 
         Vector3 _accel;
         Vector3 _gyr;
@@ -135,6 +148,8 @@ namespace Movuino
         Vector3 _angleEuler;
         Vector3 _initMagAngle;
 
+        public coordinates movuinoCoordinates;
+        coordinates initmovuinoCoordinates;
         
         #endregion
 
@@ -195,8 +210,8 @@ namespace Movuino
             _initAngle = this.gameObject.transform.eulerAngles;
             _deltaAngleAccel = new Vector3(0, 0, 0);
 
-            _initGyr = new Vector3(0, 0, 0); ;
-            _initAccel = new Vector3(0, 0, 0);
+            _initGyr = new Vector3(666, 666, 666);
+            _initAccel = new Vector3(666, 666, 666);
             _initMag = new Vector3(666, 666, 666);
             _initEulerAngle = new Vector3(666, 666, 666);
 
@@ -215,10 +230,6 @@ namespace Movuino
             _OSCmovuinoSensorData = OSCDataHandler.CreateOSCDataHandler<OSCMovuinoSensorBasicData>();
         }
 
-
-        
-
-
         public void UpdateMovuinoData()
         {
             if (_initMag == new Vector3(666, 666, 666)  && _mag != new Vector3(0, 0, 0))
@@ -228,6 +239,28 @@ namespace Movuino
                 //print(_initEulerAngle);
             }
 
+            if (_initAccel == new Vector3(666, 666, 666) && _accel != new Vector3(0, 0, 0))
+            {
+                _initAccel = _accel;
+                gravityReference = _initAccel;
+                //_initMagAngle = MovuinoDataProcessing.ComputeAngleAccel(_initMag);
+                //print(_initEulerAngle);
+            }
+
+            if (_initMag != new Vector3(666, 666, 666) && _initAccel != new Vector3(666, 666, 666))
+            {
+                movuinoCoordinates.xAxis = _initAccel.normalized;
+                movuinoCoordinates.yAxis = Vector3.Cross(_initAccel, _initMag).normalized;
+                movuinoCoordinates.zAxis = Vector3.Cross(_initMag, movuinoCoordinates.yAxis).normalized;
+            }
+
+            movuinoCoordinates.xAxis = accelerationSmooth.normalized;
+            movuinoCoordinates.yAxis = Vector3.Cross(accelerationSmooth, magnetometerSmooth).normalized;
+            movuinoCoordinates.zAxis = Vector3.Cross(magnetometerSmooth, movuinoCoordinates.yAxis).normalized;
+
+            float psi = Mathf.Atan(movuinoCoordinates.zAxis.z/ movuinoCoordinates.zAxis.y) * 180 / Mathf.PI;
+            //print(psi);
+            //print(Mathf.Asin(movuinoCoordinates.xAxis.x)*180/Mathf.PI + "    " + (90- _angleAccelMethod.z));
             _prevAccel = _accel;
             _prevGyr = _gyr;
             _prevMag = _mag;
@@ -240,6 +273,11 @@ namespace Movuino
 
             _prevHPGyr = _HPGyr;
             _HPGyr = MovuinoDataProcessing.HighPassFilter(_fcHighPass, Time.fixedDeltaTime, _prevHPGyr, _gyr, _prevGyr);
+
+            //print((Mathf.Atan2(_mag.x, _mag.z) - Mathf.Atan2(_initMag.x, _initMag.z)) * 180 / Mathf.PI);
+            Matrix4x4 rotationMatrix;
+            //print(this.gameObject.transform.worldToLocalMatrix);
+            //print(movuinoCoordinates.ToString());
             
 
             _angleGyrHP = MovuinoDataProcessing.GetEulerIntegration(gyroscopeHighPass, _angleGyrHP, Time.fixedDeltaTime);

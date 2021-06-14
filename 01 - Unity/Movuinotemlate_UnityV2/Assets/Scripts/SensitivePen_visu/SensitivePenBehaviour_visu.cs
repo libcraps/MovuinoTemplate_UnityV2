@@ -40,13 +40,11 @@ public class SensitivePenBehaviour_visu : ObjectMovuino_visu
     {
         if (onlineMode)
         {
-
-
-
-
-            graphData.x = movuinoBehaviour.angleMagOrientation.x;
+            float psi = Mathf.Atan(movuinoBehaviour.movuinoCoordinates.xAxis.y / movuinoBehaviour.movuinoCoordinates.xAxis.x) * 180 / Mathf.PI;
+            graphData.x = movuinoBehaviour.angleAccelOrientationRaw.z;
             graphData.y = movuinoBehaviour.magnetometerSmooth.magnitude;
-            graphData.z = Vector3.SignedAngle(movuinoBehaviour.magnetometerSmooth, movuinoBehaviour.initMag, Vector3.up);
+            graphData.z = psi;
+            print(movuinoBehaviour.movuinoCoordinates);
 
             angle = new Vector3(0,0,0);            //this.gameObject.transform.Rotate(movuinoBehaviour.gyroscopeRaw * Time.deltaTime);
                                                    //this.gameObject.transform.eulerAngles = new Vector3(-angle.x, angle.z, angle.y);

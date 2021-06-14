@@ -36,11 +36,11 @@ namespace Movuino
         {
             Vector3 angle;
 
-            float alpha; //z angle
+            float theta; //z angle
             float beta; //x angle
             float gamma; //y angle
 
-            alpha = Mathf.Atan(U.x / U.y);
+            theta = Mathf.Acos(U.x);
             beta = Mathf.Atan(U.y / U.z);
             gamma = Mathf.Atan(-U.x / U.z);
 
@@ -69,7 +69,7 @@ namespace Movuino
             }
 
 
-            angle = new Vector3(beta, gamma, alpha) * 360 / (2 * Mathf.PI);
+            angle = new Vector3(beta, gamma, theta) * 360 / (2 * Mathf.PI);
             //print(angle + " ---- " + U);
             return angle;
         }
