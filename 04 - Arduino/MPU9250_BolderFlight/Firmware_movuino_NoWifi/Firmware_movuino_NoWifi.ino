@@ -65,6 +65,8 @@ bool isEditable = false;
 bool isReadable = false;
 bool formatted;
 
+
+//--------------- SETUP -----------------
 void setup() {
   Wire.begin();
   Serial.begin(115200);
@@ -92,11 +94,14 @@ void setup() {
   int statusGyro = IMU.setGyroRange(MPU9250::GYRO_RANGE_1000DPS);
   int statusAccel = IMU.setAccelRange(MPU9250::ACCEL_RANGE_8G);
   
-  if (statusGyro<0 || statusAccel<0) {
+  if (statusGyro<0 || statusAccel<0) 
+  {
     Serial.println("ERROR while setting range :");
     Serial.println("Accel range : " + statusAccel);
     Serial.println("Gyro range : " + statusGyro);
-  } else {
+  } 
+  else 
+  {
     Serial.println("RAS for the range");
   }
   
@@ -115,9 +120,10 @@ void setup() {
   button.callback(onButtonHold, HOLD); // called on either event
   button.callback(onButtondoubleTap, DOUBLE_TAP);
   
-
 }
 
+
+//----------------------- LOOP -------------------------
 void loop() {
   
   button.update();
