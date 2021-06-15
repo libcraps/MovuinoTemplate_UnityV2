@@ -9,7 +9,7 @@
 #include <WiFiUdp.h>
 #include "Wire.h"
 #include "I2Cdev.h"
-#include "MPU9250.h"
+#include "MPU9250_.h"
 #include <OSCBundle.h>
 #include <OSCMessage.h>
 #include <OSCTiming.h>

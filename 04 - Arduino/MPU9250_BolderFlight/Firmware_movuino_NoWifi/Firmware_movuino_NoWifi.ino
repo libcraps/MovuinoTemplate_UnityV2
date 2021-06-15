@@ -253,7 +253,7 @@ void loop() {
     } 
     else 
     {
-      Serial.print("file is open, please close it before start the reading");
+      Serial.print("file is open or doesn't exist, please close it before start the reading");
     }
 
   }

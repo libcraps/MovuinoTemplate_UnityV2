@@ -16,6 +16,9 @@ public class SensitivePenBehaviour_visu : ObjectMovuino_visu
     [SerializeField] private GameObject vertAngle;
     [SerializeField] private GameObject horizAngle;
 
+    float theta;
+    float psi;
+
     public void Start()
     {
         if (offlineMode)
@@ -40,8 +43,17 @@ public class SensitivePenBehaviour_visu : ObjectMovuino_visu
     {
         if (onlineMode)
         {
-            float psi = Mathf.Atan(movuinoBehaviour.movuinoCoordinates.xAxis.y / movuinoBehaviour.movuinoCoordinates.xAxis.x) * 180 / Mathf.PI;
-            graphData.x = movuinoBehaviour.angleAccelOrientationRaw.z;
+            if (Mathf.Abs(movuinoBehaviour.movuinoCoordinates.xAxis.x) > 0.1*Mathf.PI/180)
+            {
+                psi = Mathf.Atan(movuinoBehaviour.movuinoCoordinates.xAxis.y / movuinoBehaviour.movuinoCoordinates.xAxis.x) * 180 / Mathf.PI;
+            } 
+            else
+            {
+                psi = 0;
+            }
+            
+            //float psi = Mathf.Asin(movuinoBehaviour.movuinoCoordinates.xAxis.z) * 180 / Mathf.PI;
+            graphData.x = 0;//movuinoBehaviour.angleAccelOrientationRaw.z;
             graphData.y = movuinoBehaviour.magnetometerSmooth.magnitude;
             graphData.z = psi;
             print(movuinoBehaviour.movuinoCoordinates);

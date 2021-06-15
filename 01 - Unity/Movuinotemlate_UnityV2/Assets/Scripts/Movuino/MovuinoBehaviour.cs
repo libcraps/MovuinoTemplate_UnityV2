@@ -44,10 +44,9 @@ namespace Movuino
         private List<Vector3> _listMeanMag;
         private List<Vector3> _listMeanAngleAcc;
 
-
         private string _addressSensorData;
 
-        private OSCMovuinoSensorBasicData _OSCmovuinoSensorData; //9axes data
+        private OSCMovuinoSensorExtendedData _OSCmovuinoSensorData; //9axes data
         private DataSessionMovuinoExtended _movuinoExportData;
 
 
@@ -55,21 +54,19 @@ namespace Movuino
 
         #region Properties
         //OSC
-        public OSCMovuinoSensorBasicData OSCmovuinoSensorData { get { return _OSCmovuinoSensorData; } }
+        public OSCMovuinoSensorExtendedData OSCmovuinoSensorData { get { return _OSCmovuinoSensorData; } }
         //Instant data
         public Vector3 instantAcceleration { get { return _OSCmovuinoSensorData.accelerometer; } }
         public Vector3 instantGyroscope { get { return _OSCmovuinoSensorData.gyroscope; } }
         public Vector3 instantMagnetometer { get { return _OSCmovuinoSensorData.magnetometer; } }
 
-        public Vector3 instantEulerAngles; /*{ get { return _OSCmovuinoSensorData.eulerAngle; } }*/
+        public Vector3 instantEulerAngles { get { return _OSCmovuinoSensorData.eulerAngle; } }*/
 
         //Data for the duration of the frame
         public Vector3 accelerationRaw { get { return _accel; } }
         public Vector3 gyroscopeRaw { get { return (_gyr)*(float)(360/(2*3.14)); } }
         public Vector3 magnetometerRaw { get { return _mag; } }
-
         public Vector3 eulerRaw { get { return _euler; } }
-
         public Vector3 initMag { get { return _initMag; } }
 
         public Vector3 accelerationSmooth { get { return MovuinoDataProcessing.MovingMean(_accel, ref _listMeanAcc, _nbPointFilter); } }
@@ -97,17 +94,12 @@ namespace Movuino
         public Vector3 angleMagOrientation {  get { return _angleMagMethod; } }
         public Vector3 angleGyrOrientation {  get { return _angleGyrMethod; } }
         public Vector3 angleGyrOrientationHP {  get { return _angleGyrHP; } }
-        public Vector3 angleAccelOrientationRaw {  get { return _angleAccelMethod; } }
-        public Vector3 angleAccelOrientationSmooth {  get { return MovuinoDataProcessing.MovingMean(_angleAccelMethod, ref _listMeanAngleAcc, _nbPointFilter); } }
-
+        public Vector3 angleAccelOrientation {  get { return _angleAccelMethod; } }
         public Vector3 angleEuler { get { return _euler - _initEulerAngle;  } }
         #endregion
 
-        private float gravity;
 
-        private Vector3 gravityReference;
-
-        public struct coordinates
+        public struct Coordinates
         {
             public Vector3 xAxis;
             public Vector3 yAxis;
@@ -135,7 +127,7 @@ namespace Movuino
 
         Vector3 _deltaAngleAccel;
 
-        Vector3 _initAngle;
+        Vector3 _initObjectAngle;
         Vector3 _initGyr;
         Vector3 _initAccel;
         Vector3 _initMag;
@@ -148,8 +140,8 @@ namespace Movuino
         Vector3 _angleEuler;
         Vector3 _initMagAngle;
 
-        public coordinates movuinoCoordinates;
-        coordinates initmovuinoCoordinates;
+        public Coordinates movuinoCoordinates;
+        public Coordinates initmovuinoCoordinates;
         
         #endregion
 
@@ -173,7 +165,7 @@ namespace Movuino
         {
             UpdateMovuinoData();
             InitMovTransform();
-            _movuinoExportData.StockData(Time.time, accelerationRaw, gyroscopeRaw, magnetometerRaw, angleGyrOrientation, angleAccelOrientationRaw);
+            _movuinoExportData.StockData(Time.time, accelerationRaw, gyroscopeRaw, magnetometerRaw, angleGyrOrientation, angleAccelOrientation);
         }
 
         private void OnDestroy()
@@ -207,7 +199,7 @@ namespace Movuino
             _mag = new Vector3(0, 0, 0);
             _euler = new Vector3(0, 0, 0);
 
-            _initAngle = this.gameObject.transform.eulerAngles;
+            _initObjectAngle = this.gameObject.transform.eulerAngles;
             _deltaAngleAccel = new Vector3(0, 0, 0);
 
             _initGyr = new Vector3(666, 666, 666);
@@ -215,9 +207,9 @@ namespace Movuino
             _initMag = new Vector3(666, 666, 666);
             _initEulerAngle = new Vector3(666, 666, 666);
 
-            _angleGyrMethod = _initAngle;
-            _angleAccelMethod = _initAngle;
-            _angleGyrHP= _initAngle;
+            _angleGyrMethod = new Vector3(0, 0, 0);
+            _angleAccelMethod = new Vector3(0, 0, 0);
+            _angleGyrHP= new Vector3(0, 0, 0);
             _angleMagMethod = new Vector3(0, 0, 0);
             _angleEuler = new Vector3(0, 0, 0);
             _initMagAngle = new Vector3(0, 0, 0);
@@ -227,7 +219,7 @@ namespace Movuino
             _listMeanMag = new List<Vector3>();
             _listMeanAngleAcc = new List<Vector3>();
 
-            _OSCmovuinoSensorData = OSCDataHandler.CreateOSCDataHandler<OSCMovuinoSensorBasicData>();
+            _OSCmovuinoSensorData = OSCDataHandler.CreateOSCDataHandler<OSCMovuinoSensorExtendedData>();
         }
 
         public void UpdateMovuinoData()
@@ -236,31 +228,37 @@ namespace Movuino
             {
                 _initMag = _mag;
                 _initMagAngle = MovuinoDataProcessing.ComputeAngleAccel(_initMag);
-                //print(_initEulerAngle);
             }
 
             if (_initAccel == new Vector3(666, 666, 666) && _accel != new Vector3(0, 0, 0))
             {
                 _initAccel = _accel;
-                gravityReference = _initAccel;
-                //_initMagAngle = MovuinoDataProcessing.ComputeAngleAccel(_initMag);
-                //print(_initEulerAngle);
+            }
+            if (_initEulerAngle == new Vector3(666, 666, 666) && _euler != new Vector3(0, 0, 0))
+            {
+                _initEulerAngle = _euler;
             }
 
+
+            /*
             if (_initMag != new Vector3(666, 666, 666) && _initAccel != new Vector3(666, 666, 666))
             {
-                movuinoCoordinates.xAxis = _initAccel.normalized;
-                movuinoCoordinates.yAxis = Vector3.Cross(_initAccel, _initMag).normalized;
-                movuinoCoordinates.zAxis = Vector3.Cross(_initMag, movuinoCoordinates.yAxis).normalized;
+                initmovuinoCoordinates.xAxis = _initAccel.normalized;
+                initmovuinoCoordinates.yAxis = Vector3.Cross(_initAccel, _initMag).normalized;
+                initmovuinoCoordinates.zAxis = Vector3.Cross(_initMag, initmovuinoCoordinates.yAxis).normalized;
             }
+            */
 
-            movuinoCoordinates.xAxis = accelerationSmooth.normalized;
-            movuinoCoordinates.yAxis = Vector3.Cross(accelerationSmooth, magnetometerSmooth).normalized;
-            movuinoCoordinates.zAxis = Vector3.Cross(magnetometerSmooth, movuinoCoordinates.yAxis).normalized;
+            // --- Getting orientation matrix -----
+            Vector3 x = accelerationSmooth.normalized;
+            Vector3 y = Vector3.Cross(accelerationSmooth, magnetometerSmooth).normalized;
+            Vector3 z = Vector3.Cross(x, y).normalized;
+            movuinoCoordinates.xAxis = y;
+            movuinoCoordinates.yAxis = z;
+            movuinoCoordinates.zAxis = x;
+            //-------------------------------------
 
-            float psi = Mathf.Atan(movuinoCoordinates.zAxis.z/ movuinoCoordinates.zAxis.y) * 180 / Mathf.PI;
-            //print(psi);
-            //print(Mathf.Asin(movuinoCoordinates.xAxis.x)*180/Mathf.PI + "    " + (90- _angleAccelMethod.z));
+
             _prevAccel = _accel;
             _prevGyr = _gyr;
             _prevMag = _mag;
@@ -273,11 +271,6 @@ namespace Movuino
 
             _prevHPGyr = _HPGyr;
             _HPGyr = MovuinoDataProcessing.HighPassFilter(_fcHighPass, Time.fixedDeltaTime, _prevHPGyr, _gyr, _prevGyr);
-
-            //print((Mathf.Atan2(_mag.x, _mag.z) - Mathf.Atan2(_initMag.x, _initMag.z)) * 180 / Mathf.PI);
-            Matrix4x4 rotationMatrix;
-            //print(this.gameObject.transform.worldToLocalMatrix);
-            //print(movuinoCoordinates.ToString());
             
 
             _angleGyrHP = MovuinoDataProcessing.GetEulerIntegration(gyroscopeHighPass, _angleGyrHP, Time.fixedDeltaTime);
@@ -295,7 +288,7 @@ namespace Movuino
 
             if (Input.GetKeyDown(KeyCode.I))
             {
-                _initAngle = _OSCmovuinoSensorData.magnetometer;
+                _initObjectAngle = _OSCmovuinoSensorData.magnetometer;
             }
             if (Input.GetKeyDown(KeyCode.Y))
             {

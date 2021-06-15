@@ -68,7 +68,7 @@ if toExtract:
 
 if toDataManage:
     print(nbRecord)
-    nbRecord = 10
+    #nbRecord = 10
     for i in range(1, nbRecord+1):
         dataSet = dm.MovuinoDataSet(folderPath + fileName + "_"+str(i))
         dataSet.run()
