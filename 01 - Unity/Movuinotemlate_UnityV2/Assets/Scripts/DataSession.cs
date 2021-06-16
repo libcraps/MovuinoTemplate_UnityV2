@@ -277,7 +277,7 @@ namespace Movuino.Data
         }
     }
 
-    public class DataSessionMovuinoExtended : DataSession
+    public class DataMovuinoSensitivePen : DataSession
     {
         /// <value>Id of the movuino</value>
         public string id = "";
@@ -285,8 +285,8 @@ namespace Movuino.Data
         public List<Vector3> listAcceleration = new List<Vector3>();
         public List<Vector3> listGyroscope = new List<Vector3>();
         public List<Vector3> listMagneto = new List<Vector3>();
-        public List<Vector3> listAngleGyro = new List<Vector3>();
-        public List<Vector3> listAngleAccel = new List<Vector3>();
+        public List<float> listTheta = new List<float>();
+        public List<float> listPsi = new List<float>();
 
         /// <value>Get the DataTable of this DataSession object</value>
         public DataTable DataTable { get { return this.CreateDataTable(); } }
@@ -302,8 +302,8 @@ namespace Movuino.Data
             listAcceleration.Add((Vector3)list[1]);
             listGyroscope.Add((Vector3)list[2]);
             listMagneto.Add((Vector3)list[3]);
-            listAngleGyro.Add((Vector3)list[4]);
-            listAngleAccel.Add((Vector3)list[5]);
+            listTheta.Add((float)list[4]);
+            listPsi.Add((float)list[5]);
         }
 
         /// <summary>
@@ -324,12 +324,9 @@ namespace Movuino.Data
             table.Columns.Add("mx " + id, typeof(float));
             table.Columns.Add("my " + id, typeof(float));
             table.Columns.Add("mz " + id, typeof(float));
-            table.Columns.Add("ThetaGyrx " + id, typeof(float));
-            table.Columns.Add("ThetaGyry " + id, typeof(float));
-            table.Columns.Add("ThetaGyrz " + id, typeof(float));
-            table.Columns.Add("ThetaAccx " + id, typeof(float));
-            table.Columns.Add("ThetaAccxy " + id, typeof(float));
-            table.Columns.Add("ThetaAccxz " + id, typeof(float));
+            table.Columns.Add("Theta " + id, typeof(float));
+            table.Columns.Add("Psi " + id, typeof(float));
+
 
             for (int i = 0; i < listAcceleration.Count; i++)
             {
@@ -337,9 +334,8 @@ namespace Movuino.Data
                     listAcceleration[i].x, listAcceleration[i].y, listAcceleration[i].z,
                     listGyroscope[i].x, listGyroscope[i].y, listGyroscope[i].z,
                     listMagneto[i].x, listMagneto[i].y, listMagneto[i].z,
-                    listAngleGyro[i].x, listAngleGyro[i].y, listAngleGyro[i].z,
-                    listAngleAccel[i].x, listAngleAccel[i].y, listAngleAccel[i].z);
-                Debug.Log("tgx : " + listAngleGyro[i].x + " -- tax : " + listAngleAccel[i].x);
+                    listTheta[i],
+                    listPsi[i]);
             }
 
             return table;

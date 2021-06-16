@@ -90,7 +90,8 @@ void setup() {
     Serial.println(status);
     while(1) {}
   }
-  
+
+  IMU.selectFilter(QuatFilterSel::MADGWICK);
   IMU.calibrateAccelGyro();
   
   // We start by connecting to a WiFi network
@@ -128,11 +129,11 @@ void loop() {
     if(!digitalRead(pinVibro)){
       // SEND MOVUINO DATA
       OSCMessage msg(idMov); // create an OSC message on address "/movuinOSC"
-      msg.add(ax);   // add acceleration X data as message -> 6ax in order to get a orthonormal repère
-      msg.add(ay);   // add acceleration Y data
-      msg.add(az);   // add ...
-      msg.add(gx);
+      msg.add(-ay);   // add acceleration X data as message -> 6ax in order to get a orthonormal repère
+      msg.add(ax);   // add acceleration Y data
+      msg.add(-az);   // add ...
       msg.add(gy);
+      msg.add(-gx);
       msg.add(gz);    // you can add as many data as you want
       msg.add(mx);
       msg.add(my);

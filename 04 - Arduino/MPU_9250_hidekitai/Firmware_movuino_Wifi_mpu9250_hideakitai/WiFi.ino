@@ -17,7 +17,7 @@ void startWifi(){
 
   // wait while connecting to wifi ...
   long timWifi0 = millis();
-  while (WiFi.status() != WL_CONNECTED && millis() - timWifi0 < 20000) {
+  while (WiFi.status() != WL_CONNECTED && millis() - timWifi0 < 30000) {
     Serial.print(".");
     delay(500);
   }

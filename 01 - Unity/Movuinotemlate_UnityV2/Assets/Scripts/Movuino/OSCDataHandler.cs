@@ -156,7 +156,7 @@ namespace Device
 
 		public override void ToOSCDataHandler(OscMessage message)
 		{
-			message.
+		
 			float ax = message.GetFloat(0);
 			float ay = message.GetFloat(1);
 			float az = message.GetFloat(2);

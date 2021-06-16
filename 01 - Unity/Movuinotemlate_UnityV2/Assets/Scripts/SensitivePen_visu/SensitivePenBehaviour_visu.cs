@@ -2,10 +2,26 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Movuino;
+using Movuino.Data;
+using Device;
+using System.IO;
 
 
 public class SensitivePenBehaviour_visu : ObjectMovuino_visu
 {
+    [SerializeField] private bool _exportIntoFile;
+
+    /// <summary>
+    /// Path of the export data file
+    /// </summary>
+    [SerializeField] private string _folderPath;
+    [SerializeField] private string _filename;
+
+    [SerializeField] private GameObject vertAngle;
+    [SerializeField] private GameObject horizAngle;
+
+    private DataMovuinoSensitivePen _movuinoExportData;
+
     Vector3 angle;
     Vector3 initAngle;
 
@@ -13,24 +29,29 @@ public class SensitivePenBehaviour_visu : ObjectMovuino_visu
     private int i;
     private bool end;
 
-    [SerializeField] private GameObject vertAngle;
-    [SerializeField] private GameObject horizAngle;
 
+
+    //Angles we wnt with sensitiv pen
     float theta;
     float psi;
 
+
+
     public void Start()
     {
+        _movuinoExportData = new DataMovuinoSensitivePen();
+
+
         if (offlineMode)
         {
             //movuinoDataSet.Init(dataPath);
             print("Movuino offline mode");
             InvokeRepeating("Rotate", 2f, 0.03f);
-        } 
+        }
         else if (onlineMode)
         {
             print("Movuino online mode");
-        } 
+        }
         else if (movuinoBehaviour.enabled && movuinoDataSet.enabled)
         {
             print("Impossible to use both modes, please uncheck one");
@@ -43,30 +64,83 @@ public class SensitivePenBehaviour_visu : ObjectMovuino_visu
     {
         if (onlineMode)
         {
-            if (Mathf.Abs(movuinoBehaviour.movuinoCoordinates.xAxis.x) > 0.1*Mathf.PI/180)
-            {
-                psi = Mathf.Atan(movuinoBehaviour.movuinoCoordinates.xAxis.y / movuinoBehaviour.movuinoCoordinates.xAxis.x) * 180 / Mathf.PI;
-            } 
-            else
-            {
-                psi = 0;
-            }
-            
-            //float psi = Mathf.Asin(movuinoBehaviour.movuinoCoordinates.xAxis.z) * 180 / Mathf.PI;
-            graphData.x = 0;//movuinoBehaviour.angleAccelOrientationRaw.z;
-            graphData.y = movuinoBehaviour.magnetometerSmooth.magnitude;
-            graphData.z = psi;
-            print(movuinoBehaviour.movuinoCoordinates);
+            theta = 90-movuinoBehaviour.angleAccelOrientation.x;
+            psi = -movuinoBehaviour.angleEuler.z;
 
-            angle = new Vector3(0,0,0);            //this.gameObject.transform.Rotate(movuinoBehaviour.gyroscopeRaw * Time.deltaTime);
+            graphData.x = movuinoBehaviour.angleEuler.x;
+            graphData.y = movuinoBehaviour.angleEuler.z;
+            graphData.z = movuinoBehaviour.magnetometerSmooth.magnitude;
+
+            angle = new Vector3(theta, psi, 0);            //this.gameObject.transform.Rotate(movuinoBehaviour.gyroscopeRaw * Time.deltaTime);
                                                    //this.gameObject.transform.eulerAngles = new Vector3(-angle.x, angle.z, angle.y);
 
-            vertAngle.transform.eulerAngles = new Vector3(0,90-movuinoBehaviour.angleAccelOrientationSmooth.y, 0);
-            horizAngle.transform.eulerAngles = new Vector3(0,90-graphData.x, 0);
+            vertAngle.transform.eulerAngles = new Vector3(0, theta,0);
+            horizAngle.transform.eulerAngles = new Vector3(0, psi, 0);
+
+            _movuinoExportData.StockData(Time.time, movuinoBehaviour.accelerationRaw, movuinoBehaviour.gyroscopeRaw, movuinoBehaviour.magnetometerRaw, theta, psi);
         }
 
+    }
+
+    private void OnDestroy()
+    {
+        if (_exportIntoFile == true) //We export the file t the end of the session if t
+        {
+            if (!Directory.Exists(_folderPath))
+            {
+                Debug.Log(_folderPath + " has been created");
+                Directory.CreateDirectory(_folderPath);
+            }
+            DataManager.ToCSV(_movuinoExportData.DataTable, _folderPath + _filename);
+        }
+    }
+
+    public Vector3 GetEulerAngle()
+    {
+        float a00;
+        float a10;
+        float a20;
+        float a01;
+        float a02;
+        float a11;
+        float a22;
+        float a12;
+        float a21;
+
+        float theta;
+        float psi;
+        float phi;
 
 
+        a00 = movuinoBehaviour.movuinoCoordinates.xAxis.x;
+        a10 = movuinoBehaviour.movuinoCoordinates.xAxis.y;
+        a20 = movuinoBehaviour.movuinoCoordinates.xAxis.z;
+        a01 = movuinoBehaviour.movuinoCoordinates.yAxis.x;
+        a11 = movuinoBehaviour.movuinoCoordinates.yAxis.y;
+        a21 = movuinoBehaviour.movuinoCoordinates.yAxis.z;
+        a02 = movuinoBehaviour.movuinoCoordinates.zAxis.x;
+        a12 = movuinoBehaviour.movuinoCoordinates.zAxis.y;
+        a22 = movuinoBehaviour.movuinoCoordinates.zAxis.z;
+
+        float sy = Mathf.Sqrt(a00 * a00 + a10 * a10);
+        bool singuler = sy < 0.00001;
+
+        if (!singuler)
+        {
+            phi = Mathf.Atan2(a21, a22);
+            theta = Mathf.Atan2(-a20, sy);
+            psi = Mathf.Atan2(a10, a00);
+        }
+        else
+        {
+            theta = Mathf.Atan2(a20, sy);
+            phi = Mathf.Atan2(a21, a22);
+            psi = 0;
+        }
+
+        print("theta  : " + theta + " / " + " psi : " + psi);
+
+        return new Vector3(phi, theta, psi);
     }
 
     private void Rotate()

@@ -36,40 +36,15 @@ namespace Movuino
         {
             Vector3 angle;
 
-            float theta; //z angle
+            float alpha; //z angle
             float beta; //x angle
             float gamma; //y angle
 
-            theta = Mathf.Acos(U.x);
-            beta = Mathf.Atan(U.y / U.z);
-            gamma = Mathf.Atan(-U.x / U.z);
+            alpha = Mathf.Acos(U.x);
+            beta = Mathf.Acos(U.y);
+            gamma = Mathf.Acos(U.z);
 
-            /*
-            if (U.x > 0 && U.z > 0)
-            {
-                gamma = Mathf.PI + gamma;
-            }
-            else if (U.x < 0 && U.z > 0)
-            {
-                gamma = -Mathf.PI + gamma;
-            }
-
-            if (U.y < 0 && U.z > 0)
-            {
-                beta = Mathf.PI + beta;
-            }
-            else if (U.y > 0 && U.z > 0)
-            {
-                beta = -Mathf.PI + beta;
-            }*/
-
-            if (U.z < 0)
-            {
-                gamma = -gamma;
-            }
-
-
-            angle = new Vector3(beta, gamma, theta) * 360 / (2 * Mathf.PI);
+            angle = new Vector3(alpha, beta, gamma) * 360 / (2 * Mathf.PI);
             //print(angle + " ---- " + U);
             return angle;
         }
@@ -184,6 +159,49 @@ namespace Movuino
             sn = new Vector3(gx, gy, gz);
 
             return sn;
+        }
+
+        public static Vector3 GetEulerAngle()
+        {
+            float a00;
+            float a10;
+            float a20;
+            float a01;
+            float a02;
+            float a11;
+            float a22;
+            float a12;
+            float a21;
+
+            float theta;
+            float psi;
+
+
+            a00 = movuinoBehaviour.movuinoCoordinates.xAxis.x;
+            a10 = movuinoBehaviour.movuinoCoordinates.xAxis.y;
+            a20 = movuinoBehaviour.movuinoCoordinates.xAxis.z;
+            a01 = movuinoBehaviour.movuinoCoordinates.yAxis.x;
+            a11 = movuinoBehaviour.movuinoCoordinates.yAxis.y;
+            a21 = movuinoBehaviour.movuinoCoordinates.yAxis.z;
+            a02 = movuinoBehaviour.movuinoCoordinates.zAxis.x;
+            a12 = movuinoBehaviour.movuinoCoordinates.zAxis.y;
+            a22 = movuinoBehaviour.movuinoCoordinates.zAxis.z;
+
+            float sy = Mathf.Sqrt(a00 * a00 + a10 * a10);
+            bool singuler = sy < 0.00001;
+
+            if (!singuler)
+            {
+                theta = Mathf.Atan2(a21, a22);
+                psi = Mathf.Atan2(a10, a00);
+            }
+            else
+            {
+                theta = Mathf.Atan2(a20, sy);
+                psi = 0;
+            }
+
+            print("theta  : " + theta + " / " + " psi : " + psi);
         }
     }
 }
