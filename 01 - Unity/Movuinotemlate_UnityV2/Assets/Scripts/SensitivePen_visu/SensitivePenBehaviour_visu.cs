@@ -67,15 +67,17 @@ public class SensitivePenBehaviour_visu : ObjectMovuino_visu
             theta = 90-movuinoBehaviour.angleAccelOrientation.x;
             psi = -movuinoBehaviour.angleEuler.z;
 
-            graphData.x = movuinoBehaviour.angleEuler.x;
-            graphData.y = movuinoBehaviour.angleEuler.z;
-            graphData.z = movuinoBehaviour.magnetometerSmooth.magnitude;
+            angle = GetEulerAngle()*180/Mathf.PI;
 
-            angle = new Vector3(theta, psi, 0);            //this.gameObject.transform.Rotate(movuinoBehaviour.gyroscopeRaw * Time.deltaTime);
+            graphData.x = angle.x;
+            graphData.y = angle.y;
+            graphData.z = angle.z;
+
+            //angle = new Vector3(theta, psi, 0);            //this.gameObject.transform.Rotate(movuinoBehaviour.gyroscopeRaw * Time.deltaTime);
                                                    //this.gameObject.transform.eulerAngles = new Vector3(-angle.x, angle.z, angle.y);
 
             vertAngle.transform.eulerAngles = new Vector3(0, theta,0);
-            horizAngle.transform.eulerAngles = new Vector3(0, psi, 0);
+            horizAngle.transform.eulerAngles = new Vector3(0, angle.z, 0);
 
             _movuinoExportData.StockData(Time.time, movuinoBehaviour.accelerationRaw, movuinoBehaviour.gyroscopeRaw, movuinoBehaviour.magnetometerRaw, theta, psi);
         }
@@ -133,8 +135,9 @@ public class SensitivePenBehaviour_visu : ObjectMovuino_visu
         }
         else
         {
-            theta = Mathf.Atan2(a20, sy);
+            
             phi = Mathf.Atan2(a21, a22);
+            theta = Mathf.Atan2(a20, sy);
             psi = 0;
         }
 

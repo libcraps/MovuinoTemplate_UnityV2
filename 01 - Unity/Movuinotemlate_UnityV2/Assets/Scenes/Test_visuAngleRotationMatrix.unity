@@ -516,9 +516,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   graphData: {x: 0, y: 0, z: 0}
-  x: {fileID: 0}
-  y: {fileID: 0}
-  z: {fileID: 0}
+  x: {fileID: 1350440266}
+  y: {fileID: 2132898506}
+  z: {fileID: 755758704}
 --- !u!1 &1350440266
 GameObject:
   m_ObjectHideFlags: 0
