@@ -193,6 +193,7 @@ namespace Movuino
                 phi = Mathf.Atan2(a21, a22);
                 theta = Mathf.Atan2(-a20, sy);
                 psi = Mathf.Atan2(a10, a00);
+                Debug.Log("Yep");
             }
             else
             {
@@ -200,8 +201,8 @@ namespace Movuino
                 phi = Mathf.Atan2(a21, a22);
                 theta = Mathf.Atan2(a20, sy);
                 psi = 0;
+                Debug.Log("Casual");
             }
-
             Debug.Log("theta  : " + theta + " / " + " psi : " + psi);
 
             return new Vector3(phi, theta, psi);

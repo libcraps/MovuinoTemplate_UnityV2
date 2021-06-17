@@ -66,7 +66,7 @@ namespace Movuino
         public Vector3 angleGyrOrientation {  get { return _angleGyrMethod; } }
         public Vector3 angleGyrOrientationHP {  get { return _angleGyrHP; } }
         public Vector3 angleAccelOrientation {  get { return _angleAccelMethod; } }
-        public Vector3 angleEuler { get { return (_euler - _initEulerAngle) * 180 / Mathf.PI;  } }
+        public Vector3 angleEuler { get { return (_euler-_initEulerAngle) * 180 / Mathf.PI;  } }
         #endregion
 
         public struct Coordinates

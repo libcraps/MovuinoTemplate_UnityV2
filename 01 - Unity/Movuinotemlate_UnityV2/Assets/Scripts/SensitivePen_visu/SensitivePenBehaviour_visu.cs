@@ -64,19 +64,29 @@ public class SensitivePenBehaviour_visu : ObjectMovuino_visu
     {
         if (onlineMode)
         {
-            theta = 90-movuinoBehaviour.angleAccelOrientation.x;
+            theta = movuinoBehaviour.angleAccelOrientation.x-90;
             psi = -movuinoBehaviour.angleEuler.z;
 
-            angle = movuinoBehaviour.angleEuler;
+            //Angle continuity for the pen :
+            if (psi < -180 && psi >= -360)
+            {
+                psi += 360;
+            }
+            else if (psi > 180 && psi <=360)
+            {
+                psi -= 360;
+            }
 
-            graphData.x = angle.x;
-            graphData.y = angle.y;
-            graphData.z = angle.z;
+            graphData.x = theta;
+            graphData.y = movuinoBehaviour.magnetometerSmooth.magnitude;
+            graphData.z = psi;
 
-            //angle = new Vector3(theta, psi, 0);            //this.gameObject.transform.Rotate(movuinoBehaviour.gyroscopeRaw * Time.deltaTime);
-                                                   //this.gameObject.transform.eulerAngles = new Vector3(-angle.x, angle.z, angle.y);
+            //angle = new Vector3(theta, psi, 0);            
+            //this.gameObject.transform.Rotate(movuinoBehaviour.gyroscopeRaw * Time.deltaTime);
+                                                   
+            this.gameObject.transform.eulerAngles = new Vector3(theta, psi, 0);
 
-            vertAngle.transform.eulerAngles = new Vector3(0, theta,0);
+            vertAngle.transform.eulerAngles = new Vector3(0, (theta+90),0);
             horizAngle.transform.eulerAngles = new Vector3(0, psi, 0);
 
             _movuinoExportData.StockData(Time.time, movuinoBehaviour.accelerationRaw, movuinoBehaviour.gyroscopeRaw, movuinoBehaviour.magnetometerRaw, theta, psi);

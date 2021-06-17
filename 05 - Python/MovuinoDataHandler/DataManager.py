@@ -10,19 +10,23 @@ import time
 
 class MovuinoDataSet():
 
-    def __init__(self, filepath):
+    def __init__(self, filepath, nbPointfilter = 2):
 
         self.filepath = filepath
         self.rawData = pd.read_csv(filepath + ".csv", sep=",")
 
         print(filepath)
-
+        self.nbPointFilter = nbPointfilter
         self.time = []
 
         # liste de vecteurs numpy
         self.acceleration = []
         self.gyroscope = []
         self.magnetometer = []
+
+        self.listMeanAcc = [np.array([0,0,0])]
+        self.listMeanGyr = [np.array([0,0,0])]
+        self.listMeanMag = [np.array([0,0,0])]
 
         self.acceleration_pb = []
         self.acceleration_lp = []
@@ -98,12 +102,8 @@ class MovuinoDataSet():
         gy = LowPassFilter(self.time, self.acceleration[:, 1],  self.Te, 0.0001)
         gz = LowPassFilter(self.time, self.acceleration[:, 2],  self.Te, 0.0001)
 
-        for k in range(self.nb_line):
-            self.gravity.append(np.array([gx[k], gy[k], gz[k]]))
-        self.gravity = np.array(self.gravity)
-
         #--------------------------- FILTER ----------------------------------
-
+        """
         ax_pb = BandPassButterworthFilter(3, [0.01, 0.5], self.acceleration[:, 0])
         ay_pb = BandPassButterworthFilter(3, [0.01, 0.5], self.acceleration[:, 1])
         az_pb = BandPassButterworthFilter(3, [0.01, 0.5], self.acceleration[:, 2])
@@ -115,16 +115,17 @@ class MovuinoDataSet():
         gx_lp = LowPassButterworthFilter(3, 0.1, self.gyroscope[:, 0])
         gy_lp = LowPassButterworthFilter(3, 0.1, self.gyroscope[:, 1])
         gz_lp = LowPassButterworthFilter(3, 0.1, self.gyroscope[:, 2])
-        
+        """
         gx_lp = self.FiltreNBPointAverage(10, self.gyroscope[:, 0])
         gy_lp = self.FiltreNBPointAverage(10, self.gyroscope[:, 1])
         gz_lp = self.FiltreNBPointAverage(10, self.gyroscope[:, 2])
+        
+        #self.acceleration_pb = self.acceleration - self.gravity
         """
-        self.acceleration_pb = self.acceleration - self.gravity
-
         for k in range(self.nb_line):
-            #self.acceleration_pb.append(np.array([ax_pb[k], ay_pb[k], az_pb[k]]))
+            self.acceleration_pb.append(self.MeandDat(self.acceleration[k], self.nbPointFilter, self.listMeanAcc))
             self.gyroscope_lp.append(np.array([gx_lp[k], gy_lp[k], gz_lp[k]]))
+
 
         self.posAngGyr_filter_lp = self.EulerIntegration(self.gyroscope_lp)
         self.velocity_filter = self.EulerIntegration(self.acceleration_pb)
@@ -152,27 +153,6 @@ class MovuinoDataSet():
             Uz = Uprime[k][2] * pas + U[k][2]
             U.append(np.array([Ux, Uy, Uz]))
         return U
-
-
-    def FiltreNBPointAverage(self, nb_point, sig): #TODO
-        array_to_moy = []
-        compteur = 0
-        sig_filtre = []
-
-        def moyenne(liste):
-            r = 0
-            for nb in liste:
-                r+= nb
-            return r/len(liste)
-
-        for k in range(len(sig)):
-            array_to_moy.append(sig[k])
-            if (len(array_to_moy) >= nb_point) :
-                sig_filtre.append(moyenne(array_to_moy[k+1-nb_point:k+1]))
-            else:
-                sig_filtre.append(moyenne(array_to_moy))
-
-        return sig_filtre
 
     def StockIntoNewFile(self, filepath):
         self.rawData.to_csv(filepath + "_treated" + ".csv", sep=",", index=False, index_label=False)
@@ -220,7 +200,7 @@ class MovuinoDataSet():
         velocity_pb.plot(self.time, self.velocity_filter[:, 1], color="green")
         velocity_pb.plot(self.time, self.velocity_filter[:, 2], color="blue")
         velocity_pb.set_title('Velocity Passe bande')
-
+        """
         omega_lp = plt.subplot(338)
         omega_lp.plot(self.time, self.gyroscope_lp[:, 0], color="r")
         omega_lp.plot(self.time, self.gyroscope_lp[:, 1], color="green")
@@ -232,7 +212,7 @@ class MovuinoDataSet():
         theta_lp.plot(self.time, self.posAngGyr_filter_lp[:, 1], color="green")
         theta_lp.plot(self.time, self.posAngGyr_filter_lp[:, 2], color="blue")
         theta_lp.set_title('Angle filtré (deg)')
-
+        """
         patchX = mpatches.Patch(color='red', label='x')
         patchY = mpatches.Patch(color='green', label='y')
         patchZ = mpatches.Patch(color='blue', label='z')
@@ -258,21 +238,21 @@ class MovuinoDataSet():
             print(angle)
             self.posAngAcc = np.array(self.posAngAcc)
 
-def MeandDat(rawDat, nbPointFilter, listMean):
-    meanDat = 0
-    listMean.Add(rawDat)
+    def MeandDat(self, rawDat, nbPointFilter, listMean):
+        meanDat = np.array([0.,0.,0.])
+        listMean.append(rawDat)
 
-    if listMean.Count - nbPointFilter > 0:
-        # remove oldest data if N unchanged(i=0 removed)
-        # remove from 0 to rawdat.length - N + 1 if new N < old N
-        for i in range(listMean.Count - nbPointFilter + 1) :
-            listMean.RemoveAt(0)
+        if len(listMean)- nbPointFilter > 0:
+            # remove oldest data if N unchanged(i=0 removed)
+            # remove from 0 to rawdat.length - N + 1 if new N < old N
+            for i in range(len(listMean) - nbPointFilter + 1) :
+                listMean.pop(0)
 
-    for number in listMean:
-        meanDat += number
-    meanDat /= listMean.Count
+        for k in range(len(listMean)):
+            meanDat += listMean[k]
+        meanDat /= len(listMean)
 
-    return meanDat
+        return meanDat
 
 def LowPassFilter(x, y, Te, fc):
     """
