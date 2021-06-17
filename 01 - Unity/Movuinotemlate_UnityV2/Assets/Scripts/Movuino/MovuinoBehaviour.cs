@@ -31,14 +31,12 @@ namespace Movuino
         private List<Vector3> _listMeanAcc;
         private List<Vector3> _listMeanGyro;
         private List<Vector3> _listMeanMag;
-        private List<Vector3> _listMeanAngleAcc;
 
         private string _addressSensorData;
 
         private OSCMovuinoSensorBasicData _OSCmovuinoSensorData; //9axes data
-
-
         public string movuinoAdress { get { return _movuinoAdress; } }
+
 
         #region Properties
         //OSC
@@ -47,14 +45,11 @@ namespace Movuino
         public Vector3 instantAcceleration { get { return _OSCmovuinoSensorData.accelerometer; } }
         public Vector3 instantGyroscope { get { return _OSCmovuinoSensorData.gyroscope; } }
         public Vector3 instantMagnetometer { get { return _OSCmovuinoSensorData.magnetometer; } }
-        //public Vector3 instantEulerAngles { get { return _OSCmovuinoSensorData.eulerAngle; } }
 
         //Data for the duration of the frame
         public Vector3 accelerationRaw { get { return _accel; } }
         public Vector3 gyroscopeRaw { get { return (_gyr)*(float)(360/(2*3.14)); } }
         public Vector3 magnetometerRaw { get { return _mag; } }
-        public Vector3 eulerRaw { get { return _euler; } }
-        public Vector3 initMag { get { return _initMag; } }
 
         public Vector3 accelerationSmooth { get { return MovuinoDataProcessing.MovingMean(_accel, ref _listMeanAcc, _nbPointFilter); } }
         public Vector3 gyroscopeSmooth { get { return MovuinoDataProcessing.MovingMean(_gyr, ref _listMeanGyro, _nbPointFilter) * (float)(360 / (2 * 3.14)); } }
@@ -65,24 +60,13 @@ namespace Movuino
         public Vector3 deltaAccel { get { return _accel - _prevAccel;  } }
         public Vector3 deltaGyr { get { return _gyr - _prevGyr;  } }
         public Vector3 deltaMag { get { return _mag - _prevMag;  } }
-        public Vector3 deltaAngleAccel 
-        { 
-            get 
-            {
 
-
-
-                return _deltaAngleAccel;
-            } 
-        }
 
         //Angle obtained with != ways
-        public Vector3 initAngleMag { get { return _initMagAngle; } }
-        public Vector3 angleMagOrientation {  get { return _angleMagMethod; } }
         public Vector3 angleGyrOrientation {  get { return _angleGyrMethod; } }
         public Vector3 angleGyrOrientationHP {  get { return _angleGyrHP; } }
         public Vector3 angleAccelOrientation {  get { return _angleAccelMethod; } }
-        public Vector3 angleEuler { get { return _euler - _initEulerAngle;  } }
+        public Vector3 angleEuler { get { return (_euler - _initEulerAngle) * 180 / Mathf.PI;  } }
         #endregion
 
         public struct Coordinates
@@ -98,6 +82,13 @@ namespace Movuino
                     + xAxis.x + "   " + yAxis.x + "   " + zAxis.x + " \n " 
                     + xAxis.y + "   " + yAxis.y + "   " + zAxis.y + " \n " 
                     + xAxis.z + "   " + yAxis.z + "   " + zAxis.z;
+            }
+
+            public Coordinates(int i)
+            {
+                xAxis = new Vector3(666, 666, 666);
+                yAxis = new Vector3(666, 666, 666);
+                zAxis = new Vector3(666, 666, 666);
             }
         }
 
@@ -185,58 +176,43 @@ namespace Movuino
             _initGyr = new Vector3(666, 666, 666);
             _initAccel = new Vector3(666, 666, 666);
             _initMag = new Vector3(666, 666, 666);
-            _initEulerAngle = new Vector3(666, 666, 666);
+            _initEulerAngle = new Vector3(0, 0, 0);
 
             _angleGyrMethod = new Vector3(0, 0, 0);
             _angleAccelMethod = new Vector3(0, 0, 0);
             _angleGyrHP= new Vector3(0, 0, 0);
             _angleMagMethod = new Vector3(0, 0, 0);
-            _initMagAngle = new Vector3(0, 0, 0);
 
             _listMeanAcc = new List<Vector3>();
             _listMeanGyro = new List<Vector3>();
             _listMeanMag = new List<Vector3>();
-            _listMeanAngleAcc = new List<Vector3>();
+
+            initmovuinoCoordinates = new Coordinates(0);
 
             _OSCmovuinoSensorData = OSCDataHandler.CreateOSCDataHandler<OSCMovuinoSensorBasicData>();
         }
 
         public void UpdateMovuinoData()
         {
-            if (_initMag == new Vector3(666, 666, 666)  && _mag != new Vector3(0, 0, 0))
+            print(initmovuinoCoordinates.xAxis);
+            if (_initMag == new Vector3(666, 666, 666) && _initAccel == new Vector3(666, 666, 666) && initmovuinoCoordinates.xAxis == new Vector3(666, 666, 666) && _mag != new Vector3(0, 0, 0) && _accel != new Vector3(0, 0, 0))
             {
                 _initMag = _mag;
-                _initMagAngle = MovuinoDataProcessing.ComputeAngleAccel(_initMag);
-            }
-            if (_initAccel == new Vector3(666, 666, 666) && _accel != new Vector3(0, 0, 0))
-            {
                 _initAccel = _accel;
-            }
-            if (_initGyr == new Vector3(666, 666, 666) && _gyr != new Vector3(0, 0, 0))
-            {
-                _initGyr = _gyr;
-            }
-            if (_initEulerAngle == new Vector3(666, 666, 666) && _euler != new Vector3(0, 0, 0))
-            {
-                _initEulerAngle = _euler;
-            }
 
-            if (_initMag != new Vector3(666, 666, 666) && _initAccel != new Vector3(666, 666, 666))
-            {
-                initmovuinoCoordinates.xAxis = _initAccel.normalized;
-                initmovuinoCoordinates.yAxis = Vector3.Cross(_initAccel, _initMag).normalized;
-                initmovuinoCoordinates.zAxis = Vector3.Cross(_initMag, initmovuinoCoordinates.yAxis).normalized;
+                Vector3 c = -_initAccel.normalized;
+                Vector3 b = Vector3.Cross(c, _initMag.normalized);
+                Vector3 a = Vector3.Cross(c, b).normalized;
+                initmovuinoCoordinates.xAxis = b;
+                initmovuinoCoordinates.yAxis = c;
+                initmovuinoCoordinates.zAxis = a;
+
+                _initEulerAngle = MovuinoDataProcessing.GetEulerAngle(initmovuinoCoordinates.rotationMatrix);
+                print("OOOOk");
             }
             
 
-            // --- Getting orientation matrix -----
-            Vector3 z = -accelerationSmooth.normalized;
-            Vector3 y = Vector3.Cross(z, magnetometerSmooth.normalized);
-            Vector3 x = Vector3.Cross(z, y).normalized;
-            movuinoCoordinates.xAxis = y;
-            movuinoCoordinates.yAxis = z;
-            movuinoCoordinates.zAxis = x;
-            //-------------------------------------
+
 
 
             _prevAccel = _accel;
@@ -247,7 +223,7 @@ namespace Movuino
             _accel = instantAcceleration;
             _gyr = instantGyroscope;
             _mag = instantMagnetometer;
-            //_euler = instantEulerAngles;
+            
 
             _prevHPGyr = _HPGyr;
             _HPGyr = MovuinoDataProcessing.HighPassFilter(_fcHighPass, Time.fixedDeltaTime, _prevHPGyr, _gyr, _prevGyr);
@@ -259,10 +235,21 @@ namespace Movuino
             _angleAccelMethod = MovuinoDataProcessing.ComputeAngleAccel(accelerationSmooth.normalized);
             _deltaAngleAccel = _angleAccelMethod - _deltaAngleAccel;
 
+            // --- Getting orientation matrix -----
+            Vector3 z = -accelerationSmooth.normalized;
+            Vector3 y = Vector3.Cross(z, magnetometerSmooth.normalized);
+            Vector3 x = Vector3.Cross(z, y).normalized;
+            movuinoCoordinates.xAxis = y;
+            movuinoCoordinates.yAxis = z;
+            movuinoCoordinates.zAxis = x;
+
+            _euler = MovuinoDataProcessing.GetEulerAngle(movuinoCoordinates.rotationMatrix);
+            //-------------------------------------
+
         }
 
 
-        
+
         public void InitMovTransform()
         {
 

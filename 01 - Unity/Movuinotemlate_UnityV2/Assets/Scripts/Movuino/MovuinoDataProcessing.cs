@@ -28,7 +28,7 @@ namespace Movuino
 
 
         /// <summary>
-        /// return the angle Vector between gravity and incoming acceleration 
+        /// Return the angle Vector between gravity and incoming acceleration 
         /// </summary>
         /// <param name="U">Acceleration</param>
         /// <returns></returns>
@@ -40,6 +40,8 @@ namespace Movuino
             float beta; //x angle
             float gamma; //y angle
 
+            U = U.normalized;
+
             alpha = Mathf.Acos(U.x);
             beta = Mathf.Acos(U.y);
             gamma = Mathf.Acos(U.z);
@@ -50,7 +52,7 @@ namespace Movuino
         }
 
         /// <summary>
-        /// return the angle Vector between Bterrestre and the movuino
+        /// return the angle Vector between earth magnetic field and the movuino
         /// </summary>
         /// <param name="U">Bmov</param>
         /// <returns></returns>
@@ -61,16 +63,14 @@ namespace Movuino
             float alpha; //z angle
             float beta; //x angle
             float gamma; //y angle
-            /*
-            alpha = Mathf.Atan(U.x / U.y);
-            beta = Mathf.Atan(U.y / U.z);
-            gamma = Mathf.Atan(U.x / U.z);
-            */
+
+            U = U.normalized;
 
             alpha = Mathf.Acos(U.x);
             beta = Mathf.Acos(U.y);
-            gamma = Mathf.Atan(U.x / U.z);
-            angle = new Vector3(beta, gamma, alpha) * 360 / (2 * Mathf.PI);
+            gamma = Mathf.Atan(U.z);
+
+            angle = new Vector3(alpha, beta, gamma) * 360 / (2 * Mathf.PI);
             //print(angle + " ---- " + U);
             return angle;
         }
@@ -103,6 +103,8 @@ namespace Movuino
             meanDat /= listMean.Count;
             return meanDat;
         }
+
+
         public static Vector3 MovingMean(Vector3 rawDat, ref List<Vector3> listMean, int nbPointFilter)
         {
             Vector3 meanDat = new Vector3(0, 0, 0);
@@ -142,7 +144,7 @@ namespace Movuino
         }
 
         /// <summary>
-        /// HP filter
+        /// HP filter.
         /// </summary>
         /// <param name="fc">Cut frequency</param>
         /// <param name="Te">Sampling period</param>
@@ -159,6 +161,50 @@ namespace Movuino
             sn = new Vector3(gx, gy, gz);
 
             return sn;
+        }
+
+
+        /// <summary>
+        /// Return euler angles of the rotation matrix.
+        /// </summary>
+        /// <param name="rotationMatrix">Rotation Matrix</param>
+        /// <returns>Euler angles of the rotation matrix</returns>
+        public static Vector3 GetEulerAngle(Matrix4x4 rotationMatrix)
+        {
+            float a00 = rotationMatrix.m00;
+            float a10 = rotationMatrix.m10;
+            float a20 = rotationMatrix.m20;
+            float a01 = rotationMatrix.m01;
+            float a11 = rotationMatrix.m11;
+            float a21 = rotationMatrix.m21;
+            float a02 = rotationMatrix.m02;
+            float a12 = rotationMatrix.m12;
+            float a22 = rotationMatrix.m22;
+
+            float theta;
+            float psi;
+            float phi;
+
+            float sy = Mathf.Sqrt(a00 * a00 + a10 * a10);
+            bool singuler = sy < 0.000001;
+
+            if (!singuler)
+            {
+                phi = Mathf.Atan2(a21, a22);
+                theta = Mathf.Atan2(-a20, sy);
+                psi = Mathf.Atan2(a10, a00);
+            }
+            else
+            {
+
+                phi = Mathf.Atan2(a21, a22);
+                theta = Mathf.Atan2(a20, sy);
+                psi = 0;
+            }
+
+            Debug.Log("theta  : " + theta + " / " + " psi : " + psi);
+
+            return new Vector3(phi, theta, psi);
         }
 
 

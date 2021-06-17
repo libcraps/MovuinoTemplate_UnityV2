@@ -67,7 +67,7 @@ public class SensitivePenBehaviour_visu : ObjectMovuino_visu
             theta = 90-movuinoBehaviour.angleAccelOrientation.x;
             psi = -movuinoBehaviour.angleEuler.z;
 
-            angle = GetEulerAngle()*180/Mathf.PI;
+            angle = movuinoBehaviour.angleEuler;
 
             graphData.x = angle.x;
             graphData.y = angle.y;
@@ -77,7 +77,7 @@ public class SensitivePenBehaviour_visu : ObjectMovuino_visu
                                                    //this.gameObject.transform.eulerAngles = new Vector3(-angle.x, angle.z, angle.y);
 
             vertAngle.transform.eulerAngles = new Vector3(0, theta,0);
-            horizAngle.transform.eulerAngles = new Vector3(0, angle.z, 0);
+            horizAngle.transform.eulerAngles = new Vector3(0, psi, 0);
 
             _movuinoExportData.StockData(Time.time, movuinoBehaviour.accelerationRaw, movuinoBehaviour.gyroscopeRaw, movuinoBehaviour.magnetometerRaw, theta, psi);
         }
@@ -97,54 +97,7 @@ public class SensitivePenBehaviour_visu : ObjectMovuino_visu
         }
     }
 
-    public Vector3 GetEulerAngle()
-    {
-        float a00;
-        float a10;
-        float a20;
-        float a01;
-        float a02;
-        float a11;
-        float a22;
-        float a12;
-        float a21;
-
-        float theta;
-        float psi;
-        float phi;
-
-
-        a00 = movuinoBehaviour.movuinoCoordinates.xAxis.x;
-        a10 = movuinoBehaviour.movuinoCoordinates.xAxis.y;
-        a20 = movuinoBehaviour.movuinoCoordinates.xAxis.z;
-        a01 = movuinoBehaviour.movuinoCoordinates.yAxis.x;
-        a11 = movuinoBehaviour.movuinoCoordinates.yAxis.y;
-        a21 = movuinoBehaviour.movuinoCoordinates.yAxis.z;
-        a02 = movuinoBehaviour.movuinoCoordinates.zAxis.x;
-        a12 = movuinoBehaviour.movuinoCoordinates.zAxis.y;
-        a22 = movuinoBehaviour.movuinoCoordinates.zAxis.z;
-
-        float sy = Mathf.Sqrt(a00 * a00 + a10 * a10);
-        bool singuler = sy < 0.00001;
-
-        if (!singuler)
-        {
-            phi = Mathf.Atan2(a21, a22);
-            theta = Mathf.Atan2(-a20, sy);
-            psi = Mathf.Atan2(a10, a00);
-        }
-        else
-        {
-            
-            phi = Mathf.Atan2(a21, a22);
-            theta = Mathf.Atan2(a20, sy);
-            psi = 0;
-        }
-
-        print("theta  : " + theta + " / " + " psi : " + psi);
-
-        return new Vector3(phi, theta, psi);
-    }
+    
 
     private void Rotate()
     {

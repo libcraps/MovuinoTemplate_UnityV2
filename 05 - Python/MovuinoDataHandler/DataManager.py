@@ -239,9 +239,6 @@ class MovuinoDataSet():
         plt.legend(handles=[patchX, patchY, patchZ], loc="center right", bbox_to_anchor=(-2.5,3.6),ncol=1)
         plt.show()
 
-    def TrapezeIntegration(self, y1, y2, t1, t2, dt=0):
-        return np.trapz([y1, y2], [t1, t2])
-
     def GetAnglewithAcc(self):
         for k in range(self.nb_line):
             gx = self.acceleration[k, 0]
@@ -251,15 +248,31 @@ class MovuinoDataSet():
             Gyz = np.array([gy, gz])
             Gzx = np.array([gz, gx])
 
-            alpha = math.acos(gx / np.linalg.norm(Gxy))
-            beta = math.acos(gy / np.linalg.norm(Gyz))
-            gamma = math.acos(gz / np.linalg.norm(Gzx))
+            alpha = math.acos(gx / np.linalg.norm(self.acceleration[k]))
+            beta = math.acos(gy / np.linalg.norm(self.acceleration[k]))
+            gamma = math.acos(gz / np.linalg.norm(self.acceleration[k]))
 
             angle = np.array([beta, alpha, gamma]) * 360 / (2 * np.pi)
 
             self.posAngAcc.append(angle)
             print(angle)
-        self.posAngAcc = np.array(self.posAngAcc)
+            self.posAngAcc = np.array(self.posAngAcc)
+
+def MeandDat(rawDat, nbPointFilter, listMean):
+    meanDat = 0
+    listMean.Add(rawDat)
+
+    if listMean.Count - nbPointFilter > 0:
+        # remove oldest data if N unchanged(i=0 removed)
+        # remove from 0 to rawdat.length - N + 1 if new N < old N
+        for i in range(listMean.Count - nbPointFilter + 1) :
+            listMean.RemoveAt(0)
+
+    for number in listMean:
+        meanDat += number
+    meanDat /= listMean.Count
+
+    return meanDat
 
 def LowPassFilter(x, y, Te, fc):
     """
