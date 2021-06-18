@@ -10,12 +10,11 @@ import time
 
 class MovuinoDataSet():
 
-    def __init__(self, filepath, nbPointfilter = 2):
+    def __init__(self, filepath, nbPointfilter = 15):
 
         self.filepath = filepath
         self.rawData = pd.read_csv(filepath + ".csv", sep=",")
 
-        print(filepath)
         self.nbPointFilter = nbPointfilter
         self.time = []
 
@@ -24,14 +23,15 @@ class MovuinoDataSet():
         self.gyroscope = []
         self.magnetometer = []
 
-        self.listMeanAcc = [np.array([0,0,0])]
-        self.listMeanGyr = [np.array([0,0,0])]
-        self.listMeanMag = [np.array([0,0,0])]
+        self.listMeanAcc = [np.array([0, 0, 0])]
+        self.listMeanGyr = [np.array([0, 0, 0])]
+        self.listMeanMag = [np.array([0, 0, 0])]
 
-        self.acceleration_pb = []
         self.acceleration_lp = []
         self.gyroscope_lp = []
         self.magnetometer_lp = []
+
+        self.eulerAngles = []
 
         self.gravity = []
 
@@ -81,6 +81,7 @@ class MovuinoDataSet():
 
         self.velocity = self.EulerIntegration(self.acceleration)
         self.ThetaGyr = self.EulerIntegration(self.gyroscope)
+
         self.pos = self.EulerIntegration(self.velocity)
 
         self.acceleration = np.array(self.acceleration)
@@ -97,51 +98,84 @@ class MovuinoDataSet():
         self.rawData["ThetaGyry"] = self.ThetaGyr[:, 1]
         self.rawData["ThetaGyrz"] = self.ThetaGyr[:, 2]
 
-        #--- Gravity recuperation----
-        gx = LowPassFilter(self.time, self.acceleration[:, 0], self.Te, 0.0001)
-        gy = LowPassFilter(self.time, self.acceleration[:, 1],  self.Te, 0.0001)
-        gz = LowPassFilter(self.time, self.acceleration[:, 2],  self.Te, 0.0001)
-
         #--------------------------- FILTER ----------------------------------
-        """
-        ax_pb = BandPassButterworthFilter(3, [0.01, 0.5], self.acceleration[:, 0])
-        ay_pb = BandPassButterworthFilter(3, [0.01, 0.5], self.acceleration[:, 1])
-        az_pb = BandPassButterworthFilter(3, [0.01, 0.5], self.acceleration[:, 2])
-
-        gx_lp = LowPassFilter(self.time, self.gyroscope[:, 0], self.Te, 1)
-        gy_lp = LowPassFilter(self.time, self.gyroscope[:, 1], self.Te, 1)
-        gz_lp = LowPassFilter(self.time, self.gyroscope[:, 2], self.Te, 1)
-        """
-        gx_lp = LowPassButterworthFilter(3, 0.1, self.gyroscope[:, 0])
-        gy_lp = LowPassButterworthFilter(3, 0.1, self.gyroscope[:, 1])
-        gz_lp = LowPassButterworthFilter(3, 0.1, self.gyroscope[:, 2])
-        """
-        gx_lp = self.FiltreNBPointAverage(10, self.gyroscope[:, 0])
-        gy_lp = self.FiltreNBPointAverage(10, self.gyroscope[:, 1])
-        gz_lp = self.FiltreNBPointAverage(10, self.gyroscope[:, 2])
-        
-        #self.acceleration_pb = self.acceleration - self.gravity
-        """
         for k in range(self.nb_line):
-            self.acceleration_pb.append(self.MeandDat(self.acceleration[k], self.nbPointFilter, self.listMeanAcc))
-            self.gyroscope_lp.append(np.array([gx_lp[k], gy_lp[k], gz_lp[k]]))
+            self.acceleration_lp.append(self.MeandDat(self.acceleration[k], self.nbPointFilter, self.listMeanAcc))
+            self.gyroscope_lp.append(self.MeandDat(self.gyroscope[k], self.nbPointFilter, self.listMeanGyr))
+            self.magnetometer_lp.append(self.MeandDat(self.magnetometer[k], self.nbPointFilter, self.listMeanMag))
+            #print(self.acceleration_lp[k])
 
+            ac = self.acceleration_lp[k]/np.linalg.norm(self.acceleration_lp[k])
+            m = self.magnetometer_lp[k]/np.linalg.norm(self.magnetometer_lp[k])
+            c = ac
+            b = np.cross(c, m)
+            b /= np.linalg.norm(b)
+            a = np.cross(c,b)
+            a /= np.linalg.norm(a)
+            R = np.mat([b,c,a]).T
+            print(isRotationMatrix(R))
+
+            def rotationMatrixToEulerAngles(R) :
+                sy = math.sqrt(R[0, 0] * R[0, 0] + R[1, 0] * R[1, 0])
+                singular = sy < 1e-6
+                if not singular:
+                    x = math.atan2(R[2, 1], R[2, 2])
+                    y = math.atan2(-R[2, 0], sy)
+                    z = math.atan2(R[1, 0], R[0, 0])
+                else:
+                    x = math.atan2(-R[1, 2], R[1, 1])
+                    y = math.atan2(-R[2, 0], sy)
+                    z = 0
+
+                return np.array([x, y, z])
+
+#print(R)
+            """
+            c = -_initAccel.normalized;
+            Vector3 b = Vector3.Cross(c, _initMag.normalized);
+            Vector3 a = Vector3.Cross(c, b).normalized;
+            
+                    public static Vector3 GetEulerAngle(Matrix4x4 rotationMatrix)
+        {
+            a00 = rotationMatrix.m00;
+            a10 = rotationMatrix.m10;
+            a20 = rotationMatrix.m20;
+            a01 = rotationMatrix.m01;
+            a11 = rotationMatrix.m11;
+            a21 = rotationMatrix.m21;
+            a02 = rotationMatrix.m02;
+            a12 = rotationMatrix.m12;
+            a22 = rotationMatrix.m22;
+
+            theta;
+            psi;
+            phi;
+
+            sy = Mathf.Sqrt(a00 * a00 + a10 * a10);
+            singuler = sy < 0.000001;
+
+            if (!singuler)
+                phi = Mathf.Atan2(a21, a22);
+                theta = Mathf.Atan2(-a20, sy);
+                psi = Mathf.Atan2(a10, a00);
+            else
+                phi = Mathf.Atan2(a21, a22);
+                theta = Mathf.Atan2(a20, sy);
+                psi = 0;
+            """
 
         self.posAngGyr_filter_lp = self.EulerIntegration(self.gyroscope_lp)
-        self.velocity_filter = self.EulerIntegration(self.acceleration_pb)
+        self.velocity_filter = self.EulerIntegration(self.acceleration_lp)
 
-        self.acceleration_pb = np.array(self.acceleration_pb)
+        self.acceleration_lp = np.array(self.acceleration_lp)
         self.gyroscope_lp = np.array(self.gyroscope_lp)
         self.posAngGyr_filter_lp = np.array(self.posAngGyr_filter_lp)
-
         self.velocity_filter = np.array(self.velocity_filter)
+
         self.StockIntoNewFile(self.filepath)
         self.PlotImage()
 
-    def ConvertArray(*args):
 
-        for arg in args:
-            arg = np.array(arg)
 
     def EulerIntegration(self, Uprime):
         U = [np.array([0, 0, 0])]
@@ -157,6 +191,8 @@ class MovuinoDataSet():
     def StockIntoNewFile(self, filepath):
         self.rawData.to_csv(filepath + "_treated" + ".csv", sep=",", index=False, index_label=False)
 
+
+
     def PlotImage(self):
 
         a = plt.subplot(331)
@@ -168,7 +204,7 @@ class MovuinoDataSet():
         g = plt.subplot(332)
         g.plot(self.time, self.gyroscope[:, 0], color="r")
         g.plot(self.time, self.gyroscope[:, 1], color="green")
-        g.plot(self.time, self.gyroscope[:, 2], color="blue", marker=".")
+        g.plot(self.time, self.gyroscope[:, 2], color="blue")
         g.set_title('Gyroscope (deg/s)')
 
         m = plt.subplot(333)
@@ -190,9 +226,9 @@ class MovuinoDataSet():
         theta.set_title('Angle (deg)')
 
         accel_pb = plt.subplot(336)
-        accel_pb.plot(self.time, self.acceleration_pb[:, 0], color="r")
-        accel_pb.plot(self.time, self.acceleration_pb[:, 1], color="green")
-        accel_pb.plot(self.time, self.acceleration_pb[:, 2], color="blue")
+        accel_pb.plot(self.time, self.acceleration_lp[:, 0], color="r")
+        accel_pb.plot(self.time, self.acceleration_lp[:, 1], color="green")
+        accel_pb.plot(self.time, self.acceleration_lp[:, 2], color="blue")
         accel_pb.set_title('Acceleration Passe bande')
 
         velocity_pb = plt.subplot(337)
@@ -200,7 +236,7 @@ class MovuinoDataSet():
         velocity_pb.plot(self.time, self.velocity_filter[:, 1], color="green")
         velocity_pb.plot(self.time, self.velocity_filter[:, 2], color="blue")
         velocity_pb.set_title('Velocity Passe bande')
-        """
+
         omega_lp = plt.subplot(338)
         omega_lp.plot(self.time, self.gyroscope_lp[:, 0], color="r")
         omega_lp.plot(self.time, self.gyroscope_lp[:, 1], color="green")
@@ -212,7 +248,7 @@ class MovuinoDataSet():
         theta_lp.plot(self.time, self.posAngGyr_filter_lp[:, 1], color="green")
         theta_lp.plot(self.time, self.posAngGyr_filter_lp[:, 2], color="blue")
         theta_lp.set_title('Angle filtré (deg)')
-        """
+
         patchX = mpatches.Patch(color='red', label='x')
         patchY = mpatches.Patch(color='green', label='y')
         patchZ = mpatches.Patch(color='blue', label='z')
@@ -242,17 +278,29 @@ class MovuinoDataSet():
         meanDat = np.array([0.,0.,0.])
         listMean.append(rawDat)
 
-        if len(listMean)- nbPointFilter > 0:
+        if len(listMean) - nbPointFilter > 0:
             # remove oldest data if N unchanged(i=0 removed)
             # remove from 0 to rawdat.length - N + 1 if new N < old N
-            for i in range(len(listMean) - nbPointFilter + 1) :
+            for i in range(len(listMean) - nbPointFilter) :
                 listMean.pop(0)
 
         for k in range(len(listMean)):
             meanDat += listMean[k]
         meanDat /= len(listMean)
-
         return meanDat
+
+
+def isRotationMatrix(R):
+    Rt = np.transpose(R)
+    shouldBeIdentity = np.dot(Rt, R)
+    I = np.identity(3, dtype=R.dtype)
+    n = np.linalg.norm(I - shouldBeIdentity)
+    print(n)
+    return n < 1e-6
+
+def ConvertArray(*args):
+    for arg in args:
+        arg = np.array(arg)
 
 def LowPassFilter(x, y, Te, fc):
     """

@@ -201,7 +201,7 @@ namespace Movuino
                 _initAccel = _accel;
 
                 Vector3 c = -_initAccel.normalized;
-                Vector3 b = Vector3.Cross(c, _initMag.normalized);
+                Vector3 b = Vector3.Cross(c, _initMag.normalized).normalized;
                 Vector3 a = Vector3.Cross(c, b).normalized;
                 initmovuinoCoordinates.xAxis = b;
                 initmovuinoCoordinates.yAxis = c;
@@ -237,7 +237,7 @@ namespace Movuino
 
             // --- Getting orientation matrix -----
             Vector3 z = -accelerationSmooth.normalized;
-            Vector3 y = Vector3.Cross(z, magnetometerSmooth.normalized);
+            Vector3 y = Vector3.Cross(z, magnetometerSmooth.normalized).normalized;
             Vector3 x = Vector3.Cross(z, y).normalized;
             movuinoCoordinates.xAxis = y;
             movuinoCoordinates.yAxis = z;
