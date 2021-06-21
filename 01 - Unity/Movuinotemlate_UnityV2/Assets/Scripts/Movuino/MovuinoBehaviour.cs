@@ -239,10 +239,12 @@ namespace Movuino
             Vector3 z = -accelerationSmooth.normalized;
             Vector3 y = Vector3.Cross(z, magnetometerSmooth.normalized).normalized;
             Vector3 x = Vector3.Cross(z, y).normalized;
+
             movuinoCoordinates.xAxis = y;
             movuinoCoordinates.yAxis = z;
             movuinoCoordinates.zAxis = x;
 
+            print(movuinoCoordinates.rotationMatrix);
             _euler = MovuinoDataProcessing.GetEulerAngle(movuinoCoordinates.rotationMatrix);
             //-------------------------------------
 

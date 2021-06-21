@@ -1,5 +1,6 @@
 import serial
 import DataManager as dm
+import SensitivePenDataSet as sp
 import DisplayFunctions as disp
 import OnlyExtract as extractMovDat
 import os
@@ -12,13 +13,13 @@ from scipy import signal
 
 ############ SETTINGS #############
 
-folderPath = "..\\_data\\4polo_2\\"
+folderPath = "..\\_data\\data_ana\\2\\"
 fileName = "record"
 
 serialPort = 'COM5'
 
 toDataManage = True
-toExtract = False
+toExtract =False
 
 ###################################
 
@@ -68,9 +69,10 @@ if toExtract:
 
 if toDataManage:
     print(nbRecord)
-    nbRecord = 1
+    nbRecord = 5
     for i in range(1, nbRecord+1):
-        dataSet = dm.MovuinoDataSet(folderPath + fileName + "_"+str(i))
+        #dataSet = dm.MovuinoDataSet(folderPath + fileName + "_"+str(i))
+        dataSet = sp.SensitivePenDataSet(folderPath + fileName + "_" + str(i))
         dataSet.run()
         Te = dataSet.Te
         print(1/Te)

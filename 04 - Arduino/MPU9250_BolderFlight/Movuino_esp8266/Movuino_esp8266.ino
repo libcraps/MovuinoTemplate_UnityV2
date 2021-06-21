@@ -138,7 +138,7 @@ void loop() {
       Udp.endPacket();
       msg.empty();
   
-      delay(5);
+      delay(25);
     }
 
     // RECEIVE EXTERNAL OSC MESSAGES

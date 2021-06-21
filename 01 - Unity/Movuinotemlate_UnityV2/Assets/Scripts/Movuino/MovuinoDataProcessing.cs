@@ -201,7 +201,6 @@ namespace Movuino
                 theta = Mathf.Atan2(a20, sy);
                 psi = 0;
             }
-            Debug.Log("theta  : " + theta + " / " + " psi : " + psi);
 
             return new Vector3(phi, theta, psi);
         }
