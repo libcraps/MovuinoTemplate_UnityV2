@@ -1399,8 +1399,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   oscManager: {fileID: 1330286088}
   _movuinoAdress: /movPlayer
-  _nbPointFilter: 30
+  _nbPointFilter: 15
   _fcHighPass: 0.5
+  test: 0
 --- !u!1 &1526251404
 GameObject:
   m_ObjectHideFlags: 0

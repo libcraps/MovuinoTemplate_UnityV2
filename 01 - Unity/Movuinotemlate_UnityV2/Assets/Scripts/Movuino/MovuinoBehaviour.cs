@@ -194,26 +194,23 @@ namespace Movuino
 
         public void UpdateMovuinoData()
         {
-            print(initmovuinoCoordinates.xAxis);
+
             if (_initMag == new Vector3(666, 666, 666) && _initAccel == new Vector3(666, 666, 666) && initmovuinoCoordinates.xAxis == new Vector3(666, 666, 666) && _mag != new Vector3(0, 0, 0) && _accel != new Vector3(0, 0, 0))
             {
                 _initMag = _mag;
                 _initAccel = _accel;
 
-                Vector3 c = -_initAccel.normalized;
-                Vector3 b = Vector3.Cross(c, _initMag.normalized).normalized;
-                Vector3 a = Vector3.Cross(c, b).normalized;
-                initmovuinoCoordinates.xAxis = b;
-                initmovuinoCoordinates.yAxis = c;
-                initmovuinoCoordinates.zAxis = a;
+                Vector3 d = _initAccel.normalized;
+                Vector3 e = Vector3.Cross(d, _initMag.normalized).normalized;
+                Vector3 n = Vector3.Cross(e, d).normalized;
+                initmovuinoCoordinates.xAxis = n;
+                initmovuinoCoordinates.yAxis = e;
+                initmovuinoCoordinates.zAxis = d;
 
                 _initEulerAngle = MovuinoDataProcessing.GetEulerAngle(initmovuinoCoordinates.rotationMatrix);
-                print("OOOOk");
+
             }
             
-
-
-
 
             _prevAccel = _accel;
             _prevGyr = _gyr;
@@ -236,21 +233,70 @@ namespace Movuino
             _deltaAngleAccel = _angleAccelMethod - _deltaAngleAccel;
 
             // --- Getting orientation matrix -----
-            Vector3 z = -accelerationSmooth.normalized;
-            Vector3 y = Vector3.Cross(z, magnetometerSmooth.normalized).normalized;
-            Vector3 x = Vector3.Cross(z, y).normalized;
+            Matrix4x4 id;
 
-            movuinoCoordinates.xAxis = y;
-            movuinoCoordinates.yAxis = z;
-            movuinoCoordinates.zAxis = x;
+            Vector3 D = accelerationSmooth.normalized;
+            Vector3 E = Vector3.Cross(D, magnetometerSmooth.normalized).normalized;
+            Vector3 N = Vector3.Cross(E, D).normalized;
 
-            print(movuinoCoordinates.rotationMatrix);
+            movuinoCoordinates.xAxis = N;
+            movuinoCoordinates.yAxis = E;
+            movuinoCoordinates.zAxis = D;
+
             _euler = MovuinoDataProcessing.GetEulerAngle(movuinoCoordinates.rotationMatrix);
-            //-------------------------------------
+            //id = Matrix4x4.Rotate() *  movuinoCoordinates.rotationMatrix;
+
+            
+
 
         }
+        public int test;
 
+        public Quaternion set(Matrix4x4 m1)
+        {
+            Quaternion q = new Quaternion();
 
+            float trace = m1.m00 + m1.m11 + m1.m22;
+
+                // I removed + 1.0f; see discussion with Ethan
+            if (trace > 0)
+            {// I changed M_EPSILON to 0
+                float s = 0.5f / Mathf.Sqrt(trace + 1.0f);
+                q.w = 0.25f / s;
+                q.x = (m1.m21 - m1.m12) * s;
+                q.y = (m1.m02 - m1.m20) * s;
+                q.z = (m1.m10- m1.m01) * s;
+            }
+            else
+            {
+                if (m1.m00 > m1.m11 && m1.m00 > m1.m22)
+                {
+                    float s = 2.0f * Mathf.Sqrt(1.0f + m1.m00 - m1.m11 - m1.m22);
+                    q.w = (m1.m21 - m1.m12) / s;
+                    q.x = 0.25f * s;
+                    q.y = (m1.m01 + m1.m10) / s;
+                    q.z = (m1.m02 + m1.m20) / s;
+                }
+                else if (m1.m11 > m1.m22)
+                {
+                    float s = 2.0f * Mathf.Sqrt(1.0f + m1.m11 - m1.m00 - m1.m22);
+                    q.w = (m1.m02 - m1.m20) / s;
+                    q.x = (m1.m01 + m1.m10) / s;
+                    q.y = 0.25f * s;
+                    q.z = (m1.m12 + m1.m21) / s;
+                }
+                else
+                {
+                    float s = 2.0f * Mathf.Sqrt(1.0f + m1.m22 - m1.m00 - m1.m11);
+                    q.w = (m1.m10 - m1.m01) / s;
+                    q.x = (m1.m02 + m1.m20) / s;
+                    q.y = (m1.m12 + m1.m21) / s;
+                    q.z = 0.25f * s;
+                }
+            }
+
+            return q;
+        }
 
         public void InitMovTransform()
         {

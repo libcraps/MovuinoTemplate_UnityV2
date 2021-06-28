@@ -1,6 +1,7 @@
 import serial
 import DataManager as dm
 import SensitivePenDataSet as sp
+import SkateboardXXX3000DataSet as sk
 import DisplayFunctions as disp
 import OnlyExtract as extractMovDat
 import os
@@ -13,13 +14,15 @@ from scipy import signal
 
 ############ SETTINGS #############
 
-folderPath = "..\\_data\\data_ana\\2\\"
-fileName = "record"
+device = 'sensitivePen' #skateboardXXX3000 or sensitivePen
+
+folderPath = "..\\_data\\template_data_test\\"
+fileName = "record_SIMPLE_2"
 
 serialPort = 'COM5'
 
 toDataManage = True
-toExtract =False
+toExtract = False
 
 ###################################
 
@@ -69,10 +72,16 @@ if toExtract:
 
 if toDataManage:
     print(nbRecord)
-    nbRecord = 5
+    nbRecord = 1
     for i in range(1, nbRecord+1):
-        #dataSet = dm.MovuinoDataSet(folderPath + fileName + "_"+str(i))
-        dataSet = sp.SensitivePenDataSet(folderPath + fileName + "_" + str(i))
+        if (device == 'sensitivePen'):
+            dataSet = sp.SensitivePenDataSet(folderPath + fileName + "_" + str(i))
+        elif (device == 'skateboardXXX3000'):
+            dataSet = sk.SkateboardXXX3000DataSet(folderPath + fileName + "_" + str(i))
+        else:
+            print("No device matching")
+            dataSet = dm.MovuinoDataSet(folderPath + fileName + "_"+str(i))
+
         dataSet.run()
         Te = dataSet.Te
         print(1/Te)

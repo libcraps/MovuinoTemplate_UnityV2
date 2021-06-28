@@ -9,8 +9,8 @@ namespace Movuino
     /// Static class that contains usefull methods for process data of the movuino
     /// </summary>
     public static class MovuinoDataProcessing
-
     {
+        public static float RAD_TO_DEG = 180 / Mathf.PI;
         /// <summary>
         /// Integrate with Euler methods incoming data
         /// </summary>
@@ -185,14 +185,20 @@ namespace Movuino
             float psi;
             float phi;
 
-            float sy = Mathf.Sqrt(a00 * a00 + a10 * a10);
-            bool singuler = sy < 0.000001;
+            float sy = Mathf.Acos(Mathf.Sqrt(a00 * a00 + a10 * a10));
+            float sw = Mathf.Acos(Mathf.Sqrt(a21 * a21 + a22 * a22));
+            float sz = -Mathf.Asin(a20);
+
+            bool singuler = sy < 0.00001;
+
+            Debug.Log("cos(t) 00.01 :   " + sy *RAD_TO_DEG + "   | cos(t) 21.22 : " + sw * RAD_TO_DEG + "   | 1_s2 : " + sz * RAD_TO_DEG );
 
             if (!singuler)
             {
                 phi = Mathf.Atan2(a21, a22);
                 theta = Mathf.Atan2(-a20, sy);
                 psi = Mathf.Atan2(a10, a00);
+
             }
             else
             {
@@ -202,7 +208,25 @@ namespace Movuino
                 psi = 0;
             }
 
+            //float s01 = -Mathf.Sin(psi)*Mathf.Cos(phi) + Mathf.Sin(phi)*;
+            float s02;
+            float s11;
+            float s12;
+
             return new Vector3(phi, theta, psi);
+        }
+
+        public static void AngleRange(ref float psi)
+        {
+            //Angle continuity for the pen :
+            if (psi < -180 && psi >= -360)
+            {
+                psi += 360;
+            }
+            else if (psi > 180 && psi <= 360)
+            {
+                psi -= 360;
+            }
         }
 
 

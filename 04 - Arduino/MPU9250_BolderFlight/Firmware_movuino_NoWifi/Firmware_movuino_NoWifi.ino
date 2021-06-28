@@ -90,6 +90,7 @@ void setup() {
   }
 
   //magnometerCalibration();
+  //blinkLongTimes();
   
   int statusGyro = IMU.setGyroRange(MPU9250::GYRO_RANGE_1000DPS);
   int statusAccel = IMU.setAccelRange(MPU9250::ACCEL_RANGE_8G);
@@ -163,7 +164,7 @@ void loop() {
         listingDir(dirPath);
         break;
       case 'b': //Light tests
-        blinkNtimes(3, 500);
+        pixel.setPixelColor(0, pixel.Color(100, 0, 0));
         break;
       case CMD_PRINT_DAT:
         printMovuinoData();
@@ -217,7 +218,6 @@ void loop() {
   get9axesDataMPU(IMU, &ax, &ay, &az, &gx, &gy, &gz, &mx, &my, &mz);
   magnetometerAutoCallibration();
   time = millis() - startTime;
-  
 
   //------- Writing in File ------------
   if (isEditable)

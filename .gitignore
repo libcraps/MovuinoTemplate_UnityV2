@@ -24,9 +24,12 @@ ExportedObj/
 *.pdb
 *.opendb
 
-# Unity3D generated meta files
+# Unity3D files
 *.pidb.meta
 *.pdb.meta
+*.dll
+*.pbd
+*.dwlt
 
 # Unity3D Generated File On Crash Reports
 sysinfo.txt
@@ -35,7 +38,10 @@ sysinfo.txt
 *.apk
 *.unitypackage
 
+#Folder
 *_data/
+*01 - Unity\Movuinotemlate_UnityV2\Library\ArtifactDB
+*01 - Unity\Movuinotemlate_UnityV2\Library\SourceAssetDB
 
 #pycharm files
 *.idea/

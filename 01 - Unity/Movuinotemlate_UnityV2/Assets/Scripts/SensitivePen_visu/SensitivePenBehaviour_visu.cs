@@ -67,18 +67,20 @@ public class SensitivePenBehaviour_visu : ObjectMovuino_visu
             theta = movuinoBehaviour.angleAccelOrientation.x-90;
             psi = -movuinoBehaviour.angleEuler.z;
 
+            float phiWish = movuinoBehaviour.angleEuler.x;
+            float thetaWish = movuinoBehaviour.angleEuler.y;
             //Angle continuity for the pen :
-            if (psi < -180 && psi >= -360)
+            MovuinoDataProcessing.AngleRange(ref psi);
+            MovuinoDataProcessing.AngleRange(ref phiWish);
+            MovuinoDataProcessing.AngleRange(ref thetaWish);
+            /*
+            if (Mathf.Abs(phiWish) > 40)
             {
-                psi += 360;
-            }
-            else if (psi > 180 && psi <=360)
-            {
-                psi -= 360;
-            }
+                psi += Mathf.Abs(phiWish) / 2.2f;
+            }*/
 
-            graphData.x = theta;
-            graphData.y = movuinoBehaviour.magnetometerSmooth.magnitude;
+            graphData.x = phiWish;
+            graphData.y = thetaWish;
             graphData.z = psi;
 
             //angle = new Vector3(theta, psi, 0);            

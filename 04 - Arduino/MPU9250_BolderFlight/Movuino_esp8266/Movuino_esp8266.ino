@@ -131,8 +131,8 @@ void loop() {
       msg.add(-gy);
       msg.add(-gz);    // you can add as many data as you want
       msg.add(mx);
-      msg.add(my);
-      msg.add(mz);
+      msg.add(-my);
+      msg.add(-mz);
       Udp.beginPacket(hostIP, portOut); // send message to computer target with "hostIP" on "port"
       msg.send(Udp);
       Udp.endPacket();
@@ -183,9 +183,9 @@ void printMovuinoData() {
   Serial.print("\t ");
   Serial.print(mx);
   Serial.print("\t ");
-  Serial.print(my);
+  Serial.print(-my);
   Serial.print("\t ");
-  Serial.print(mz);
+  Serial.print(-mz);
   Serial.println();  
 }
 
