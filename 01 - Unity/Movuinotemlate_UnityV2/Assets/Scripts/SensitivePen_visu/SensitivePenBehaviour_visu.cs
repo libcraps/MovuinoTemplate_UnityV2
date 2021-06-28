@@ -79,8 +79,13 @@ public class SensitivePenBehaviour_visu : ObjectMovuino_visu
                 psi += Mathf.Abs(phiWish) / 2.2f;
             }*/
 
+            print(movuinoBehaviour.movuinoCoordinates.yAxis);
+            float d1 = movuinoBehaviour.movuinoCoordinates.yAxis.y;
+            float d2 = movuinoBehaviour.movuinoCoordinates.yAxis.x;
+
+
             graphData.x = phiWish;
-            graphData.y = thetaWish;
+            graphData.y = Mathf.Atan2(d1,d2)*MovuinoDataProcessing.RAD_TO_DEG;
             graphData.z = psi;
 
             //angle = new Vector3(theta, psi, 0);            
