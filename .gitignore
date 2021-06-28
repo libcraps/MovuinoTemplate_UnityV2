@@ -44,5 +44,5 @@ sysinfo.txt
 *SourceAssetDB
 
 #pycharm files
-*.idea/
-venv
+.idea/
+venv/
