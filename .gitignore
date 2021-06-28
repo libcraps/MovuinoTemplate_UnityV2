@@ -40,9 +40,9 @@ sysinfo.txt
 
 #Folder
 *_data/
-01 - Unity\Movuinotemlate_UnityV2\Library\ArtifactDB
-01 - Unity\Movuinotemlate_UnityV2\Library\SourceAssetDB
+*ArtifactDB
+*SourceAssetDB
 
 #pycharm files
 *.idea/
-venv/
+venv
