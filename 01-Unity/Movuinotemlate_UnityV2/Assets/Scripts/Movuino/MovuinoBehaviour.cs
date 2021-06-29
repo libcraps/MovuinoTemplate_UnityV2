@@ -66,7 +66,7 @@ namespace Movuino
         public Vector3 angleGyrOrientation {  get { return _angleGyrMethod; } }
         public Vector3 angleGyrOrientationHP {  get { return _angleGyrHP; } }
         public Vector3 angleAccelOrientation {  get { return _angleAccelMethod; } }
-        public Vector3 angleEuler { get { return (_euler-_initEulerAngle) * 180 / Mathf.PI;  } }
+        public Vector3 angleEuler { get { return (_euler) * 180 / Mathf.PI;  } }
         #endregion
 
         public struct Coordinates
@@ -203,9 +203,9 @@ namespace Movuino
                 Vector3 d = _initAccel.normalized;
                 Vector3 e = Vector3.Cross(d, _initMag.normalized).normalized;
                 Vector3 n = Vector3.Cross(e, d).normalized;
-                initmovuinoCoordinates.xAxis = n;
-                initmovuinoCoordinates.yAxis = e;
-                initmovuinoCoordinates.zAxis = d;
+                initmovuinoCoordinates.xAxis = e;
+                initmovuinoCoordinates.yAxis = n;
+                initmovuinoCoordinates.zAxis = -d;
 
                 _initEulerAngle = MovuinoDataProcessing.GetEulerAngle(initmovuinoCoordinates.rotationMatrix);
 
@@ -239,9 +239,9 @@ namespace Movuino
             Vector3 E = Vector3.Cross(D, magnetometerSmooth.normalized).normalized;
             Vector3 N = Vector3.Cross(E, D).normalized;
 
-            movuinoCoordinates.xAxis = N;
-            movuinoCoordinates.yAxis = E;
-            movuinoCoordinates.zAxis = D;
+            movuinoCoordinates.xAxis = E;
+            movuinoCoordinates.yAxis = N;
+            movuinoCoordinates.zAxis = -D;
 
             _euler = MovuinoDataProcessing.GetEulerAngle(movuinoCoordinates.rotationMatrix);
             //id = Matrix4x4.Rotate() *  movuinoCoordinates.rotationMatrix;

@@ -41,14 +41,9 @@ sysinfo.txt
 *.apk
 *.unitypackage
 
+#Pycharm
+**/.idea
+**/venv
+
 #Folder
 *_data/
-
-
-#pycharm files
-.idea/
-venv/
-01 - Unity/Movuinotemlate_UnityV2/Library/ArtifactDB
-01 - Unity/Movuinotemlate_UnityV2/Library/SourceAssetDB
-01 - Unity/Movuinotemlate_UnityV2/Library/ArtifactDB
-01 - Unity/Movuinotemlate_UnityV2/Library/SourceAssetDB
