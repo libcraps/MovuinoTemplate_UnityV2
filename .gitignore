@@ -30,8 +30,9 @@ ExportedObj/
 *.dll
 *.pbd
 *.dwlt
+
 01 - Unity/
-!01 - Unity/Movuinotemlate_UnityV2/Assets/
+!Assets/
 
 # Unity3D Generated File On Crash Reports
 sysinfo.txt
