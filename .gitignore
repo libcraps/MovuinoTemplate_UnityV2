@@ -30,6 +30,8 @@ ExportedObj/
 *.dll
 *.pbd
 *.dwlt
+01 - Unity/
+!01 - Unity/Movuinotemlate_UnityV2/Assets/
 
 # Unity3D Generated File On Crash Reports
 sysinfo.txt
@@ -40,9 +42,12 @@ sysinfo.txt
 
 #Folder
 *_data/
-*ArtifactDB
-*SourceAssetDB
+
 
 #pycharm files
 .idea/
 venv/
+01 - Unity/Movuinotemlate_UnityV2/Library/ArtifactDB
+01 - Unity/Movuinotemlate_UnityV2/Library/SourceAssetDB
+01 - Unity/Movuinotemlate_UnityV2/Library/ArtifactDB
+01 - Unity/Movuinotemlate_UnityV2/Library/SourceAssetDB
