@@ -1,7 +1,13 @@
 import matplotlib.pyplot as plt
 
 def Display(title, time, *args):
+    """
 
+    :param title:
+    :param time:
+    :param args:
+    :return:
+    """
     nbGraph = len(args)
     for i in range(nbGraph):
         plt.subplot(nbGraph, 1, i+1)
@@ -11,3 +17,18 @@ def Display(title, time, *args):
         plt.legend()
     plt.title(title)
     plt.show()
+
+def PlotVector(t, v, title, pos):
+    """
+
+    :param t:
+    :param v:
+    :param title:
+    :param pos:
+    :return:
+    """
+    fig = plt.subplot(pos)
+    fig.plot(t, v[:, 0], color="r")
+    fig.plot(t, v[:, 1], color="green")
+    fig.plot(t, v[:, 2], color="blue")
+    fig.set_title(title)

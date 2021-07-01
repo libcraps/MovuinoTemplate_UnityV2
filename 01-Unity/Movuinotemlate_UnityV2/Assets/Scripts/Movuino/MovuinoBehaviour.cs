@@ -56,6 +56,10 @@ namespace Movuino
         public Vector3 gyroscopeHighPass { get { return _HPGyr * (float)(360 / (2 * 3.14)); } }
         public Vector3 magnetometerSmooth { get { return MovuinoDataProcessing.MovingMean(_mag, ref _listMeanMag, _nbPointFilter); } }
 
+        //Init Values
+
+        
+
         //DeltaValues
         public Vector3 deltaAccel { get { return _accel - _prevAccel;  } }
         public Vector3 deltaGyr { get { return _gyr - _prevGyr;  } }
@@ -143,7 +147,6 @@ namespace Movuino
         private void FixedUpdate()
         {
             UpdateMovuinoData();
-            InitMovTransform();
             
         }
 
@@ -200,15 +203,12 @@ namespace Movuino
                 _initMag = _mag;
                 _initAccel = _accel;
 
-                Vector3 d = _initAccel.normalized;
+                Vector3 d = -_initAccel.normalized;
                 Vector3 e = Vector3.Cross(d, _initMag.normalized).normalized;
                 Vector3 n = Vector3.Cross(e, d).normalized;
-                initmovuinoCoordinates.xAxis = e;
-                initmovuinoCoordinates.yAxis = n;
-                initmovuinoCoordinates.zAxis = -d;
-
-                _initEulerAngle = MovuinoDataProcessing.GetEulerAngle(initmovuinoCoordinates.rotationMatrix);
-
+                initmovuinoCoordinates.xAxis = n;
+                initmovuinoCoordinates.yAxis = e;
+                initmovuinoCoordinates.zAxis = d;
             }
             
 
@@ -233,88 +233,14 @@ namespace Movuino
             _deltaAngleAccel = _angleAccelMethod - _deltaAngleAccel;
 
             // --- Getting orientation matrix -----
-            Matrix4x4 id;
-
-            Vector3 D = accelerationSmooth.normalized;
+            Vector3 D = -accelerationSmooth.normalized;
             Vector3 E = Vector3.Cross(D, magnetometerSmooth.normalized).normalized;
             Vector3 N = Vector3.Cross(E, D).normalized;
 
-            movuinoCoordinates.xAxis = E;
-            movuinoCoordinates.yAxis = N;
-            movuinoCoordinates.zAxis = -D;
-
-            _euler = MovuinoDataProcessing.GetEulerAngle(movuinoCoordinates.rotationMatrix);
-            //id = Matrix4x4.Rotate() *  movuinoCoordinates.rotationMatrix;
-
-            
-
-
+            movuinoCoordinates.xAxis = N;
+            movuinoCoordinates.yAxis = E;
+            movuinoCoordinates.zAxis = D;
         }
-        public int test;
-
-        public Quaternion set(Matrix4x4 m1)
-        {
-            Quaternion q = new Quaternion();
-
-            float trace = m1.m00 + m1.m11 + m1.m22;
-
-                // I removed + 1.0f; see discussion with Ethan
-            if (trace > 0)
-            {// I changed M_EPSILON to 0
-                float s = 0.5f / Mathf.Sqrt(trace + 1.0f);
-                q.w = 0.25f / s;
-                q.x = (m1.m21 - m1.m12) * s;
-                q.y = (m1.m02 - m1.m20) * s;
-                q.z = (m1.m10- m1.m01) * s;
-            }
-            else
-            {
-                if (m1.m00 > m1.m11 && m1.m00 > m1.m22)
-                {
-                    float s = 2.0f * Mathf.Sqrt(1.0f + m1.m00 - m1.m11 - m1.m22);
-                    q.w = (m1.m21 - m1.m12) / s;
-                    q.x = 0.25f * s;
-                    q.y = (m1.m01 + m1.m10) / s;
-                    q.z = (m1.m02 + m1.m20) / s;
-                }
-                else if (m1.m11 > m1.m22)
-                {
-                    float s = 2.0f * Mathf.Sqrt(1.0f + m1.m11 - m1.m00 - m1.m22);
-                    q.w = (m1.m02 - m1.m20) / s;
-                    q.x = (m1.m01 + m1.m10) / s;
-                    q.y = 0.25f * s;
-                    q.z = (m1.m12 + m1.m21) / s;
-                }
-                else
-                {
-                    float s = 2.0f * Mathf.Sqrt(1.0f + m1.m22 - m1.m00 - m1.m11);
-                    q.w = (m1.m10 - m1.m01) / s;
-                    q.x = (m1.m02 + m1.m20) / s;
-                    q.y = (m1.m12 + m1.m21) / s;
-                    q.z = 0.25f * s;
-                }
-            }
-
-            return q;
-        }
-
-        public void InitMovTransform()
-        {
-
-            if (Input.GetKeyDown(KeyCode.I))
-            {
-                _initObjectAngle = _OSCmovuinoSensorData.magnetometer;
-            }
-            if (Input.GetKeyDown(KeyCode.Y))
-            {
-                _initGyr = _OSCmovuinoSensorData.gyroscope;
-                _initMag = _OSCmovuinoSensorData.magnetometer;
-                _initAccel = _OSCmovuinoSensorData.accelerometer;
-            }
-
-        }
-
-
         #endregion
 
 

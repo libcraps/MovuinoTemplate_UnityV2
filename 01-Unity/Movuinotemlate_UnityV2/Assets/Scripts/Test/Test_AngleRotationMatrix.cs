@@ -26,6 +26,8 @@ namespace Movuino
             y.transform.localPosition = movuinoBehaviour.movuinoCoordinates.yAxis.normalized / 2;
             z.transform.localPosition = movuinoBehaviour.movuinoCoordinates.zAxis.normalized / 2;
 
+            print(movuinoBehaviour.movuinoCoordinates.xAxis);
+
             
         }
     }

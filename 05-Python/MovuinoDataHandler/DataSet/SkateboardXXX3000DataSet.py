@@ -1,4 +1,4 @@
-from DataManager import *
+from dataSet.DataManager import *
 
 class SkateboardXXX3000DataSet(MovuinoDataSet):
 
@@ -23,8 +23,8 @@ class SkateboardXXX3000DataSet(MovuinoDataSet):
     def PlotImage(self):
         MovuinoDataSet.PlotImage(self)
 
-        PlotVector(self.time, self.acceleration_lp, 'Acceleration filtered (LP)', 334)
-        PlotVector(self.time, self.ThetaGyr, 'Angle (integration of gyroscope) (deg)', 336)
+        df.PlotVector(self.time, self.acceleration_lp, 'Acceleration filtered (LP)', 334)
+        df.PlotVector(self.time, self.ThetaGyr, 'Angle (integration of gyroscope) (deg)', 336)
 
         normAcc = plt.subplot(335)
         normAcc.plot(self.time, self.normAcceleration, color="black")

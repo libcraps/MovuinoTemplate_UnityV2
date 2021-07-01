@@ -1364,8 +1364,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 22a21445e18272e4291ebe1854bf30cf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  folderPath: .\\_data\\4polo_2\\
-  filename: record_1_treated.csv
+  folderPath: .\\Data_visu\\mov_template\\
+  filename: record_2_treated_globalDataSet.csv
   i: 0
 --- !u!114 &1497267972
 MonoBehaviour:
@@ -1379,12 +1379,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d9ac441a82655bb45b2db336a16b70bb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  graphData: {x: 0, y: 0, z: 0}
   _exportIntoFile: 0
   _folderPath: 
   _filename: 
   vertAngle: {fileID: 1031240780}
   horizAngle: {fileID: 1304062949}
+  offlineSampleRate: 0.01
 --- !u!114 &1497267973
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1401,7 +1401,6 @@ MonoBehaviour:
   _movuinoAdress: /movPlayer
   _nbPointFilter: 15
   _fcHighPass: 0.5
-  test: 0
 --- !u!1 &1526251404
 GameObject:
   m_ObjectHideFlags: 0

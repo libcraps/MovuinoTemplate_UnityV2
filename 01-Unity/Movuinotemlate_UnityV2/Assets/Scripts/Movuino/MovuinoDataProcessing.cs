@@ -47,7 +47,6 @@ namespace Movuino
             gamma = Mathf.Acos(U.z);
 
             angle = new Vector3(alpha, beta, gamma) * 360 / (2 * Mathf.PI);
-            //print(angle + " ---- " + U);
             return angle;
         }
 
@@ -189,9 +188,7 @@ namespace Movuino
             float sw = Mathf.Acos(Mathf.Sqrt(a21 * a21 + a22 * a22));
             float sz = -Mathf.Asin(a20);
 
-            bool singuler = sy < 0.00001;
-
-            //Debug.Log("cos(t) 00.01 :   " + Mathf.Acos(sy) *RAD_TO_DEG + "   | cos(t) 21.22 : " + sw * RAD_TO_DEG + "   | 1_s2 : " + sz * RAD_TO_DEG );
+            bool singuler = sy < 0.0001;
 
             if (!singuler)
             {
@@ -208,12 +205,6 @@ namespace Movuino
                 psi = 0;
             }
 
-            float s01 = -Mathf.Sin(psi)*Mathf.Cos(phi) + Mathf.Sin(phi)*Mathf.Sin(theta)*Mathf.Cos(psi);
-            float s02;
-            float s11;
-            float s12;
-
-            //Debug.Log("a01 :   " + a01+ "   | s01 " + s01 );
             return new Vector3(phi, theta, psi);
         }
 

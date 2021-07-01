@@ -34,6 +34,9 @@ def isRotationMatrix(R):
 def rotationMatrixCreation(u, v):
     """
     Calculate a rotation matrix given 2 vectors
+
+    A revoir
+
     :param u: vector
     :param v: vector
     :return: Rotation matrix
@@ -50,8 +53,7 @@ def rotationMatrixCreation(u, v):
     N /= np.linalg.norm(N)
 
     #matrix
-    R = np.mat([N, E, D]).T
-
+    R = np.mat([N, E, D])
     return R
 
 

@@ -35,7 +35,6 @@ namespace Movuino
         {
             movuino.UpdateMovuinoData();
             //this.gameObject.transform.Rotate(movuino.InstantGyroscope * Time.fixedDeltaTime * (float)(360/(2*3.14)));
-            movuino.InitMovTransform();
         }
 
         void GetGyroriantation(OSCMovuinoSensorBasicData movuino)

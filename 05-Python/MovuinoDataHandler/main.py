@@ -1,9 +1,8 @@
 import serial
-import DataManager as dm
-import SensitivePenDataSet as sp
-import SkateboardXXX3000DataSet as sk
-import DisplayFunctions as disp
-import OnlyExtract as extractMovDat
+import dataSet.SensitivePenDataSet as sp
+import dataSet.SkateboardXXX3000DataSet as sk
+import dataSet.GlobalDataSet as gds
+import dataSet.DataManager as dm
 import os
 import numpy as np
 import matplotlib.pyplot as plt
@@ -14,10 +13,10 @@ from scipy import signal
 
 ############ SETTINGS #############
 
-device = 'sensitivePen' #skateboardXXX3000 or sensitivePen
+device = 'globalDataSet'  #  skateboardXXX3000 / sensitivePen / globalDataSet
 
-folderPath = "..\\_data\\template_data_test\\"
-fileName = "record_SIMPLE_2"
+folderPath = "..\\_data\\mov_template\\"
+fileName = "record"
 
 serialPort = 'COM5'
 
@@ -27,7 +26,8 @@ toExtract = False
 ###################################
 
 nb_files = 0
-nbRecord = 0
+file_start = 8
+nbRecord = 3
 path = folderPath + fileName
 
 # --------- Data Extraction from Movuino ----------
@@ -39,7 +39,7 @@ if toExtract:
     line_byte = ''
     line_str = ''
     datafile = []
-    nbRecord = 1
+    nbRecord = 11
 
     while ExtractionCompleted != True:
         line_byte = arduino.readline()
@@ -72,12 +72,14 @@ if toExtract:
 
 if toDataManage:
     print(nbRecord)
-    nbRecord = 1
-    for i in range(1, nbRecord+1):
+    #nbRecord = 1
+    for i in range(file_start, file_start+nbRecord+1):
         if (device == 'sensitivePen'):
             dataSet = sp.SensitivePenDataSet(folderPath + fileName + "_" + str(i))
         elif (device == 'skateboardXXX3000'):
             dataSet = sk.SkateboardXXX3000DataSet(folderPath + fileName + "_" + str(i))
+        elif (device == 'globalDataSet'):
+            dataSet = gds.GlobalDataSet(folderPath + fileName + "_" + str(i))
         else:
             print("No device matching")
             dataSet = dm.MovuinoDataSet(folderPath + fileName + "_"+str(i))

@@ -19,7 +19,6 @@ namespace Movuino
         List<object[]> rawData_ = new List<object[]>();
         DataTable _rawData;
 
-
         public DataTable rawData
         {
             get { return _rawData; }
@@ -86,6 +85,15 @@ namespace Movuino
             _rawData = ConvertCSVtoDataTable(dataPath);
             i = 1;
         }
+
+        /// <summary>
+        /// Get a vector from the raw data a the index i.
+        /// </summary>
+        /// <param name="columnX">column x</param>
+        /// <param name="columnY">column y</param>
+        /// <param name="columnZ">column z</param>
+        /// <param name="i">index in raw data</param>
+        /// <returns>Vector3(x,y,z)</returns>
         public Vector3 GetVector(string columnX, string columnY, string columnZ, int i)
         {
             float x = GetValue(columnX, i);
@@ -94,16 +102,31 @@ namespace Movuino
             return new Vector3(x, y, z);
         }
 
+        /// <summary>
+        /// GetVector("ax", "ay", "az")
+        /// </summary>
+        /// <param name="i">index</param>
+        /// <returns></returns>
         public Vector3 GetAcceleration(int i)
         {
             return GetVector("ax", "ay", "az", i);
         }
 
+        /// <summary>
+        /// GetVector("gx", "gy", "gz")
+        /// </summary>
+        /// <param name="i">index</param>
+        /// <returns></returns>
         public Vector3 GetGyroscope(int i)
         {
             return GetVector("gx", "gy", "gz", i);
         }
 
+        /// <summary>
+        /// GetVector("mx", "my", "mz")
+        /// </summary>
+        /// <param name="i">index</param>
+        /// <returns></returns>
         public Vector3 GetMagnetometre(int i)
         {
             return GetVector("mx", "my", "mz", i);

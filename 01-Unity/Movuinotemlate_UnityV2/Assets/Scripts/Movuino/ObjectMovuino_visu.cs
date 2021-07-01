@@ -10,6 +10,7 @@ namespace Movuino
         private MovuinoDataSet _movuinoDataSet;
         private MovuinoBehaviour _movuinoBehaviour;
 
+        [System.NonSerialized]
         public Vector3 graphData;
 
         public bool onlineMode 
