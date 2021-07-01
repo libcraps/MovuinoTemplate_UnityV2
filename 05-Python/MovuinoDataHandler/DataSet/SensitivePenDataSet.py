@@ -18,17 +18,14 @@ class SensitivePenDataSet(MovuinoDataSet):
 
         # --- Getting initial euler angles
         initRotationMatrix = gam.rotationMatrixCreation(-self.acceleration_lp[15], self.magnetometer_lp[15])
-        self.initEulerAngles = gam.rotationMatrixToEulerAngles(initRotationMatrix)
-        self.initEulerAngles = np.array(self.initEulerAngles)
+        self.initPsi = math.atan2(initRotationMatrix[0, 1], initRotationMatrix[0, 0])
 
         for k in range(len(self.time)):
-
-            # Get inclinaison of the pen (theta)
-            self.posAngAcc.append(gam.getInclinaison(self.acceleration_lp[k]))
-            # --- Getting euler angles from filtered data
+            # --- Getting rotation matrix from filtered data
             rotationMatrix = gam.rotationMatrixCreation(-self.acceleration_lp[k], self.magnetometer_lp[k])
-            angle = gam.rotationMatrixToEulerAngles(rotationMatrix)
 
+            # --- Get inclinaison of the pen (theta)
+            self.posAngAcc.append(gam.getInclinaison(self.acceleration_lp[k]))
             theta = self.posAngAcc[k][0] - 90
 
             # --- getting oriantation of the pen (for psi)
@@ -38,7 +35,12 @@ class SensitivePenDataSet(MovuinoDataSet):
             if (abs(theta) > 80):
                 psi = 0
             else:
-                psi = math.atan2(a01, a00) * 180 / math.pi
+                psi = (math.atan2(a01, a00) - self.initPsi) * 180 / math.pi
+
+                if -180 > psi >= -360:
+                    psi += 360
+                elif 180 < psi <= 360:
+                    psi -= 360
 
             self.sensitivePenAngles.append(np.array([psi, theta]))
 
@@ -60,7 +62,6 @@ class SensitivePenDataSet(MovuinoDataSet):
 
         df.PlotVector(self.time, self.acceleration_lp, 'Acceleration filtered (LP)', 334)
         df.PlotVector(self.time, self.magnetometer_lp, 'Magnetometer filtered (LP)', 335)
-        df.PlotVector(self.time, self.eulerAngles, 'Euler Angles (deg)', 338)
 
         normMag = plt.subplot(337)
         normMag.plot(self.time, self.normMagnetometer, color="black")
@@ -71,8 +72,8 @@ class SensitivePenDataSet(MovuinoDataSet):
         normAcc.set_title("Norm Acceleration")
 
         sensitivePenAngle = plt.subplot(339)
-        sensitivePenAngle.plot(self.time, self.sensitivePenAngles[:, 0], color="blue")
-        sensitivePenAngle.plot(self.time, self.sensitivePenAngles[:, 1], color="red")
+        sensitivePenAngle.plot(self.time, self.sensitivePenAngles[:, 0], color="red")
+        sensitivePenAngle.plot(self.time, self.sensitivePenAngles[:, 1], color="blue")
         sensitivePenAngle.set_title("Relevant angle (psi, theta) (deg)")
 
         patchX = mpatches.Patch(color='red', label='x')

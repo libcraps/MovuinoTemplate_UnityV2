@@ -13,7 +13,7 @@ from scipy import signal
 
 ############ SETTINGS #############
 
-device = 'globalDataSet'  #  skateboardXXX3000 / sensitivePen / globalDataSet
+device = 'sensitivePen'  #  skateboardXXX3000 / sensitivePen / globalDataSet
 
 folderPath = "..\\_data\\mov_template\\"
 fileName = "record"
@@ -26,8 +26,8 @@ toExtract = False
 ###################################
 
 nb_files = 0
-file_start = 8
-nbRecord = 3
+file_start = 12
+nbRecord = 1
 path = folderPath + fileName
 
 # --------- Data Extraction from Movuino ----------
@@ -39,7 +39,7 @@ if toExtract:
     line_byte = ''
     line_str = ''
     datafile = []
-    nbRecord = 11
+    nbRecord = 12
 
     while ExtractionCompleted != True:
         line_byte = arduino.readline()
