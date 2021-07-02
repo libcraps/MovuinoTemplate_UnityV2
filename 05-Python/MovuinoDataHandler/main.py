@@ -13,7 +13,7 @@ from scipy import signal
 
 ############ SETTINGS #############
 
-device = 'sensitivePen'  #  skateboardXXX3000 / sensitivePen / globalDataSet
+device = 'sensitivePen'  # devices available : skateboardXXX3000 / sensitivePen / globalDataSet
 
 folderPath = "..\\_data\\mov_template\\"
 fileName = "record"
