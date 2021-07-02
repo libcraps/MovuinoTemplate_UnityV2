@@ -2,16 +2,32 @@
  * Functions that allows us to manage files in the firmware
  */
 
+
+
 void createFile(String filepath)
 {
-  File file = SPIFFS.open(filepath, "w");
+  /*
+   * Create the file for the movuino with the filepath "filepath"
+   */
+  file = SPIFFS.open(filepath, "w");
  
   if (!file) {
     Serial.println("Error opening file for writing");
     return;
   }
   initialiseFileMovuinoData(file, sep);
-  file.close();
+}
+
+void addNewRecord(String filepath)
+{
+    file = SPIFFS.open(filePath, "a");     
+    if (!file) 
+    {
+      Serial.println("Error opening file for writing");
+      return;
+    }
+    file.println("-----------------   NEW RECORD   ---------------------");
+    initialiseFileMovuinoData(file, sep);
 }
 
 void readFile(String filepath)

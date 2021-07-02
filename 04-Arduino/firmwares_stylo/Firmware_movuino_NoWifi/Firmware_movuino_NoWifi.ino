@@ -39,7 +39,7 @@ int magRange[] = {666, -666, 666, -666, 666, -666}; // magneto range values for 
 // BUTTON
 Button button;
 const int pinBtn = 13;     // the number of the pushbutton pin
-bool buttonFlash = false;
+bool buttonHold = false;
 bool buttonPressed = false;
 bool doubleTap = false;
 float startPush;
@@ -65,10 +65,12 @@ bool isEditable = false;
 bool isReadable = false;
 bool formatted;
 
+
+//--------------- SETUP -----------------
 void setup() {
   Wire.begin();
   Serial.begin(115200);
-  delay(2000);
+  delay(3000);
   
   // initialize device
   Serial.println("Initializing I2C devices...");
@@ -86,15 +88,21 @@ void setup() {
     Serial.println(status);
     while(1) {}
   }
+
+  //magnometerCalibration();
+  //blinkLongTimes();
   
-  int statusGyro = IMU.setGyroRange(MPU9250::GYRO_RANGE_250DPS);
-  int statusAccel = IMU.setAccelRange(MPU9250::ACCEL_RANGE_4G);
+  int statusGyro = IMU.setGyroRange(MPU9250::GYRO_RANGE_1000DPS);
+  int statusAccel = IMU.setAccelRange(MPU9250::ACCEL_RANGE_8G);
   
-  if (statusGyro<0 || statusAccel<0) {
+  if (statusGyro<0 || statusAccel<0) 
+  {
     Serial.println("ERROR while setting range :");
     Serial.println("Accel range : " + statusAccel);
     Serial.println("Gyro range : " + statusGyro);
-  } else {
+  } 
+  else 
+  {
     Serial.println("RAS for the range");
   }
   
@@ -113,9 +121,10 @@ void setup() {
   button.callback(onButtonHold, HOLD); // called on either event
   button.callback(onButtondoubleTap, DOUBLE_TAP);
   
-
 }
 
+
+//----------------------- LOOP -------------------------
 void loop() {
   
   button.update();
@@ -155,10 +164,13 @@ void loop() {
         listingDir(dirPath);
         break;
       case 'b': //Light tests
-        Serial.println("ligth");
+        pixel.setPixelColor(0, pixel.Color(100, 0, 0));
         break;
       case CMD_PRINT_DAT:
         printMovuinoData();
+        break;
+      case 'h':
+        Serial.print(file);
         break;
       default:
         Serial.println("No command associated");
@@ -177,23 +189,22 @@ void loop() {
       startTime = millis();
       
       Serial.println("Writing in " + filePath);
+      
       //---- If the file already exists we write after it
       if (SPIFFS.exists(filePath))
       {
-        file = SPIFFS.open(filePath, "a");     
-        file.println("-----------------   NEW RECORD   ---------------------");
-        initialiseFileMovuinoData(file, sep);
-        file.close();
+        addNewRecord(filePath);
       } 
       else 
       {
         createFile(filePath);
       }
     } 
-    else 
+    else //If the file was open and writable we close it
     {
       Serial.println();
       Serial.println("Stopping the continue edition of " + filePath);
+      file.close();
       isEditable = false;
       blinkLongTimes();
       
@@ -201,34 +212,59 @@ void loop() {
   }
 
 
-    //----- GET MPU DATA ------
+  //----- GET MPU DATA ------
   IMU.readSensor();
   //print9axesDataMPU(IMU);
   get9axesDataMPU(IMU, &ax, &ay, &az, &gx, &gy, &gz, &mx, &my, &mz);
+  magnetometerAutoCallibration();
   time = millis() - startTime;
-  
+
   //------- Writing in File ------------
   if (isEditable)
   {
-    writeData(filePath);
+    
+    if (file && SPIFFS.exists(filePath))
+    {
+      static uint32_t prev_ms = millis();
+      if (millis() > prev_ms + 10)
+      {
+          digitalWrite(pinLedBat, HIGH);
+          writeInFileMovuinoData(file, sep);
+          prev_ms = millis();
+      }
+
+    } 
+    else
+    {
+      Serial.println("Error opening file for writing");
+    }
+
   }
 
   //------- Reading file ---------------
   if (isReadable)
   {
-    Serial.println();
-    Serial.println("reading " + filePath + "...");
-    readFile(filePath);
-    isReadable = false;
+    if (!file && SPIFFS.exists(filePath))
+    {
+        Serial.println();
+        Serial.println("reading " + filePath + "...");
+        readFile(filePath);
+        isReadable = false;
+    } 
+    else 
+    {
+      Serial.print("file is open or doesn't exist, please close it before start the reading");
+    }
+
   }
 
-  if (buttonFlash) 
+  if (buttonHold) 
   {
-    if(millis()-startPush > 2500) //If the button is pressed more than 2.5sec
+    
+    if(millis()-startPush > 2500 && isReadable == false) //If the button is pressed more than 2.5sec
     {
       isReadable = true;
       digitalWrite(pinLedESP, HIGH);
-      startPush = millis()+10000;
       delay(250);
     }
     else
@@ -237,7 +273,6 @@ void loop() {
     }
   }
 
-  delay(1);
 }
 
 

@@ -1,4 +1,8 @@
-void printMovuinoData() {
+void printMovuinoData() 
+{
+  /*
+   * Print 9 axes data from the movuino
+   */
   Serial.print(time);
   Serial.print("\t ");
   Serial.print(-ax);
@@ -15,9 +19,9 @@ void printMovuinoData() {
   Serial.print("\t ");
   Serial.print(mx);
   Serial.print("\t ");
-  Serial.print(my);
+  Serial.print(-my);
   Serial.print("\t ");
-  Serial.print(mz);
+  Serial.print(-mz);
   Serial.println();
 }
 void writeInFileMovuinoData(File file, String sep) {
@@ -37,9 +41,9 @@ void writeInFileMovuinoData(File file, String sep) {
   file.print(sep);
   file.print(mx);
   file.print(sep);
-  file.print(my);
+  file.print(-my);
   file.print(sep);
-  file.print(mz);
+  file.print(-mz);
   file.println();
 }
 void initialiseFileMovuinoData(File file, String sep) {

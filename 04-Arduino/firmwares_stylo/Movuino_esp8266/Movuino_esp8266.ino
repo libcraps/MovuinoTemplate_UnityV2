@@ -9,7 +9,7 @@
 #include <WiFiUdp.h>
 #include "Wire.h"
 #include "I2Cdev.h"
-#include "MPU9250_.h"
+#include "MPU9250.h"
 #include <OSCBundle.h>
 #include <OSCMessage.h>
 #include <OSCTiming.h>
@@ -29,13 +29,12 @@ char movuinoIP[4];
 const char* idMov = "/movPlayer";
 
 // MPU
-MPU9250 IMU; //address get with I2C scanner
+MPU9250 IMU(Wire, 0x69); //address get with I2C scanner
 int status;
 
 float ax, ay, az; // store accelerometre values
 float gx, gy, gz; // store gyroscope values
 float mx, my, mz; // store magneto values
-float ex, ey, ez;
 int magRange[] = {666, -666, 666, -666, 666, -666}; // magneto range values for callibration
 
 // Button variables
@@ -82,8 +81,9 @@ void setup() {
 
   // initialize device
   Serial.println("Initializing I2C devices...");
+  status = IMU.begin();
   
-  if (!IMU.setup(0x69)) {
+  if (status < 0) {
     Serial.println("IMU initialization unsuccessful");
     Serial.println("Check IMU wiring or try cycling power");
     Serial.print("Status: ");
@@ -91,28 +91,23 @@ void setup() {
     while(1) {}
   }
 
-  IMU.selectFilter(QuatFilterSel::MADGWICK);
-  IMU.calibrateAccelGyro();
-  
+
+  //magnometerCalibration();
   // We start by connecting to a WiFi network
   startWifi();
   
 }
 
 void loop() {
-    getSerialMsg(); // update msgAdr & msgMsg
+  getSerialMsg(); // update msgAdr & msgMsg
 
-    // BUTTON CHECK
-    checkButton();
-    if (IMU.update())
-    {
-        // read the sensor
-        print9axesDataMPU(IMU);
-        get9axesDataMPU(IMU, &ax, &ay, &az, &gx, &gy, &gz, &mx, &my, &mz, &ex, &ey, &ez);
-    }
-
-
-
+  // BUTTON CHECK
+  checkButton();
+  
+  // read the sensor
+  IMU.readSensor();
+  get9axesDataMPU(IMU, &ax, &ay, &az, &gx, &gy, &gz, &mx, &my, &mz);
+  print9axesDataMPU(IMU);
 
   // MOVUINO DATA
   if (WiFi.status() == WL_CONNECTED) {
@@ -122,34 +117,77 @@ void loop() {
     magnetometerAutoCallibration();
 
     if (millis() < 30000) {
-      print9axesDataMPU(IMU); // optional
+      printMovuinoData(); // optional
     }
 
     delay(2);
     if(!digitalRead(pinVibro)){
       // SEND MOVUINO DATA
       OSCMessage msg(idMov); // create an OSC message on address "/movuinOSC"
-      msg.add(-ay);   // add acceleration X data as message -> 6ax in order to get a orthonormal repère
-      msg.add(ax);   // add acceleration Y data
-      msg.add(-az);   // add ...
-      msg.add(gy);
-      msg.add(-gx);
-      msg.add(gz);    // you can add as many data as you want
+      msg.add(-ax);   // add acceleration X data as message -> 6ax in order to get a orthonormal repère
+      msg.add(ay);   // add acceleration Y data
+      msg.add(az);   // add ...
+      msg.add(gx);
+      msg.add(-gy);
+      msg.add(-gz);    // you can add as many data as you want
       msg.add(mx);
-      msg.add(my);
-      msg.add(mz);
-      msg.add(ex);
-      msg.add(ey);
-      msg.add(ez);
+      msg.add(-my);
+      msg.add(-mz);
       Udp.beginPacket(hostIP, portOut); // send message to computer target with "hostIP" on "port"
       msg.send(Udp);
       Udp.endPacket();
       msg.empty();
+  
+      delay(25);
+    }
+
+    // RECEIVE EXTERNAL OSC MESSAGES
+    OSCMessage bundle;
+    int size = Udp.parsePacket();
+    if (size > 0) {
+      while (size--) {
+        bundle.fill(Udp.read()); // read incoming message into the bundle
+      }
+      if (!bundle.hasError()) {
+        bundle.dispatch("/vibroPulse", callbackVibroPulse);
+        bundle.dispatch("/vibroNow", callbackVibroNow);
+      } else {
+        error = bundle.getError();
+        Serial.print("error: ");
+        Serial.println(error);
+      }
+    }
+
+    // MANAGE VIBRATIONS
+    if (isVibro) {
+      vibroPulse();
     }
   }
-  delay(5);
+  else {
+    delay(50); // wait more if Movuino is sleeping
+  }
 }
 
+void printMovuinoData() {
+  Serial.print(-ax);
+  Serial.print("\t ");
+  Serial.print(ay);
+  Serial.print("\t ");
+  Serial.print(az);
+  Serial.print("\t ");
+  Serial.print(gx);
+  Serial.print("\t ");
+  Serial.print(-gy);
+  Serial.print("\t ");
+  Serial.print(-gz);
+  Serial.print("\t ");
+  Serial.print(mx);
+  Serial.print("\t ");
+  Serial.print(-my);
+  Serial.print("\t ");
+  Serial.print(-mz);
+  Serial.println();  
+}
 
 float splitFloatDecimal(float f_){
   int i_ = f_ * 1000;
