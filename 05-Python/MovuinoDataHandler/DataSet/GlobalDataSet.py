@@ -1,4 +1,4 @@
-from dataSet.DataManager import *
+from dataSet.MovuinoDataSet import *
 
 class GlobalDataSet(MovuinoDataSet):
     """

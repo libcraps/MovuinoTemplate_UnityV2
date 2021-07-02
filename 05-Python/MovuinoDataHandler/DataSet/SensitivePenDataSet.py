@@ -1,4 +1,4 @@
-from dataSet.DataManager import *
+from dataSet.MovuinoDataSet import *
 
 
 class SensitivePenDataSet(MovuinoDataSet):
@@ -80,3 +80,4 @@ class SensitivePenDataSet(MovuinoDataSet):
         patchY = mpatches.Patch(color='green', label='y')
         patchZ = mpatches.Patch(color='blue', label='z')
         plt.legend(handles=[patchX, patchY, patchZ], loc="center right", bbox_to_anchor=(-2.5,3.6),ncol=1)
+

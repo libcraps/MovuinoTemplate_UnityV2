@@ -1,4 +1,4 @@
-from dataSet.DataManager import *
+from dataSet.MovuinoDataSet import *
 
 class SkateboardXXX3000DataSet(MovuinoDataSet):
 
