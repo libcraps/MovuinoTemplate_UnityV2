@@ -28,8 +28,8 @@ filter = 75
 ###################################
 
 nb_files = 0
-file_start = 13
-nbRecord = 1
+file_start = 1
+nbRecord = 13
 path = folderPath + fileName
 
 # --------- Data Extraction from Movuino ----------

@@ -18,7 +18,7 @@ class SensitivePenDataSet(MovuinoDataSet):
 
         # --- Getting initial euler angles
         initRotationMatrix = gam.rotationMatrixCreation(-self.acceleration_lp[15], self.magnetometer_lp[15])
-        self.initPsi = math.atan2(initRotationMatrix[0, 1], initRotationMatrix[0, 0])
+        self.initPsi = math.atan2(initRotationMatrix[0, 1], initRotationMatrix[0,0])
 
         for k in range(len(self.time)):
             # --- Getting rotation matrix from filtered data
@@ -35,7 +35,7 @@ class SensitivePenDataSet(MovuinoDataSet):
             if (abs(theta) > 80):
                 psi = 0
             else:
-                psi = (math.atan2(a01, a00) - self.initPsi) * 180 / math.pi
+                psi = (math.atan2(a01, a00) - self.initPsi) * 180/math.pi
 
                 if -180 > psi >= -360:
                     psi += 360
@@ -72,12 +72,21 @@ class SensitivePenDataSet(MovuinoDataSet):
         normAcc.set_title("Norm Acceleration")
 
         sensitivePenAngle = plt.subplot(339)
-        sensitivePenAngle.plot(self.time, self.sensitivePenAngles[:, 0], color="red")
-        sensitivePenAngle.plot(self.time, self.sensitivePenAngles[:, 1], color="blue")
+        sensitivePenAngle.plot(self.time, self.sensitivePenAngles[:, 0], color="red", label= 'psi')
+        sensitivePenAngle.plot(self.time, self.sensitivePenAngles[:, 1], color="blue", label= 'theta')
+        sensitivePenAngle.grid(b=True, which='major')
+        sensitivePenAngle.grid(b=True, which='minor', color='#999999', linestyle='dotted')
+        sensitivePenAngle.tick_params(axis='y', which='minor', labelsize=12, color="#999999")
+        sensitivePenAngle.minorticks_on()
+
+        sensitivePenAngle.set_yticks([-180, -90, 0, 90, 180])
+        sensitivePenAngle.yaxis.set_minor_locator(MultipleLocator(45))
+
+        sensitivePenAngle.legend(loc='upper right')
         sensitivePenAngle.set_title("Relevant angle (psi, theta) (deg)")
 
         patchX = mpatches.Patch(color='red', label='x')
         patchY = mpatches.Patch(color='green', label='y')
         patchZ = mpatches.Patch(color='blue', label='z')
-        plt.legend(handles=[patchX, patchY, patchZ], loc="center right", bbox_to_anchor=(-2.5,3.6),ncol=1)
+        #plt.legend(handles=[patchX, patchY, patchZ], loc="center right", bbox_to_anchor=(-2.5,3.6),ncol=1)
 

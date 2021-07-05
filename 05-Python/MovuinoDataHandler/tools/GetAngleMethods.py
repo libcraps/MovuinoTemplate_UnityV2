@@ -53,7 +53,7 @@ def rotationMatrixCreation(u, v):
     N /= np.linalg.norm(N)
 
     #matrix
-    R = np.mat([N, E, D])
+    R = np.mat([N, E, D]).T
     return R
 
 
