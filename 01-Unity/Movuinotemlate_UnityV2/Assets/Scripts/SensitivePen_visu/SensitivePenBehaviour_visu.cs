@@ -70,7 +70,7 @@ public class SensitivePenBehaviour_visu : ObjectMovuino_visu
 
             initPsi = GetPenOrientation(movuinoBehaviour.initmovuinoCoordinates.rotationMatrix);
 
-            theta = 90-movuinoBehaviour.angleAccelOrientation.x;
+            theta = movuinoBehaviour.angleAccelOrientation.x-90;
 
             if (Mathf.Abs(theta) > 80)
             {
@@ -154,6 +154,8 @@ public class SensitivePenBehaviour_visu : ObjectMovuino_visu
     {
         float a00 = coord.m00;
         float a01 = coord.m01;
+        print(coord);
+        print(a01);
 
         float psi = Mathf.Atan2(a01, a00)*180/Mathf.PI;
         

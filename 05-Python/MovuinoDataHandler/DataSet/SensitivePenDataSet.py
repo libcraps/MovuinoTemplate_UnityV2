@@ -17,12 +17,12 @@ class SensitivePenDataSet(MovuinoDataSet):
         MovuinoDataSet.run(self)
 
         # --- Getting initial euler angles
-        initRotationMatrix = gam.rotationMatrixCreation(-self.acceleration_lp[15], self.magnetometer_lp[15])
+        initRotationMatrix = gam.rotationMatrixCreation(self.acceleration_lp[15], self.magnetometer_lp[15])
         self.initPsi = math.atan2(initRotationMatrix[0, 1], initRotationMatrix[0,0])
 
         for k in range(len(self.time)):
             # --- Getting rotation matrix from filtered data
-            rotationMatrix = gam.rotationMatrixCreation(-self.acceleration_lp[k], self.magnetometer_lp[k])
+            rotationMatrix = gam.rotationMatrixCreation(self.acceleration_lp[k], self.magnetometer_lp[k])
 
             # --- Get inclinaison of the pen (theta)
             self.posAngAcc.append(gam.getInclinaison(self.acceleration_lp[k]))
