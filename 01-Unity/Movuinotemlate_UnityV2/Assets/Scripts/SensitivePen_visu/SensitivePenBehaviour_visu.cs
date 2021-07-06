@@ -89,13 +89,12 @@ public class SensitivePenBehaviour_visu : ObjectMovuino_visu
             graphData.z = theta;
 
             //graphData = movuinoBehaviour.movuinoCoordinates.xAxis;
-            print("psi : " + psi + " theta : " + theta);
             //angle = new Vector3(theta, psi, 0);            
             //this.gameObject.transform.Rotate(movuinoBehaviour.gyroscopeRaw * Time.deltaTime);
 
-            this.gameObject.transform.eulerAngles = new Vector3(theta, psi, 0);
+            this.gameObject.transform.eulerAngles = new Vector3(-theta, psi, 0);
 
-            vertAngle.transform.eulerAngles = new Vector3(0, (theta+90),0);
+            vertAngle.transform.eulerAngles = new Vector3(0, -theta+90,0);
             horizAngle.transform.eulerAngles = new Vector3(0, psi, 0);
 
             _movuinoExportData.StockData(Time.time, movuinoBehaviour.accelerationRaw, movuinoBehaviour.gyroscopeRaw, movuinoBehaviour.magnetometerRaw, theta, psi);
@@ -106,28 +105,15 @@ public class SensitivePenBehaviour_visu : ObjectMovuino_visu
 
             if (Time.time - prevTime > offlineSampleRate)
             {
-
-                float a00 = movuinoDataSet.GetValue("a00", i);
-                float a10 = movuinoDataSet.GetValue("a10", i);
-                float a20 = movuinoDataSet.GetValue("a20", i);
-                float a01 = movuinoDataSet.GetValue("a01", i);
-                float a11 = movuinoDataSet.GetValue("a11", i);
-                float a21 = movuinoDataSet.GetValue("a21", i);
-                float a02 = movuinoDataSet.GetValue("a02", i);
-                float a12 = movuinoDataSet.GetValue("a12", i);
-                float a22 = movuinoDataSet.GetValue("a22", i);
-
-                float theta;
-                float psi;
+                theta = movuinoDataSet.GetValue("theta", i);
+                psi = movuinoDataSet.GetValue("psi", i);
  
+                graphData = new Vector3(psi, 0, theta); //TODO
 
-                psi = Mathf.Atan2(a01, a00);
-                theta = 0;
-
-                graphData = new Vector3(0, 0, 0); //TODO
-
-                vertAngle.transform.eulerAngles = new Vector3(0, (theta + 90), 0);
+                vertAngle.transform.eulerAngles = new Vector3(0, -theta + 90, 0);
                 horizAngle.transform.eulerAngles = new Vector3(0, psi, 0);
+
+                this.gameObject.transform.eulerAngles = new Vector3(-theta, psi, 0);
 
 
                 prevTime = Time.time;

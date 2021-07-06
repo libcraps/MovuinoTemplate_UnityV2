@@ -20,6 +20,8 @@ class SensitivePenDataSet(MovuinoDataSet):
         initRotationMatrix = gam.rotationMatrixCreation(self.acceleration_lp[15], self.magnetometer_lp[15])
         self.initPsi = math.atan2(initRotationMatrix[0, 1], initRotationMatrix[0,0])
 
+        heading=[]
+
         for k in range(len(self.time)):
             # --- Getting rotation matrix from filtered data
             rotationMatrix = gam.rotationMatrixCreation(self.acceleration_lp[k], self.magnetometer_lp[k])
@@ -54,6 +56,7 @@ class SensitivePenDataSet(MovuinoDataSet):
         self.PlotImage()
         plt.show()
 
+
     def StockIntoNewFile(self, filepath):
         self.rawData.to_csv(filepath + "_treated_" + self.name + ".csv", sep=",", index=False, index_label=False)
 
@@ -78,15 +81,25 @@ class SensitivePenDataSet(MovuinoDataSet):
         sensitivePenAngle.grid(b=True, which='minor', color='#999999', linestyle='dotted')
         sensitivePenAngle.tick_params(axis='y', which='minor', labelsize=12, color="#999999")
         sensitivePenAngle.minorticks_on()
-
         sensitivePenAngle.set_yticks([-180, -90, 0, 90, 180])
         sensitivePenAngle.yaxis.set_minor_locator(MultipleLocator(45))
-
         sensitivePenAngle.legend(loc='upper right')
         sensitivePenAngle.set_title("Relevant angle (psi, theta) (deg)")
+
+
+        magCal = plt.subplot(338)
+        magCal.plot(self.magnetometer_lp[:,0], self.magnetometer_lp[:,1], marker = "^", linestyle="None", color="red", label="X, Y")
+        magCal.plot(self.magnetometer_lp[:,0], self.magnetometer_lp[:,2], marker = "o", linestyle="None", color="green", label="X, Z")
+        magCal.plot(self.magnetometer_lp[:,1], self.magnetometer_lp[:,2], marker = "s", linestyle="None", color="blue", label="Y, Z")
+        magCal.legend(loc='upper right')
+        magCal.grid(True)
+        magCal.set_title("Mag calibrattion")
+        magCal.set_aspect('equal')
+
 
         patchX = mpatches.Patch(color='red', label='x')
         patchY = mpatches.Patch(color='green', label='y')
         patchZ = mpatches.Patch(color='blue', label='z')
         #plt.legend(handles=[patchX, patchY, patchZ], loc="center right", bbox_to_anchor=(-2.5,3.6),ncol=1)
+
 

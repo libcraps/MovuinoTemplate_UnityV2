@@ -15,7 +15,7 @@ from scipy import signal
 
 device = 'sensitivePen'  # devices available : skateboardXXX3000 / sensitivePen / globalDataSet
 
-folderPath = "..\\_data\\mov_template\\"
+folderPath = "..\\_data\\test_w_paulo\\"
 fileName = "record"
 
 serialPort = 'COM5'
@@ -23,13 +23,13 @@ serialPort = 'COM5'
 toDataManage = True
 toExtract = False
 
-filter = 75
+filter = 50
 
 ###################################
 
 nb_files = 0
 file_start = 1
-nbRecord = 13
+nbRecord = 2
 path = folderPath + fileName
 
 # --------- Data Extraction from Movuino ----------
@@ -41,7 +41,7 @@ if toExtract:
     line_byte = ''
     line_str = ''
     datafile = []
-    nbRecord = 13
+    nbRecord = 1
 
     while ExtractionCompleted != True:
         line_byte = arduino.readline()

@@ -89,7 +89,7 @@ void setup() {
     while(1) {}
   }
 
-  //magnometerCalibration();
+  magnometerCalibration();
   //blinkLongTimes();
   
   int statusGyro = IMU.setGyroRange(MPU9250::GYRO_RANGE_1000DPS);
@@ -216,7 +216,7 @@ void loop() {
   IMU.readSensor();
   //print9axesDataMPU(IMU);
   get9axesDataMPU(IMU, &ax, &ay, &az, &gx, &gy, &gz, &mx, &my, &mz);
-  magnetometerAutoCallibration();
+  //magnetometerAutoCallibration();
   time = millis() - startTime;
 
   //------- Writing in File ------------
