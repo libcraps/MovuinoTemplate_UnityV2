@@ -13,9 +13,39 @@ void magnometerCalibration()
   {
     Serial.println("Magnetometer's calibration OK");
   }
-
 }
 
+void accelerometerCalibration()
+{
+    
+  Serial.println("Calibrating accelerometer : ");
+  
+  int statusAccelCal = IMU.calibrateAccel();
+  if (statusAccelCal<0)
+  {
+    Serial.println("ERROR while calibrating");
+  }
+  else
+  {
+    Serial.println("Accelerometer's calibration OK");
+  }
+}
+
+void gyroscopeCalibration()
+{
+    
+  Serial.println("Calibrating Gyro : ");
+  
+  int statusGyrCal = IMU.calibrateGyro();
+  if (statusGyrCal<0)
+  {
+    Serial.println("ERROR while calibrating");
+  }
+  else
+  {
+    Serial.println("Gyroscope's calibration OK");
+  }
+}
 void print9axesDataMPU(MPU9250 IMU){
   // display the data
   Serial.print(IMU.getAccelX_mss(),6);

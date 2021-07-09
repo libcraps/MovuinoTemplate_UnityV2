@@ -1,5 +1,5 @@
 from dataSet.MovuinoDataSet import *
-
+import numpy as np
 
 class SensitivePenDataSet(MovuinoDataSet):
 
@@ -13,8 +13,8 @@ class SensitivePenDataSet(MovuinoDataSet):
         self.initEulerAngles = []
         self.eulerAngles = []
 
-    def run(self):
-        MovuinoDataSet.run(self)
+    def DataManage(self):
+        MovuinoDataSet.DataManage(self)
 
         # --- Getting initial euler angles
         initRotationMatrix = gam.rotationMatrixCreation(self.acceleration_lp[15], self.magnetometer_lp[15])
@@ -88,9 +88,9 @@ class SensitivePenDataSet(MovuinoDataSet):
 
 
         magCal = plt.subplot(338)
-        magCal.plot(self.magnetometer_lp[:,0], self.magnetometer_lp[:,1], marker = "^", linestyle="None", color="red", label="X, Y")
-        magCal.plot(self.magnetometer_lp[:,0], self.magnetometer_lp[:,2], marker = "o", linestyle="None", color="green", label="X, Z")
-        magCal.plot(self.magnetometer_lp[:,1], self.magnetometer_lp[:,2], marker = "s", linestyle="None", color="blue", label="Y, Z")
+        magCal.plot(self.magnetometer_lp[:, 0], self.magnetometer_lp[:, 1], marker = "^", linestyle="None", color="red", label="X, Y")
+        magCal.plot(self.magnetometer_lp[:, 0], self.magnetometer_lp[:, 2], marker = "o", linestyle="None", color="green", label="X, Z")
+        magCal.plot(self.magnetometer_lp[:, 1], self.magnetometer_lp[:, 2], marker = "s", linestyle="None", color="blue", label="Y, Z")
         magCal.legend(loc='upper right')
         magCal.grid(True)
         magCal.set_title("Mag calibrattion")
@@ -101,5 +101,45 @@ class SensitivePenDataSet(MovuinoDataSet):
         patchY = mpatches.Patch(color='green', label='y')
         patchZ = mpatches.Patch(color='blue', label='z')
         #plt.legend(handles=[patchX, patchY, patchZ], loc="center right", bbox_to_anchor=(-2.5,3.6),ncol=1)
+
+    @staticmethod
+    def PlotCompleteFile(filepath, sep, dec):
+        """
+
+        :param filepath:
+        :return:
+        """
+
+        data = pd.read_csv(filepath + ".csv", sep=sep, decimal=dec)
+        timeList = data["time"]
+        accel = [data["ax"], list(data["ay"]), list(data["az"])]
+        gyr = [list(data["gx"]), list(data["gy"]), list(data["gz"])]
+        mag = [list(data["mx"]), list(data["my"]), list(data["mz"])]
+        psi = list(data["psi"])
+        theta = list(data["theta"])
+        print("NAAAAAAA")
+        print(accel[0])
+
+        df.plotVect(timeList, accel, "Acceleration m/s2", 221)
+        df.plotVect(timeList, gyr, "Gyroscope m/s", 222)
+        df.plotVect(timeList, mag, "Magnetometer unit mag", 223)
+
+        sensitivePenAngle = plt.subplot(224)
+        sensitivePenAngle.plot(timeList, psi, color="red", label='psi')
+        sensitivePenAngle.plot(timeList, theta, color="blue", label='theta')
+        sensitivePenAngle.grid(b=True, which='major')
+        sensitivePenAngle.grid(b=True, which='minor', color='#999999', linestyle='dotted')
+        sensitivePenAngle.tick_params(axis='y', which='minor', labelsize=12, color="#999999")
+        sensitivePenAngle.minorticks_on()
+        sensitivePenAngle.set_yticks([-180, -90, 0, 90, 180])
+        sensitivePenAngle.yaxis.set_minor_locator(MultipleLocator(45))
+        sensitivePenAngle.legend(loc='upper right')
+        sensitivePenAngle.set_title("Relevant angle (psi, theta) (deg)")
+
+        plt.show()
+
+
+
+
 
 

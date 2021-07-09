@@ -19,13 +19,20 @@ namespace Skateboard
         {
             //movuinoDataSet.showColumns();
             print(movuinoDataSet);
-            InvokeRepeating("Rotate", 2f, (movuinoDataSet.GetValue("time", 1)- movuinoDataSet.GetValue("time", 0)));
+            InvokeRepeating("Rotate", 2f, ((movuinoDataSet.GetValue("time", 1)- movuinoDataSet.GetValue("time", 0)) / 1000f));
+
+        }
+
+        private void FixedUpdate()
+        {
+            graphData = movuinoDataSet.GetVector("thetaGyrx", "thetaGyry", "thetaGyrz", movuinoDataSet.i)*1200;
         }
 
         private void Rotate()
         {
-            Vector3 deltaTheta = movuinoDataSet.GetVector("posAngY", "posAngX", "posAngZ", movuinoDataSet.i) - movuinoDataSet.GetVector("posAngY", "posAngX", "posAngZ", movuinoDataSet.i -1);
-            this.gameObject.transform.Rotate(deltaTheta);
+            Vector3 deltaTheta = movuinoDataSet.GetVector("thetaGyrx", "thetaGyry", "thetaGyrz", movuinoDataSet.i) - movuinoDataSet.GetVector("thetaGyrx", "thetaGyry", "thetaGyrz", movuinoDataSet.i -1);
+            deltaTheta *= 1200;
+            this.gameObject.transform.eulerAngles += movuinoDataSet.GetVector("gx","gy", "gz", movuinoDataSet.i)*100;
 
             movuinoDataSet.i++;
         }

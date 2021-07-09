@@ -1379,9 +1379,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d9ac441a82655bb45b2db336a16b70bb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _exportIntoFile: 0
-  _folderPath: 
-  _filename: 
+  _exportIntoFile: 1
+  _folderPath: .\\Data_visu\\test_ecriture_live\\
+  _filename: record_1.csv
   vertAngle: {fileID: 1031240780}
   horizAngle: {fileID: 1304062949}
   offlineSampleRate: 0.005

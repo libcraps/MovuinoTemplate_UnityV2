@@ -27,12 +27,12 @@ class GlobalDataSet(MovuinoDataSet):
         self.e2 = []
         self.e3 = []
 
-    def run(self):
+    def DataManage(self):
         """
 
         :return:
         """
-        MovuinoDataSet.run(self)
+        MovuinoDataSet.DataManage(self)
 
         # --- Getting initial euler angles
         for k in range(len(self.time)):
@@ -146,3 +146,24 @@ class GlobalDataSet(MovuinoDataSet):
         patchY = mpatches.Patch(color='green', label='y')
         patchZ = mpatches.Patch(color='blue', label='z')
         plt.legend(handles=[patchX, patchY, patchZ], loc="center right", bbox_to_anchor=(-2.5,3.6),ncol=1)
+
+    @staticmethod
+    def PlotCompleteFile(filepath, sep, dec):
+        """
+
+        :param filepath:
+        :return: --
+        """
+        data = pd.read_csv(filepath + ".csv", sep=sep, decimal=dec)
+        timeList = data["time"]
+        accel = np.array([data["ax"], data["ay"], data["az"]])
+        gyr = np.array([data["gx"], data["gy"], data["gz"]])
+        mag = np.array([data["mx"], data["my"], data["mz"]])
+
+
+        df.plotVect(timeList, accel, "Acceleration m/s2", 331)
+        df.plotVect(timeList, gyr, "Gyroscope deg/s", 332)
+        df.plotVect(timeList, mag, "Magnetometer mag unit", 333)
+        plt.show()
+
+        return

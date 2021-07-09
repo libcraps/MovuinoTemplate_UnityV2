@@ -2,6 +2,7 @@ import serial
 import dataSet.SensitivePenDataSet as sp
 import dataSet.SkateboardXXX3000DataSet as sk
 import dataSet.GlobalDataSet as gds
+import tools.DisplayFunctions as df
 import dataSet.MovuinoDataSet as dm
 import os
 import numpy as np
@@ -13,23 +14,23 @@ from scipy import signal
 
 ############ SETTINGS #############
 
-device = 'sensitivePen'  # devices available : skateboardXXX3000 / sensitivePen / globalDataSet
+device = 'skateboardXXX3000'  # devices available : skateboardXXX3000 / sensitivePen / globalDataSet
 
-folderPath = "..\\_data\\test_w_paulo\\"
+folderPath = "..\\_data\\skate_test\\"
 fileName = "record"
 
-serialPort = 'COM5'
+serialPort = 'COM3'
 
-toDataManage = True
 toExtract = False
+toDataManage = True
 
-filter = 50
+filter = 25
 
 ###################################
 
 nb_files = 0
-file_start = 1
-nbRecord = 2
+file_start = 6
+nbRecord = 6
 path = folderPath + fileName
 
 # --------- Data Extraction from Movuino ----------
@@ -85,7 +86,9 @@ if toDataManage:
         else:
             print("No device matching")
 
-        dataSet.run()
+        dataSet.DataManage()
         Te = dataSet.Te
         print(1/Te)
+
+
 

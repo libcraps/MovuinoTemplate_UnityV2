@@ -88,12 +88,11 @@ void setup() {
     Serial.println(status);
     while(1) {}
   }
-
-  //magnometerCalibration();
-  //blinkLongTimes();
   
-  int statusGyro = IMU.setGyroRange(MPU9250::GYRO_RANGE_1000DPS);
-  int statusAccel = IMU.setAccelRange(MPU9250::ACCEL_RANGE_8G);
+  gyroscopeCalibration();
+
+  int statusGyro = IMU.setGyroRange(MPU9250::GYRO_RANGE_2000DPS);
+  int statusAccel = IMU.setAccelRange(MPU9250::ACCEL_RANGE_16G);
   
   if (statusGyro<0 || statusAccel<0) 
   {

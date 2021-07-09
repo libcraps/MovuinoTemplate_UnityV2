@@ -314,18 +314,18 @@ namespace Movuino.Data
         public override DataTable CreateDataTable(params DataTable[] data)
         {
             DataTable table = new DataTable();
-            table.Columns.Add("time " + id, typeof(float));
-            table.Columns.Add("ax " + id, typeof(float));
-            table.Columns.Add("ay " + id, typeof(float));
-            table.Columns.Add("az " + id, typeof(float));
-            table.Columns.Add("gx " + id, typeof(float));
-            table.Columns.Add("gy " + id, typeof(float));
-            table.Columns.Add("gz " + id, typeof(float));
-            table.Columns.Add("mx " + id, typeof(float));
-            table.Columns.Add("my " + id, typeof(float));
-            table.Columns.Add("mz " + id, typeof(float));
-            table.Columns.Add("Theta " + id, typeof(float));
-            table.Columns.Add("Psi " + id, typeof(float));
+            table.Columns.Add("time" + id, typeof(float));
+            table.Columns.Add("ax" + id, typeof(float));
+            table.Columns.Add("ay" + id, typeof(float));
+            table.Columns.Add("az" + id, typeof(float));
+            table.Columns.Add("gx" + id, typeof(float));
+            table.Columns.Add("gy" + id, typeof(float));
+            table.Columns.Add("gz" + id, typeof(float));
+            table.Columns.Add("mx" + id, typeof(float));
+            table.Columns.Add("my" + id, typeof(float));
+            table.Columns.Add("mz" + id, typeof(float));
+            table.Columns.Add("theta" + id, typeof(float));
+            table.Columns.Add("psi" + id, typeof(float));
 
 
             for (int i = 0; i < listAcceleration.Count; i++)

@@ -71,7 +71,7 @@ class MovuinoDataSet():
         self.nb_row = len(self.time)
 
 
-    def run(self):
+    def DataManage(self):
         """
         Does the basic operations on data.
         Thi is the main function of the class.
@@ -130,6 +130,23 @@ class MovuinoDataSet():
         self.rawData["normAccel"] = self.normAcceleration
         self.rawData["normMag"] = self.normMagnetometer
         self.rawData["normGyr"] = self.normGyroscope
+
+    @staticmethod
+    def PlotCompleteFile(filepath, sep):
+        data = pd.read_csv(filepath + ".csv", sep=sep)
+        timeList = data["time"]
+        accel = np.array([data["ax"], data["ay"], data["az"]])
+        gyr = np.array([data["gx"], data["gy"], data["gz"]])
+        mag = np.array([data["mx"], data["my"], data["mz"]])
+
+        df.plotVect(timeList, accel, "Acceleration m/s2", 331)
+        df.plotVect(timeList, gyr, "Gyroscope m/s", 332)
+        df.plotVect(timeList, mag, "Magnetometer unit mag", 333)
+
+        plt.show()
+
+
+
 
 
 
