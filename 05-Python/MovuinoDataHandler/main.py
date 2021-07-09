@@ -14,12 +14,12 @@ from scipy import signal
 
 ############ SETTINGS #############
 
-device = 'skateboardXXX3000'  # devices available : skateboardXXX3000 / sensitivePen / globalDataSet
+device = 'sensitivePen'  # devices available : skateboardXXX3000 / sensitivePen / globalDataSet
 
-folderPath = "..\\_data\\skate_test\\"
+folderPath = "..\\_data\\test_pen_duree\\"
 fileName = "record"
 
-serialPort = 'COM3'
+serialPort = 'COM5'
 
 toExtract = False
 toDataManage = True
@@ -29,8 +29,8 @@ filter = 25
 ###################################
 
 nb_files = 0
-file_start = 6
-nbRecord = 6
+file_start = 1
+nbRecord = 9
 path = folderPath + fileName
 
 # --------- Data Extraction from Movuino ----------
@@ -78,10 +78,13 @@ if toDataManage:
     #nbRecord = 1
     for i in range(file_start, file_start+nbRecord+1):
         if (device == 'sensitivePen'):
+            print("Processing : "+ folderPath + fileName + "_" + str(i))
             dataSet = sp.SensitivePenDataSet(folderPath + fileName + "_" + str(i), filter)
         elif (device == 'skateboardXXX3000'):
+            print("Processing : " + folderPath + fileName + "_" + str(i))
             dataSet = sk.SkateboardXXX3000DataSet(folderPath + fileName + "_" + str(i), filter)
         elif (device == 'globalDataSet'):
+            print("Processing : " + folderPath + fileName + "_" + str(i))
             dataSet = gds.GlobalDataSet(folderPath + fileName + "_" + str(i), filter)
         else:
             print("No device matching")
