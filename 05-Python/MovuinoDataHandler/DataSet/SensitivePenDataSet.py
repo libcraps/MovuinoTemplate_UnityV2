@@ -3,7 +3,7 @@ import numpy as np
 
 class SensitivePenDataSet(MovuinoDataSet):
 
-    def __init__(self, filepath, nbPointfilter=25):
+    def __init__(self, filepath, saveFig, nbPointfilter=25):
         MovuinoDataSet.__init__(self, filepath, nbPointfilter)
         self.name = "SensitivePen"
 
@@ -12,6 +12,9 @@ class SensitivePenDataSet(MovuinoDataSet):
         self.posAngAcc = []
         self.initEulerAngles = []
         self.eulerAngles = []
+
+
+        self.saveFig = saveFig
 
     def DataManage(self):
         MovuinoDataSet.DataManage(self)
@@ -66,15 +69,15 @@ class SensitivePenDataSet(MovuinoDataSet):
         df.PlotVector(self.time, self.acceleration_lp, 'Acceleration filtered (LP)', 334)
         df.PlotVector(self.time, self.magnetometer_lp, 'Magnetometer filtered (LP)', 335)
 
-        normMag = plt.subplot(337)
+        normMag = plt.subplot(338)
         normMag.plot(self.time, self.normMagnetometer, color="black")
         normMag.set_title("Norm Magnetometer")
 
-        normAcc = plt.subplot(336)
+        normAcc = plt.subplot(337)
         normAcc.plot(self.time, self.normAcceleration, color="black")
         normAcc.set_title("Norm Acceleration")
 
-        sensitivePenAngle = plt.subplot(339)
+        sensitivePenAngle = plt.subplot(336)
         sensitivePenAngle.plot(self.time, self.sensitivePenAngles[:, 0], color="red", label= 'psi')
         sensitivePenAngle.plot(self.time, self.sensitivePenAngles[:, 1], color="blue", label= 'theta')
         sensitivePenAngle.grid(b=True, which='major')
@@ -82,11 +85,12 @@ class SensitivePenDataSet(MovuinoDataSet):
         sensitivePenAngle.tick_params(axis='y', which='minor', labelsize=12, color="#999999")
         sensitivePenAngle.minorticks_on()
         sensitivePenAngle.set_yticks([-180, -90, 0, 90, 180])
+        sensitivePenAngle.set_ylim(-220, 220)
         sensitivePenAngle.yaxis.set_minor_locator(MultipleLocator(45))
         sensitivePenAngle.legend(loc='upper right')
         sensitivePenAngle.set_title("Relevant angle (psi, theta) (deg)")
 
-
+        """
         magCal = plt.subplot(338)
         magCal.plot(self.magnetometer_lp[:, 0], self.magnetometer_lp[:, 1], marker = "^", linestyle="None", color="red", label="X, Y")
         magCal.plot(self.magnetometer_lp[:, 0], self.magnetometer_lp[:, 2], marker = "o", linestyle="None", color="green", label="X, Z")
@@ -95,6 +99,7 @@ class SensitivePenDataSet(MovuinoDataSet):
         magCal.grid(True)
         magCal.set_title("Mag calibrattion")
         magCal.set_aspect('equal')
+        """
 
 
         patchX = mpatches.Patch(color='red', label='x')

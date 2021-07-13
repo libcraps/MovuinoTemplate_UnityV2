@@ -273,6 +273,7 @@ void loop() {
     }
   }
 
+  delay(15);
 }
 
 

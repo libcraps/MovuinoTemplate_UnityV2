@@ -16,7 +16,7 @@ from scipy import signal
 
 device = 'sensitivePen'  # devices available : skateboardXXX3000 / sensitivePen / globalDataSet
 
-folderPath = "..\\_data\\test_pen_duree\\"
+folderPath = "..\\_data\\test_pen_duree_2\\"
 fileName = "record"
 
 serialPort = 'COM5'
@@ -26,11 +26,14 @@ toDataManage = True
 
 filter = 25
 
+##### If only data manage
+file_start = 1
+nbRecord = 9
+
 ###################################
 
 nb_files = 0
-file_start = 1
-nbRecord = 9
+
 path = folderPath + fileName
 
 # --------- Data Extraction from Movuino ----------
@@ -78,7 +81,7 @@ if toDataManage:
     #nbRecord = 1
     for i in range(file_start, file_start+nbRecord+1):
         if (device == 'sensitivePen'):
-            print("Processing : "+ folderPath + fileName + "_" + str(i))
+            print("--- Processing : "+ folderPath + fileName + "_" + str(i) + " --- ")
             dataSet = sp.SensitivePenDataSet(folderPath + fileName + "_" + str(i), filter)
         elif (device == 'skateboardXXX3000'):
             print("Processing : " + folderPath + fileName + "_" + str(i))
@@ -91,7 +94,7 @@ if toDataManage:
 
         dataSet.DataManage()
         Te = dataSet.Te
-        print(1/Te)
+        print("sample frequency : "+str(1/Te))
 
 
 
