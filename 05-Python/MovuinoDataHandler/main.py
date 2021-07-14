@@ -59,7 +59,7 @@ if toExtract:
             with open(path + "_" + str(nbRecord) + ".csv", "w") as file:
                 file.writelines(datafile)
 
-        if "NEW RECORD" in line_str and isReading == True :
+        if "XXX_newRecord" in line_str and isReading == True :
             with open(path + "_" + str(nbRecord) + ".csv", "w") as file:
                 file.writelines(datafile)
 
@@ -81,7 +81,7 @@ if toDataManage:
     #nbRecord = 1
     for i in range(file_start, file_start+nbRecord+1):
         if (device == 'sensitivePen'):
-            print("--- Processing : "+ folderPath + fileName + "_" + str(i) + " --- ")
+            print("--- Processing : " + folderPath + fileName + "_" + str(i) + " --- ")
             dataSet = sp.SensitivePenDataSet(folderPath + fileName + "_" + str(i), filter)
         elif (device == 'skateboardXXX3000'):
             print("Processing : " + folderPath + fileName + "_" + str(i))

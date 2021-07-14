@@ -23,6 +23,7 @@
 #define  CMD_STOP_RECORD   's' //Stop the record
 #define  CMD_LISTING_DIR   'l' //List files in the directory
 #define  CMD_PRINT_DAT     'p' //print one line of data
+#define  CMD_SPIFF_INFO    'i' //get informations about the spiff
 
 #define MPU_I2C_ADDRESS 0x69
 
@@ -169,8 +170,8 @@ void loop() {
       case CMD_PRINT_DAT:
         printMovuinoData();
         break;
-      case 'h':
-        Serial.print(file);
+      case CMD_SPIFF_INFO:
+        getInfoAboutSpiff();
         break;
       default:
         Serial.println("No command associated");

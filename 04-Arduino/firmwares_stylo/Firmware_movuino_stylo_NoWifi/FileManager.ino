@@ -26,7 +26,7 @@ void addNewRecord(String filepath)
       Serial.println("Error opening file for writing");
       return;
     }
-    file.println("-----------------   NEW RECORD   ---------------------");
+    file.println("XXX_newRecord");
     initialiseFileMovuinoData(file, sep);
 }
 
@@ -89,4 +89,40 @@ void formatingSPIFFS(){
   {
     Serial.println("\n\nError formatting");
   }
+}
+
+void getInfoAboutSpiff(){
+      // Get all information about SPIFFS
+    FSInfo fsInfo;
+    SPIFFS.info(fsInfo);
+    
+    Serial.println("File system info");
+    
+    // Taille de la zone de fichier
+    Serial.print("Total space:      ");
+    Serial.print(fsInfo.totalBytes);
+    Serial.println("byte");
+    
+    // Espace total utilise
+    Serial.print("Total space used: ");
+    Serial.print(fsInfo.usedBytes);
+    Serial.println("byte");
+ 
+    // Taille d un bloc et page
+    Serial.print("Block size:       ");
+    Serial.print(fsInfo.blockSize);
+    Serial.println("byte");
+ 
+    Serial.print("Page size:        ");
+    Serial.print(fsInfo.totalBytes);
+    Serial.println("byte");
+ 
+    Serial.print("Max open files:   ");
+    Serial.println(fsInfo.maxOpenFiles);
+ 
+    // Taille max. d un chemin
+    Serial.print("Max path lenght:  ");
+    Serial.println(fsInfo.maxPathLength);
+ 
+    Serial.println();
 }
