@@ -52,15 +52,13 @@ void readFile(String filepath)
     else 
     {
 
-      if (l_ == "XXX_newRecord")
+      if (l_.startsWith("XXX_newRecord"))
       {
+          
           file.flush();
       }
-      else
-      {
-          Serial.println(l_);
-          l_ = "";
-      }
+      Serial.println(l_);
+      l_ = "";
     }
   }
   file.close();

@@ -16,19 +16,19 @@ from scipy import signal
 
 device = 'sensitivePen'  # devices available : skateboardXXX3000 / sensitivePen / globalDataSet
 
-folderPath = "..\\_data\\test_code_pen_duree_2\\"
+folderPath = "..\\_data\\test_code_pen_duree_3\\"
 fileName = "record"
 
 serialPort = 'COM5'
 
-toExtract = True
+toExtract = False
 toDataManage = True
 
 filter = 25
 
 ##### If only data manage
 file_start = 1
-nbRecord = 9
+nbRecord = 10
 
 ###################################
 

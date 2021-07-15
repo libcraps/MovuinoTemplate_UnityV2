@@ -212,23 +212,23 @@ void loop() {
   }
 
 
-  //----- GET MPU DATA ------
-  IMU.readSensor();
-  //print9axesDataMPU(IMU);
-  get9axesDataMPU(IMU, &ax, &ay, &az, &gx, &gy, &gz, &mx, &my, &mz);
-  //magnetometerAutoCallibration();
-  currentTime = millis() - startTime;
 
   //------- Writing in File ------------
   if (isEditable)
   {
     static uint32_t prev_ms = millis();
-    if (millis() > prev_ms + 25)
+    if (millis() > prev_ms + 10)
     {
       if (file && SPIFFS.exists(filePath))
       {
-        digitalWrite(pinLedBat, HIGH);
+        
+        //----- GET MPU DATA ------
+        IMU.readSensor();
+        get9axesDataMPU(IMU, &ax, &ay, &az, &gx, &gy, &gz, &mx, &my, &mz);
+        currentTime = millis() - startTime;
+
         writeInFileMovuinoData(file, sep);
+        digitalWrite(pinLedBat, HIGH);
 
       } else
       {
