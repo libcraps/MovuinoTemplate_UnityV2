@@ -39,9 +39,29 @@ void readFile(String filepath)
     Serial.println("Error opening file for reading");
     return;
   }
+  
   Serial.println("XXX_beginning");
-  while(file.available()){
-    Serial.write(file.read());
+  String l_ = "";
+  while(file.available())
+  {
+    char c_ = file.read();
+    if(c_ != '\n') 
+    {
+        l_ += c_;
+    }
+    else 
+    {
+
+      if (l_ == "XXX_newRecord")
+      {
+          file.flush();
+      }
+      else
+      {
+          Serial.println(l_);
+          l_ = "";
+      }
+    }
   }
   file.close();
   Serial.println("XXX_end");

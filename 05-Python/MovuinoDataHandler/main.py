@@ -16,12 +16,12 @@ from scipy import signal
 
 device = 'sensitivePen'  # devices available : skateboardXXX3000 / sensitivePen / globalDataSet
 
-folderPath = "..\\_data\\test_pen_duree_2\\"
+folderPath = "..\\_data\\test_code_pen_duree_2\\"
 fileName = "record"
 
 serialPort = 'COM5'
 
-toExtract = False
+toExtract = True
 toDataManage = True
 
 filter = 25
@@ -44,7 +44,7 @@ if toExtract:
     arduino = serial.Serial(serialPort, baudrate=115200, timeout=1.)
     line_byte = ''
     line_str = ''
-    datafile = []
+    datafile = ''
     nbRecord = 1
 
     while ExtractionCompleted != True:
@@ -57,23 +57,25 @@ if toExtract:
             print("End of data sheet")
 
             with open(path + "_" + str(nbRecord) + ".csv", "w") as file:
-                file.writelines(datafile)
+                file.write(datafile)
 
         if "XXX_newRecord" in line_str and isReading == True :
+            print("Add new file")
             with open(path + "_" + str(nbRecord) + ".csv", "w") as file:
-                file.writelines(datafile)
+                file.write(datafile)
 
-            datafile = []
+            datafile = ''
             line_str = ''
             nbRecord += 1
 
         if (isReading):
             if line_str != '':
-                datafile.append(line_str[:-1])
-                print("Add Data")
+                datafile += line_str
+
 
         if ("XXX_beginning" in line_str):
             isReading = True
+            print("Record begins")
 
 
 if toDataManage:
