@@ -1,6 +1,8 @@
 void magnometerCalibration()
 {
-    
+  /*
+   * Calibrate magnetometer of the IMU using the IMU function
+   */
   Serial.println("Calibrating Magnetometer : ");
   Serial.println("Please continuously and slowly move the sensor in a figure 8 while the function is running");
   
@@ -17,7 +19,9 @@ void magnometerCalibration()
 
 void accelerometerCalibration()
 {
-    
+    /*
+   * Calibrate accelerometer of the IMU using the IMU function
+   */
   Serial.println("Calibrating accelerometer : ");
   
   int statusAccelCal = IMU.calibrateAccel();
@@ -33,7 +37,9 @@ void accelerometerCalibration()
 
 void gyroscopeCalibration()
 {
-    
+  /*
+   * Calibrate Gyro of the IMU using the IMU function
+   */
   Serial.println("Calibrating Gyro : ");
   
   int statusGyrCal = IMU.calibrateGyro();
@@ -48,7 +54,9 @@ void gyroscopeCalibration()
 }
 
 void print9axesDataMPU(MPU9250 IMU){
-  // display the data
+  /* 
+   * display the data of IMU 
+   */
   Serial.print(IMU.getAccelX_mss(),6);
   Serial.print("\t");
   Serial.print(IMU.getAccelY_mss(),6);

@@ -9,20 +9,18 @@ import numpy as np
 import matplotlib.pyplot as plt
 from scipy import signal
 
-
-#folderPath = "..\\Data\\Movuino-heel_50HZ_smooth15\\"
-
 ############ SETTINGS #############
 
 device = 'sensitivePen'  # devices available : skateboardXXX3000 / sensitivePen / globalDataSet
 
-folderPath = "..\\_data\\test_code_pen_duree_3\\"
-fileName = "record"
+folderPath = "..\\_data\\test_code_pen_duree_2\\"
+fileName = "record" #generic name numbers will be added for duplicates
 
 serialPort = 'COM5'
 
 toExtract = False
 toDataManage = True
+toVisualize = True
 
 filter = 25
 
@@ -71,6 +69,7 @@ if toExtract:
         if (isReading):
             if line_str != '':
                 datafile += line_str
+                print(repr(line_str))
 
 
         if ("XXX_beginning" in line_str):
@@ -97,6 +96,9 @@ if toDataManage:
         dataSet.DataManage()
         Te = dataSet.Te
         print("sample frequency : "+str(1/Te))
+
+        if toVisualize:
+            dataSet.VisualizeData()
 
 
 

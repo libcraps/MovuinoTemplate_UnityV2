@@ -20,6 +20,10 @@ void createFile(String filepath)
 
 void addNewRecord(String filepath)
 {
+  /*
+   * Add a new record in the file ine the location filepath
+   * The separation between the 2 file is the lign "XXX_newRecord"
+   */
     file = SPIFFS.open(filePath, "a");     
     if (!file) 
     {
@@ -32,7 +36,10 @@ void addNewRecord(String filepath)
 
 void readFile(String filepath)
 {
-  
+  /*
+   * Read the file in the position "filepath"
+   * Print a line "XXX_beginning" at the beginning and a line "XXX_end" at the end of the file.
+   */
   File file = SPIFFS.open(filepath, "r");
   
   if (!file) {
@@ -67,7 +74,9 @@ void readFile(String filepath)
 
 void writeData(String filePath)
 {
-  
+  /*
+   * Write in the file in the position "filepath"
+   */
   file = SPIFFS.open(filePath, "a");
   
   if (!file) 
@@ -84,6 +93,9 @@ void writeData(String filePath)
 
 void listingDir(String dirPath)
 {
+  /*
+   * Print the directory of the spiffs and the size of each file
+   */
   Serial.println("Listing dir :");
   Dir dir = SPIFFS.openDir(dirPath);
   while (dir.next()) 
@@ -98,19 +110,24 @@ void listingDir(String dirPath)
 }
 
 void formatingSPIFFS(){
+  /*
+   * Formate the spiffs
+   */
   bool formatted = SPIFFS.format();
   if(formatted)
   {
-    Serial.println("\n\nSuccess formatting");
+    Serial.println("\nSuccess formatting");
   }
   else
   {
-    Serial.println("\n\nError formatting");
+    Serial.println("\nError formatting");
   }
 }
 
 void getInfoAboutSpiff(){
-      // Get all information about SPIFFS
+      /* 
+       * Get all information about SPIFFS 
+       */
     FSInfo fsInfo;
     SPIFFS.info(fsInfo);
     

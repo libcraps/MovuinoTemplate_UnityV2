@@ -23,10 +23,11 @@ class MovuinoDataSet():
     It manages the data in order to process it after.
     In this class only basic operations are done : filtration and norm
 
+
     """
     def __init__(self, filepath, nbPointfilter = 15):
         """
-        Get the data from the file (.csv) ad initialize variables.
+        Get the data from the file (.csv) ad initialize global variables.
 
 
         :param filepath: Where the file is stocked.
@@ -78,12 +79,13 @@ class MovuinoDataSet():
 
         :return: -
         """
-        for k in range(self.nb_row):
+
+        for k in range(self.nb_row): #We stock rawData in variables
             self.acceleration.append(np.array([self.rawData["ax"][k], self.rawData["ay"][k], self.rawData["az"][k]]))
             self.gyroscope.append(np.array([self.rawData["gx"][k], self.rawData["gy"][k], self.rawData["gz"][k]])*180/np.pi)
             self.magnetometer.append(np.array([self.rawData["mx"][k], self.rawData["my"][k], self.rawData["mz"][k]]))
 
-            if k < self.nb_row-1:
+            if k < self.nb_row-1: #Calculation of the norm
                 self.normAcceleration.append(np.linalg.norm(self.acceleration[k]))
                 self.normGyroscope.append(np.linalg.norm(self.gyroscope[k]))
                 self.normMagnetometer.append(np.linalg.norm(self.magnetometer[k]))
@@ -111,6 +113,12 @@ class MovuinoDataSet():
         :return:
         """
         self.rawData.to_csv(filepath + "_treated" + ".csv", sep=",", index=False, index_label=False)
+
+    def VisualizeData(self):
+        self.PlotImage()
+        plt.show()
+
+        return
 
     def PlotImage(self):
         """

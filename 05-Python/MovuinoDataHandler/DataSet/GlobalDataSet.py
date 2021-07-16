@@ -2,7 +2,7 @@ from dataSet.MovuinoDataSet import *
 
 class GlobalDataSet(MovuinoDataSet):
     """
-
+    Class created mainly for debugging, it has for purpose to stock most of the data that we may need
     """
 
     def __init__(self, filepath, nbPointfilter = 25):
@@ -29,7 +29,7 @@ class GlobalDataSet(MovuinoDataSet):
 
     def DataManage(self):
         """
-
+        Calculate
         :return:
         """
         MovuinoDataSet.DataManage(self)
@@ -91,8 +91,6 @@ class GlobalDataSet(MovuinoDataSet):
         # file managing
         self.AddingRawData()
         self.StockIntoNewFile(self.filepath)
-        self.PlotImage()
-        plt.show()
 
     def AddingRawData(self):
         MovuinoDataSet.AddingRawData(self)
@@ -127,6 +125,10 @@ class GlobalDataSet(MovuinoDataSet):
 
     def StockIntoNewFile(self, filepath):
         self.rawData.to_csv(filepath + "_treated_" + self.name + ".csv", sep=",", index=False, index_label=False)
+
+    def VisualizeData(self):
+        self.PlotImage()
+        plt.show()
 
     def PlotImage(self):
         MovuinoDataSet.PlotImage(self)

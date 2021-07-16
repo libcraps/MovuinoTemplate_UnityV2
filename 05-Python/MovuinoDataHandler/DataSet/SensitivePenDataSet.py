@@ -2,21 +2,30 @@ from dataSet.MovuinoDataSet import *
 import numpy as np
 
 class SensitivePenDataSet(MovuinoDataSet):
+    """Class that represent a data set of the sensitiv pen.
 
-    def __init__(self, filepath, saveFig, nbPointfilter=25):
+    """
+    def __init__(self, filepath, nbPointfilter=25):
+        """
+        Constructor of the class
+        :param filepath: filepath of the raw data set
+        :param nbPointfilter: level of filtering for the datamanage
+        """
         MovuinoDataSet.__init__(self, filepath, nbPointfilter)
         self.name = "SensitivePen"
 
+        # Relevant angle for the pen
         self.sensitivePenAngles = []
 
         self.posAngAcc = []
         self.initEulerAngles = []
         self.eulerAngles = []
 
-
-        self.saveFig = saveFig
-
     def DataManage(self):
+        """
+
+        :return:
+        """
         MovuinoDataSet.DataManage(self)
 
         # --- Getting initial euler angles
@@ -56,8 +65,7 @@ class SensitivePenDataSet(MovuinoDataSet):
         self.rawData["theta"] = self.sensitivePenAngles[:, 1]
 
         self.StockIntoNewFile(self.filepath)
-        self.PlotImage()
-        plt.show()
+
 
 
     def StockIntoNewFile(self, filepath):
@@ -106,6 +114,11 @@ class SensitivePenDataSet(MovuinoDataSet):
         patchY = mpatches.Patch(color='green', label='y')
         patchZ = mpatches.Patch(color='blue', label='z')
         #plt.legend(handles=[patchX, patchY, patchZ], loc="center right", bbox_to_anchor=(-2.5,3.6),ncol=1)
+
+    def VisualizeData(self):
+        self.PlotImage()
+        plt.show()
+
 
     @staticmethod
     def PlotCompleteFile(filepath, sep, dec):

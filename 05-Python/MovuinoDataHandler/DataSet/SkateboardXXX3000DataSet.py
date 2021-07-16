@@ -26,11 +26,12 @@ class SkateboardXXX3000DataSet(MovuinoDataSet):
         self.AddingRawData()
         self.StockIntoNewFile(self.filepath)
 
-        self.PlotImage()
-        plt.show()
-
     def StockIntoNewFile(self, filepath):
         self.rawData.to_csv(filepath + "_treated_" + self.name + ".csv", sep=",", index=False, index_label=False)
+
+    def VisualizeData(self):
+        self.PlotImage()
+        plt.show()
 
     def PlotImage(self):
         MovuinoDataSet.PlotImage(self)

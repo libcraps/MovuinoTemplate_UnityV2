@@ -25,6 +25,9 @@ void printMovuinoData()
   Serial.println();
 }
 void writeInFileMovuinoData(File file, String sep) {
+  /*
+   * Write in the File "file" all 9 axes data from the movuino separate by the String sep
+   */
   file.print(currentTime);
   file.print(sep);
   file.print(-ax);
@@ -47,6 +50,9 @@ void writeInFileMovuinoData(File file, String sep) {
   file.println();
 }
 void initialiseFileMovuinoData(File file, String sep) {
+  /*
+   * Write the name of each column of 9 axes movuino data in the File file
+   */
   file.print("time");
   file.print(sep);
   file.print("ax");

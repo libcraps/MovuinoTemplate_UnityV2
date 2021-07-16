@@ -1,6 +1,10 @@
 import numpy as np
 import math
 
+"""
+Usefull mainly for the sensitiv pen, it has some methods that calculates angle of the mvunio
+"""
+
 def getInclinaison(U):
     """
     Calculate angles between a vector and x,y,z axes
