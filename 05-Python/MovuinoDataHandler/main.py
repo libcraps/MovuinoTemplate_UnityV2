@@ -2,23 +2,25 @@ import serial
 import dataSet.SensitivePenDataSet as sp
 import dataSet.SkateboardXXX3000DataSet as sk
 import dataSet.GlobalDataSet as gds
-import tools.DisplayFunctions as df
 import dataSet.MovuinoDataSet as dm
+import tools.DisplayFunctions as df
 import os
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy import signal
 
-############ SETTINGS #############
+
+
+############   SETTINGS   #############
 
 device = 'sensitivePen'  # devices available : skateboardXXX3000 / sensitivePen / globalDataSet
 
-folderPath = "..\\_data\\test_code_pen_duree_3\\"
-fileName = "record" #generic name numbers will be added for duplicates
+folderPath = "..\\_data\\4polo_2\\"
+fileName = "record"  # generic name numbers will be added for duplicates
 
 serialPort = 'COM5'
 
-toExtract = True
+toExtract = False
 toDataManage = True
 toVisualize = True
 
@@ -33,6 +35,7 @@ nbRecord = 10
 nb_files = 0
 
 path = folderPath + fileName
+
 
 # --------- Data Extraction from Movuino ----------
 if toExtract:

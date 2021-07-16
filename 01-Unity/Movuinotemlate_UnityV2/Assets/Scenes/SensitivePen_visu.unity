@@ -1364,7 +1364,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 22a21445e18272e4291ebe1854bf30cf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  folderPath: .\\Data_visu\\test_w_paulo\\
+  folderPath: .\\Data_visu\\4polo_2\\
   filename: record_1_treated_sensitivePen.csv
   i: 0
 --- !u!114 &1497267972
@@ -1380,7 +1380,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _exportIntoFile: 1
-  _folderPath: .\\Data_visu\\test_ecriture_live\\
+  _folderPath: criture_live\\test_ecriture_live\\
   _filename: record_1.csv
   vertAngle: {fileID: 1031240780}
   horizAngle: {fileID: 1304062949}
