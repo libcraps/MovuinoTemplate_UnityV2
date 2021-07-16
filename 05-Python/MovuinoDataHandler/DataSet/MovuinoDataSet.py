@@ -23,7 +23,38 @@ class MovuinoDataSet():
     It manages the data in order to process it after.
     In this class only basic operations are done : filtration and norm
 
+    -> Attributs :
+    * filepath : dataset filepath
+    * rawData : dataframe containing the dataset
+    * nbPointFilter : level of filtering
+    * time : time list of the rawData
+    * Te : sample rate
+    * nb_row : number of line in rawData
 
+    * acceleration : acceleration list
+    * gyroscope : gyroscope list
+    * magnetometer : magnetometer list
+
+    * listMeanAcc : acceleration list usefull for data filtering
+    * listMeanGyr : gyroscope list usefull for data filtering
+    * listMeanMag : magnetometer list usefull for data filtering
+
+    * acceleration_lp : acceleration filtered list
+    * gyroscope_lp : gyroscope filtered list
+    * magnetometer_lp : magnetometer filtered list
+
+    * normAcceleration : list of norm acceleration
+    * normGyroscope : list of norm gyroscope
+    * normMagnetometer : list of norm magnetometer
+
+    -> Methods :
+    * __init(filepath, nbPointFilter) : constructor
+    * DataManage : Processes the data
+    * StockIntoNewFile : stock the data into a new file
+    * VisualizeData : Visualize data
+    * PlotImage : Put into subplot differents variables
+    * AddingRawData : Add rows in the rawData
+    * PlotCompleteFile (@static) : Show a complete file whithout processing data
     """
     def __init__(self, filepath, nbPointfilter = 15):
         """
@@ -71,7 +102,6 @@ class MovuinoDataSet():
         # number of row
         self.nb_row = len(self.time)
 
-
     def DataManage(self):
         """
         Does the basic operations on data.
@@ -103,8 +133,6 @@ class MovuinoDataSet():
         self.acceleration_lp = np.array(self.acceleration_lp)
         self.gyroscope_lp = np.array(self.gyroscope_lp)
         self.magnetometer_lp = np.array(self.magnetometer_lp)
-
-
 
     def StockIntoNewFile(self, filepath):
         """

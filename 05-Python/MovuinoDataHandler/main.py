@@ -13,12 +13,12 @@ from scipy import signal
 
 device = 'sensitivePen'  # devices available : skateboardXXX3000 / sensitivePen / globalDataSet
 
-folderPath = "..\\_data\\test_code_pen_duree_2\\"
+folderPath = "..\\_data\\test_code_pen_duree_3\\"
 fileName = "record" #generic name numbers will be added for duplicates
 
 serialPort = 'COM5'
 
-toExtract = False
+toExtract = True
 toDataManage = True
 toVisualize = True
 
@@ -68,9 +68,7 @@ if toExtract:
 
         if (isReading):
             if line_str != '':
-                datafile += line_str
-                print(repr(line_str))
-
+                datafile += line_str.strip() + '\n'
 
         if ("XXX_beginning" in line_str):
             isReading = True
