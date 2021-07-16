@@ -59,7 +59,7 @@ uint32_t Green = pixel.Color(0, 255, 0);
 //FILE
 File file;
 String dirPath = "/data";
-String filePath = "/data/file2.txt";
+String filePath = "/data/record.txt";
 String sep = ",";
 String serialMessage;
 bool isEditable = false;
