@@ -27,6 +27,10 @@ namespace Movuino
         /// </summary>
         [Tooltip("OSC adress that the movuino will read.")]
         [SerializeField] private string _movuinoAdress;
+
+        /// <summary>
+        /// Level of filtering of the data.
+        /// </summary>
         [Tooltip("Level of filtering of the data.")]
         [SerializeField] private int _nbPointFilter;
 
@@ -79,15 +83,15 @@ namespace Movuino
 
         //Data for the duration of the frame
         /// <summary>
-        /// Value of the acceleration during the current frame
+        /// Value of the norm of acceleration during the current frame
         /// </summary>
         public float normAccel { get { return _normAccel; } }
         /// <summary>
-        /// Value of the gyro during the current frame
+        /// Value of the norm of gyro during the current frame
         /// </summary>
         public float normGyro { get { return (_normGyro) * (float)(360 / (2 * 3.14)); } }
         /// <summary>
-        /// Value of the magnetometer during the current frame
+        /// Value of the norm of magnetometer during the current frame
         /// </summary>
         public float normMag { get { return _normMag; } }
 
@@ -214,12 +218,11 @@ namespace Movuino
         /// Initial coordinate system of the movuino
         /// </summary>
         public Coordinates initmovuinoCoordinates;
-        
         #endregion
 
         #region Methods
 
-        #region Unity implemented Methos
+        #region Unity implemented Methods
         private void Awake()
         {
             Init();

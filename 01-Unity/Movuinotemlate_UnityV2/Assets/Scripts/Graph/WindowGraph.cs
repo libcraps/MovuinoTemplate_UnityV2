@@ -51,8 +51,6 @@ namespace Graph
         /// </summary>
         private void Awake()
         {
-            //CreateCircle(new Vector2(200, 200));
-            //liste = new List<float>();
             curveList = new List<Curve>();
             nbCurve = 3;
 

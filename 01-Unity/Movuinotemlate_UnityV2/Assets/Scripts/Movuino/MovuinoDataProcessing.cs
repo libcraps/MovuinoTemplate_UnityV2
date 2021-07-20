@@ -11,6 +11,8 @@ namespace Movuino
     public static class MovuinoDataProcessing
     {
         public static float RAD_TO_DEG = 180 / Mathf.PI;
+        public static float DEG_TO_RAD = 1/RAD_TO_DEG;
+
         /// <summary>
         /// Integrate with Euler methods incoming data
         /// </summary>
