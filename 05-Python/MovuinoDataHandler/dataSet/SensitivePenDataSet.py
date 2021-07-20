@@ -32,8 +32,6 @@ class SensitivePenDataSet(MovuinoDataSet):
         initRotationMatrix = gam.rotationMatrixCreation(self.acceleration_lp[15], self.magnetometer_lp[15])
         self.initPsi = math.atan2(initRotationMatrix[0, 1], initRotationMatrix[0,0])
 
-        heading=[]
-
         for k in range(len(self.time)):
             # --- Getting rotation matrix from filtered data
             rotationMatrix = gam.rotationMatrixCreation(self.acceleration_lp[k], self.magnetometer_lp[k])
@@ -43,10 +41,10 @@ class SensitivePenDataSet(MovuinoDataSet):
             theta = self.posAngAcc[k][0] - 90
 
             # --- getting oriantation of the pen (for psi)
-            a00 = rotationMatrix[0, 0]
-            a01 = rotationMatrix[0, 1]
+            a00 = rotationMatrix[0, 0] # N.x
+            a01 = rotationMatrix[0, 1] # E.x
 
-            if (abs(theta) > 80):
+            if (abs(theta) > 360): #set the lim to 80 but not usefull now
                 psi = 0
             else:
                 psi = (math.atan2(a01, a00) - self.initPsi) * 180/math.pi
@@ -64,6 +62,7 @@ class SensitivePenDataSet(MovuinoDataSet):
         self.rawData["psi"] = self.sensitivePenAngles[:, 0]
         self.rawData["theta"] = self.sensitivePenAngles[:, 1]
 
+        MovuinoDataSet.AddingRawData(self)
         self.StockIntoNewFile(self.filepath)
 
 

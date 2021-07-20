@@ -277,6 +277,10 @@ namespace Movuino.Data
         }
     }
 
+    /// <summary>
+    /// Class that represent all the usefull data of the sensitivPen
+    /// </summary>
+    /// <remarks>TODO : Add norm of the magnetometer</remarks>
     public class DataMovuinoSensitivePen : DataSession
     {
         /// <value>Id of the movuino</value>
@@ -310,7 +314,7 @@ namespace Movuino.Data
         /// Create the DataTable of this object
         /// </summary>
         /// <param name="data">Not usefull for the moment</param>
-        /// <returns>DataTable</returns>
+        /// <returns>DataTable that contain all the data</returns>
         public override DataTable CreateDataTable(params DataTable[] data)
         {
             DataTable table = new DataTable();

@@ -682,8 +682,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 22a21445e18272e4291ebe1854bf30cf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  folderPath: .\\Data_visu\\
-  filename: Movuino-360flip_50HZ_smooth15treated.csv
+  folderPath: .\\Data_visu\\Data_type_for_the_moment\\Only_tricks_notransition\\
+  filename: record_4_treated_skateboardXXX3000.csv
   i: 0
 --- !u!114 &989633281
 MonoBehaviour:
@@ -700,7 +700,6 @@ MonoBehaviour:
   oscManager: {fileID: 0}
   _movuinoAdress: 
   _nbPointFilter: 0
-  _fcHighPass: 0
 --- !u!1 &1023236312
 GameObject:
   m_ObjectHideFlags: 0

@@ -15,7 +15,7 @@ from scipy import signal
 
 device = 'sensitivePen'  # devices available : skateboardXXX3000 / sensitivePen / globalDataSet
 
-folderPath = "..\\_data\\4polo_2\\"
+folderPath = "..\\data_usefull\\template\\"
 fileName = "record"  # generic name numbers will be added for duplicates
 
 serialPort = 'COM5'

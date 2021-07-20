@@ -41,7 +41,7 @@ class GlobalDataSet(MovuinoDataSet):
             self.posAngAcc.append(inc)
 
             #--- Getting euler angles from filtered data
-            rotMat = gam.rotationMatrixCreation(-self.acceleration_lp[k], self.magnetometer_lp[k])
+            rotMat = gam.rotationMatrixCreation(self.acceleration_lp[k], self.magnetometer_lp[k])
             self.rotationMatrix.append(rotMat)
 
             a00 = rotMat[0, 0]
@@ -56,7 +56,7 @@ class GlobalDataSet(MovuinoDataSet):
 
             theta = (inc[0]-90)
 
-            if (abs(theta)>80):
+            if (abs(theta)>360):
                 psi = 0
             else:
                 psi = math.atan2(a01, a00) * 180/math.pi

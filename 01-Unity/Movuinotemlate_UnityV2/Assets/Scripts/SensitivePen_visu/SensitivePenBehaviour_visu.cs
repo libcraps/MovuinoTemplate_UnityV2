@@ -7,38 +7,48 @@ using Device;
 using System.IO;
 
 
+/// <summary>
+/// Inherited class from ObjectMovuino_visu, it represent the sensitivPen developped during/for the PhD of Ana Phelipeau
+/// </summary>
+/// <remarks>It allows us tu see on Unity two relevant angle for the project : 
+/// <list type="bullet">
+/// <item>psi : that correspond to the orientation of the pen</item>
+/// <item>theta : that correspond to the inclination of the pen</item>
+/// </list>
+/// </remarks>
 public class SensitivePenBehaviour_visu : ObjectMovuino_visu
 {
+    /// <summary>
+    /// File where would like to stock data during the online mode
+    /// </summary>
     [SerializeField] private bool _exportIntoFile;
 
-    /// <summary>
-    /// Path of the export data file
-    /// </summary>
+
+    [Tooltip("Path of the export data file.")]
     [SerializeField] private string _folderPath;
+    [Tooltip("Filename.")]
     [SerializeField] private string _filename;
 
     [SerializeField] private GameObject vertAngle;
     [SerializeField] private GameObject horizAngle;
 
+    [Tooltip("Sample rate for the offline mode.")]
     [SerializeField] private float offlineSampleRate;
 
     private DataMovuinoSensitivePen _movuinoExportData;
-
-    Vector3 angle;
-    Vector3 initAngle;
 
     private float startTime;
     private float prevTime;
     private int i { get { return movuinoDataSet.i; } }
     private bool end;
 
-    //Angles we wnt with sensitiv pen
-    float theta;
-    float psi;
+    //Angles we want with sensitiv pen
+    private float theta;
+    private float psi;
 
-    float initPsi;
+    float initPsi = 666;
 
-    
+    Vector3 initAngle;
 
 
     public void Start()
@@ -47,9 +57,7 @@ public class SensitivePenBehaviour_visu : ObjectMovuino_visu
 
         if (offlineMode)
         {
-            //movuinoDataSet.Init(dataPath);
             print("Movuino offline mode");
-            //InvokeRepeating("AnimatePen", 1f, offlineSampleRate);
         }
         else if (onlineMode)
         {
@@ -67,8 +75,10 @@ public class SensitivePenBehaviour_visu : ObjectMovuino_visu
     {
         if (onlineMode)
         {
-
-            initPsi = GetPenOrientation(movuinoBehaviour.initmovuinoCoordinates.rotationMatrix);
+            if (initPsi == 666)
+            {
+                initPsi = GetPenOrientation(movuinoBehaviour.initmovuinoCoordinates.rotationMatrix);
+            }
 
             theta = movuinoBehaviour.angleAccelOrientation.x-90;
 
@@ -88,9 +98,6 @@ public class SensitivePenBehaviour_visu : ObjectMovuino_visu
             graphData.y = movuinoBehaviour.magnetometerSmooth.magnitude;
             graphData.z = theta;
 
-            //graphData = movuinoBehaviour.movuinoCoordinates.xAxis;
-            //angle = new Vector3(theta, psi, 0);            
-            //this.gameObject.transform.Rotate(movuinoBehaviour.gyroscopeRaw * Time.deltaTime);
 
             this.gameObject.transform.eulerAngles = new Vector3(-theta, psi, 0);
 
@@ -101,7 +108,6 @@ public class SensitivePenBehaviour_visu : ObjectMovuino_visu
         } 
         else if (offlineMode)
         {
-
 
             if (Time.time - prevTime > offlineSampleRate)
             {
@@ -136,8 +142,17 @@ public class SensitivePenBehaviour_visu : ObjectMovuino_visu
             DataManager.ToCSV(_movuinoExportData.DataTable, _folderPath + _filename);
         }
     }
+
+    /// <summary>
+    /// Calculate psi for the sensitive pen cf doc that explain the methods
+    /// </summary>
+    /// <param name="coord"></param>
+    /// <returns>angle</returns>
     private float GetPenOrientation(Matrix4x4 coord)
     {
+        /*
+         * x' (xpen) is in the line of the matrix
+         */
         float a00 = coord.m00;
         float a01 = coord.m01;
         print(coord);

@@ -9,16 +9,22 @@ using UnityEngine.UI;
 namespace Graph
 {
     /// <summary>
-    /// Class that manages the graph representation
+    /// Class that manages the graph representation and his curves
     /// </summary>
     public class WindowGraph : MonoBehaviour
     {
         //---- Window part -----
+        [Tooltip("Dot representation.")]
         [SerializeField] private Sprite circleSprite;
+        [Tooltip("Graph that will contain every cuvres (must have a RectTransform components).")]
         [SerializeField] private RectTransform graphContainer;
+        [Tooltip("Curve prefab (must have a script 'Curve' as components).")]
         [SerializeField] private Curve curvePrefab;
+        [Tooltip("Vertical maximum value (from the middle of the graph.")]
         [SerializeField] private int _yMax;
+        [Tooltip("Number of dots that you wwill have in the graph.")]
         [SerializeField] private int nbDot;
+
         private List<Curve> curveList;
         private int nbCurve;
 
@@ -30,12 +36,19 @@ namespace Graph
         private Text angleZ;
 
         //--------- Movuino part -----
+        /// <summary>
+        /// Movuino object that you want to represent
+        /// </summary>
+        [Tooltip("Must have a script component that inherit from 'ObjectMovuino_visu'.")]
         [SerializeField] private ObjectMovuino_visu objectVisu;
 
         //test
         private List<float> liste;
         private int i = 0;
 
+        /// <summary>
+        /// Initialise and instantitaes objects that you will need during the 
+        /// </summary>
         private void Awake()
         {
             //CreateCircle(new Vector2(200, 200));
@@ -61,6 +74,9 @@ namespace Graph
             angleY = rawDataText.transform.Find("AngleY").GetComponent<Text>();
             angleZ = rawDataText.transform.Find("AngleZ").GetComponent<Text>();
         }
+        /// <summary>
+        /// Update graph values
+        /// </summary>
         private void Update()
         {
             float valX=0;

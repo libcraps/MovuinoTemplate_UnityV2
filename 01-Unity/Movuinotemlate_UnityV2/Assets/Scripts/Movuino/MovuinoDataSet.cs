@@ -13,12 +13,23 @@ namespace Movuino
     /// </summary>
     public class MovuinoDataSet: MonoBehaviour
     {
+        /// <summary>
+        /// Path of the file.
+        /// </summary>
+        [Tooltip("Path of the file.")]
         [SerializeField] private string folderPath;
+        /// <summary>
+        /// Name of the file.
+        /// </summary>
+        [Tooltip("Name of the file.")]
         [SerializeField] private string filename;
 
         List<object[]> rawData_ = new List<object[]>();
         DataTable _rawData;
 
+        /// <summary>
+        /// DataTable that contain ll the data set.
+        /// </summary>
         public DataTable rawData
         {
             get { return _rawData; }
@@ -29,14 +40,34 @@ namespace Movuino
             get { return _rawData.Rows; }
         }
 
-
+        /// <summary>
+        /// Current index in the dataTable
+        /// </summary>
         public int i;
 
         #region Properties
+        //Basic data that you should find in a movuino file
+        /// <summary>
+        /// Returns the time value at the index i.
+        /// </summary>
         public float time { get { return GetValue("time",i); } }
+        /// <summary>
+        /// Returns the vector acceleration at the index i.
+        /// </summary>
         public Vector3 acceleration { get { return GetAcceleration(i); } }
+        /// <summary>
+        /// Returns the vector gyro at the index i.
+        /// </summary>
         public Vector3 gyroscope { get { return GetGyroscope(i); } }
+        /// <summary>
+        /// Returns the vector magnetometer at the index i.
+        /// </summary>
         public Vector3 magnetometre { get { return GetMagnetometre(i); } }
+
+        /// <summary>
+        /// Returns the vector angleGyr at the index i.
+        /// </summary>
+        /// <remarks>It doesn't have to be obligatory in the file.</remarks>
         public Vector3 angleGyrOrientation 
         { 
             get 
@@ -51,6 +82,11 @@ namespace Movuino
                 }
             } 
         }
+
+        /// <summary>
+        /// Returns the vector angleAccelOrientation at the index i.
+        /// </summary>
+        /// <remarks>It doesn't have to be obligatory in the file.</remarks>
         public Vector3 angleAccelOrientationRaw
         {
             get
@@ -78,6 +114,10 @@ namespace Movuino
             
         }
 
+        /// <summary>
+        /// Read and stock a csv in the rawData dataTable.
+        /// </summary>
+        /// <param name="dataPath">path of the file.</param>
         public void Init(string dataPath)
         {
             Debug.Log("Reading... " + dataPath);
