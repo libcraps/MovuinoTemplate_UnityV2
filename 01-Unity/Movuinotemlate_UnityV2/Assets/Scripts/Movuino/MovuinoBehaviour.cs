@@ -10,7 +10,7 @@ using System.IO;
 namespace Movuino
 {
     /// <summary>
-    /// Class that manage the movuino object in the scene
+    /// Class that manage the movuino object in the scene when it is connected in wifi.
     /// </summary>
     /// <remarks>Handle OSC conncetion too</remarks>
     public class MovuinoBehaviour : MonoBehaviour

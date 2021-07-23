@@ -28,7 +28,6 @@ namespace Movuino
             return vectorIntegrate;
         }
 
-
         /// <summary>
         /// Return the angle Vector between gravity and incoming acceleration 
         /// </summary>
@@ -76,13 +75,13 @@ namespace Movuino
             return angle;
         }
 
-
         /// <summary>
-        /// Filtered incoming data, BP filter
+        /// Filtered incoming data, LP filter.
         /// </summary>
         /// <param name="rawDat">Incoming data</param>
         /// <param name="listMean"></param>
-        /// <returns></returns>
+        /// <param name="nbPointFilter"></param>
+        /// <returns>Filtered data for this frame</returns>
         public static float MovingMean(float rawDat, ref List<float> listMean, int nbPointFilter)
         {
             float meanDat = 0;
@@ -104,8 +103,13 @@ namespace Movuino
             meanDat /= listMean.Count;
             return meanDat;
         }
-
-
+        /// <summary>
+        /// Filtered incoming data, LP filter.
+        /// </summary>
+        /// <param name="rawDat">Incoming data</param>
+        /// <param name="listMean"></param>
+        /// <param name="nbPointFilter"></param>
+        /// <returns></returns>
         public static Vector3 MovingMean(Vector3 rawDat, ref List<Vector3> listMean, int nbPointFilter)
         {
             Vector3 meanDat = new Vector3(0, 0, 0);
@@ -210,9 +214,12 @@ namespace Movuino
             return new Vector3(phi, theta, psi);
         }
 
+        /// <summary>
+        /// Keep the incoming angle between -180° and 180°.
+        /// </summary>
+        /// <param name="psi"></param>
         public static void AngleRange(ref float psi)
         {
-            //Angle continuity for the pen :
             if (psi < -180 && psi >= -360)
             {
                 psi += 360;

@@ -15,12 +15,12 @@ namespace Graph
         /// <summary>
         /// Material but not ued for the moment
         /// </summary>
-        [SerializeField] private Material material;
+        private Material material;
         /// <summary>
         /// Representation of the dot (may be not need to be serializeiField).
         /// </summary>
-        [SerializeField] private Sprite sprite;
-        [SerializeField] private RectTransform graphContainer;
+        private Sprite sprite;
+        private RectTransform graphContainer;
 
         private int _yMax;
         private int _nbDot;

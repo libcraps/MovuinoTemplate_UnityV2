@@ -47,7 +47,7 @@ namespace Graph
         private int i = 0;
 
         /// <summary>
-        /// Initialise and instantitaes objects that you will need during the 
+        /// Initialise and instantitaes objects that you will need during the prograam.
         /// </summary>
         private void Awake()
         {
