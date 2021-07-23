@@ -7,7 +7,7 @@ class SensitivePenDataSet(MovuinoDataSet):
     """
     def __init__(self, filepath, nbPointfilter=25):
         """
-        Constructor of the class
+        Constructor of the sensitivePen
         :param filepath: filepath of the raw data set
         :param nbPointfilter: level of filtering for the datamanage
         """
@@ -23,7 +23,8 @@ class SensitivePenDataSet(MovuinoDataSet):
 
     def DataManage(self):
         """
-
+        Do the MovuinoDataSet.DataManage and a special DataManager= for the sensitivePen :
+        We calculate the orientation (psi) and the inclination of the pen (theta)
         :return:
         """
         MovuinoDataSet.DataManage(self)
@@ -71,6 +72,10 @@ class SensitivePenDataSet(MovuinoDataSet):
         self.rawData.to_csv(filepath + "_treated_" + self.name + ".csv", sep=",", index=False, index_label=False)
 
     def PlotImage(self):
+        """
+        Configure the plot figure
+        :return:
+        """
         MovuinoDataSet.PlotImage(self)
 
         df.PlotVector(self.time, self.acceleration_lp, 'Acceleration filtered (LP)', 334)
@@ -112,10 +117,15 @@ class SensitivePenDataSet(MovuinoDataSet):
         patchX = mpatches.Patch(color='red', label='x')
         patchY = mpatches.Patch(color='green', label='y')
         patchZ = mpatches.Patch(color='blue', label='z')
-        #plt.legend(handles=[patchX, patchY, patchZ], loc="center right", bbox_to_anchor=(-2.5,3.6),ncol=1)
+        plt.legend(handles=[patchX, patchY, patchZ], loc="upper right", bbox_to_anchor=(2.5,3.6),ncol=1)
 
     def VisualizeData(self):
+        """
+        Plot the figure
+        :return:
+        """
         self.PlotImage()
+        plt.subplots_adjust(hspace=0.3, wspace=0.2)
         plt.show()
 
 

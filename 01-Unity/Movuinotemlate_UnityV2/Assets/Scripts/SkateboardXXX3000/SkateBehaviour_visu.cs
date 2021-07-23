@@ -15,7 +15,10 @@ namespace Skateboard
         private int i;
         private bool end;
 
+        private float T;
+
         private Vector3 initAngle;
+        private Vector3 _initObjAngle;
 
         public Vector3 angleGyr { get { return movuinoDataSet.GetVector("thetaGyrx", "thetaGyry", "thetaGyrz", movuinoDataSet.i); } }
 
@@ -23,8 +26,12 @@ namespace Skateboard
         {
             //movuinoDataSet.showColumns();
             print(movuinoDataSet);
-            InvokeRepeating("Rotate", 2f, ((movuinoDataSet.GetValue("time", 1)- movuinoDataSet.GetValue("time", 0))));
-            initAngle = movuinoDataSet.GetVector("thetaGyrx", "thetaGyry", "thetaGyrz", 0);
+            T = (movuinoDataSet.GetValue("time", 1) - movuinoDataSet.GetValue("time", 0));
+            InvokeRepeating("Rotate", 2f,T);
+            initAngle = movuinoDataSet.GetVector("thetaGyrx", "thetaGyry", "thetaGyrz", 2);
+            _initObjAngle = this.gameObject.transform.localEulerAngles;
+            
+            print(T);
 
         }
 
@@ -35,7 +42,9 @@ namespace Skateboard
 
         private void Rotate()
         {
-            this.gameObject.transform.localEulerAngles = new Vector3(angleGyr.y, 0, 0);
+            this.gameObject.transform.localEulerAngles = _initObjAngle + new Vector3(angleGyr.y, angleGyr.x, angleGyr.z) - new Vector3(initAngle.y, initAngle.x, initAngle.z);
+            //this.gameObject.transform.localEulerAngles += new Vector3(movuinoDataSet.gyroscope.y, movuinoDataSet.gyroscope.x, movuinoDataSet.gyroscope.z)*T*MovuinoDataProcessing.RAD_TO_DEG;
+            
             movuinoDataSet.i++;
         }
 

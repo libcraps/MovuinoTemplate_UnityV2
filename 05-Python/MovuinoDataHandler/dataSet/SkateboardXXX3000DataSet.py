@@ -14,8 +14,8 @@ class SkateboardXXX3000DataSet(MovuinoDataSet):
     def DataManage(self):
         MovuinoDataSet.DataManage(self)
 
-        self.velocity = ef.EulerIntegration(self.acceleration_lp, self.Te)
-        self.ThetaGyr = ef.EulerIntegration(self.gyroscope_lp, self.Te)
+        self.velocity = ef.EulerIntegration(self.acceleration, self.Te)
+        self.ThetaGyr = ef.EulerIntegration(self.gyroscope, self.Te)
         self.pos = ef.EulerIntegration(self.velocity, self.Te)
 
         #------ list into np array conversion ------
